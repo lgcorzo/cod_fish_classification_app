@@ -1,0 +1,145 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace csr.modules
+{
+
+    public class CSRModule
+    {
+        //////////////////////////////////////////////////////////////
+        private SendMessageDelegate             SendMessageFunction;
+        private GetAvailableModuleNamesDelegate GetAvailableModulesFunction;
+        private GetModule                       GetModuleFunction;
+        private LogDelegate                     LogFunction;
+        private WriteConsoleDelegate            WriteConsoleFunction;
+        private ErrorDelegate                   ErrorFunction;
+        private NotifyDelegate                  NotifyFunction;
+        private SetGlobalParameterDelegate      SetGlobalParameterFunction;
+        private GetGlobalParameterDelegate      GetGlobalParameterFunction;
+
+        public event ModuleStatusChangedDelegate StatusChanged;
+
+        //////////////////////////////////////////////////////////////
+        public string           Id      { get; set; }
+        public string           Name    { get; set; }
+        public CSRModuleStatus  Status  {
+            //
+            get
+            {
+                return m_status;
+            }
+            //
+            set
+            {
+                m_status = value;
+                if( StatusChanged != null )
+                    StatusChanged(Id, m_status);
+            }
+            //
+        }
+
+        private CSRModuleStatus m_status;
+
+        //////////////////////////////////////////////////////////////
+        public CSRModule(string _id)
+        {
+            Id      = _id;
+            Status  = CSRModuleStatus.Paused;
+        }
+        
+        //////////////////////////////////////////////////////////////
+        public bool SendMessage(string destiny, string message)
+        {
+            return SendMessageFunction(Id, destiny, message);
+        }
+
+        //////////////////////////////////////////////////////////////
+        protected void Log(string message)
+        {
+            LogFunction(Id, message, false);
+        }
+
+        //////////////////////////////////////////////////////////////
+        public void Log(string message, bool write_to_console)
+        {
+            LogFunction(Id, message, write_to_console);
+        }
+
+        //////////////////////////////////////////////////////////////
+        public void WriteConsole(string message, bool write_log = false)
+        {
+            WriteConsoleFunction(Id, message, write_log);
+        }
+
+        //////////////////////////////////////////////////////////////
+        public void Notify(string message, bool write_to_logConsole = false)
+        {
+            NotifyFunction(Id, message, write_to_logConsole);
+        }
+
+        //////////////////////////////////////////////////////////////
+        public void Error(string message, bool log_to_file = false)
+        {
+            ErrorFunction(Id, message, log_to_file);
+        }
+
+        //////////////////////////////////////////////////////////////
+        public Dictionary<string,string> GetAvailableModules()
+        {
+            return GetAvailableModulesFunction();
+        }
+
+        //////////////////////////////////////////////////////////////
+        public CSRModule GetModule(string ModuleName)
+        {
+            foreach (CSRModule mod in GetModuleFunction())
+                if (mod.Name == ModuleName)
+                    return mod;
+            return null;
+        }
+
+        //////////////////////////////////////////////////////////////
+        public void SetGlobalParameter(string parameter_name, object value)
+        {
+            SetGlobalParameterFunction(parameter_name, value);
+        }
+
+        //////////////////////////////////////////////////////////////
+        public object GetGlobalParameter(string parameter_name)
+        {
+            return GetGlobalParameterFunction(parameter_name);
+        }
+
+        //////////////////////////////////////////////////////////////
+        public virtual bool Init()
+        {
+            // override in modules
+            Status = CSRModuleStatus.Running;
+            return true;
+        }
+
+        //////////////////////////////////////////////////////////////
+        public virtual void HandleMessages(com.CSRMessage message)
+        {
+            // override in modules
+        }
+
+        //////////////////////////////////////////////////////////////
+        public void AppendDelegates(csr.modules.CSRModuleDelegates module_delegates)
+        {
+            this.SendMessageFunction            = module_delegates.SendMessageFunction;
+            this.GetAvailableModulesFunction    = module_delegates.GetAvailableModulesFunction;
+            this.GetModuleFunction              = module_delegates.GetModule;
+            this.LogFunction                    = module_delegates.LogFunction;
+            this.WriteConsoleFunction           = module_delegates.WriteConsoleFunction;
+            this.NotifyFunction                 = module_delegates.NotifyFunction;
+            this.ErrorFunction                  = module_delegates.ErrorFunction;
+            this.SetGlobalParameterFunction     = module_delegates.SetGlobalParameterFunction;
+            this.GetGlobalParameterFunction     = module_delegates.GetGlobalParameterFunction;
+
+        }
+
+        //////////////////////////////////////////////////////////////
+
+    }
+}

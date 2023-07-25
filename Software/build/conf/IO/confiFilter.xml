@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<ArrayOfIO_Parameter_Filter xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <IO_Parameter_Filter>
+    <Name>
+      <string>CSR</string>
+    </Name>
+    <Redirections />
+  </IO_Parameter_Filter>
+</ArrayOfIO_Parameter_Filter>

@@ -1,0 +1,37 @@
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Text;
+
+namespace CSRApp.config.global
+{
+    public static class GlobalConfigManager
+    {
+        ///////////////////////////////////////////////////////////
+        private static Dictionary<string, object> aValues;
+
+        ///////////////////////////////////////////////////////////
+        public static void Init()
+        {
+            aValues = new Dictionary<string, object>();
+        }
+
+        ///////////////////////////////////////////////////////////
+        public static object GetParameter(string strParam)
+        {
+            object oValue;
+            if (aValues.TryGetValue(strParam, out oValue))
+                return oValue;
+            else
+                return (int)-1;
+        }
+
+        ///////////////////////////////////////////////////////////
+        public static void SetParameter(string strParam, object value)
+        {
+            aValues[strParam] = value;
+        }
+
+        ///////////////////////////////////////////////////////////
+    }
+}

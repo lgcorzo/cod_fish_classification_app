@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <string>0_Unknown</string> 
+  <string>1_HYSE</string>
+  <string>2_SEI</string>
+  <string>3_TORSK</string>
+  <string>4_LASK</string>
+</ArrayOfString>

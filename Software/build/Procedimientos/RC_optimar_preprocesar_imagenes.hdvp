@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.3">
+<procedure name="RC_optimar_preprocesar_imagenes">
+<interface>
+<io>
+<par name="ImageOrg" base_type="iconic" dimension="0"/>
+<par name="ImagenRgbWhite" base_type="iconic" dimension="0"/>
+<par name="ROI_0" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="Image1" base_type="iconic" dimension="0"/>
+</oo>
+<ic>
+<par name="CameraParameters" base_type="ctrl" dimension="0"/>
+<par name="CameraPose" base_type="ctrl" dimension="0"/>
+<par name="angle_belt" base_type="ctrl" dimension="0"/>
+<par name="scale_x" base_type="ctrl" dimension="0"/>
+<par name="scale_y" base_type="ctrl" dimension="0"/>
+</ic>
+</interface>
+<body>
+<c>*Parámetros de entrada:</c>
+<c>*   - ImageOrg</c>
+<c>*   - ImagenRgbWhite</c>
+<c></c>
+<c>*Parámetros de salida:</c>
+<c>*   - Image</c>
+<c>*angulo alesund 0</c>
+<c>*angulo roboconcept -4</c>
+<c></c>
+<l>  try</l>
+<c>      *imagen del blanco para eliminar el defecto porducido por la iluminación</c>
+<l>    rgb1_to_gray (ImagenRgbWhite, ImageNirWhite)</l>
+<c>  </c>
+<c>    * Read in the images and show them one-by-one.  Please not the fold-like</c>
+<c>    * degradations running across the PCB.</c>
+<c>       </c>
+<l>    get_image_size (ImageOrg, Width, Height)</l>
+<l>        imagenTresCanales := 1</l>
+<l>        try</l>
+<l>            decompose3 (ImageOrg, Red, Green, Blue)</l>
+<l>        catch(Exception)</l>
+<l>            imagenTresCanales := 0</l>
+<l>        endtry</l>
+<c>            </c>
+<c>    </c>
+<c>    *NIR or RGB correction    </c>
+<l>    if (imagenTresCanales = 1)</l>
+<l>    div_image (ImageOrg, ImagenRgbWhite, Image1, 200, 0)</l>
+<l>    else</l>
+<l>    div_image (ImageOrg, ImageNirWhite, Image1, 200, 0)</l>
+<l>    endif</l>
+<c>    </c>
+<l>    parameters_image_to_world_plane_centered_full (Image1, ImageWorld, CameraParameters, CameraPose) </l>
+<c>    *reescala para obtener resolucion 1:1 </c>
+<l>    zoom_image_factor(ImageWorld,Image1,scale_x,scale_y,'constant')</l>
+<l>    zoom_region(ROI_0,ROI_0,scale_x,scale_y)</l>
+<l>    rotate_image (Image1, Image1, angle_belt, 'constant')</l>
+<c>   </c>
+<c>  </c>
+<c>   </c>
+<c>     *recortar imagen</c>
+<l>    get_image_size (Image1, Width, Height)</l>
+<l>    aux := 180</l>
+<l>    offset :=   aux</l>
+<l>    offset_width := 200</l>
+<l>    smallest_rectangle1(ROI_0,Row1, Column1, Row2, Column2)</l>
+<l>    crop_rectangle1 (Image1, Image1, Row1, Column1, Row2, Column2)</l>
+<c>    </c>
+<l>    *get_image_size(Image1, Width1, Height1)    </l>
+<l>    *desfase_RGB_NIR := 0</l>
+<l>    *if(imagenTresCanales = 1)</l>
+<l>    *    crop_rectangle1(Image1, Image1, desfase_RGB_NIR, 1, Height1, Width1)</l>
+<l>    *else</l>
+<l>    *    crop_rectangle1(Image1, Image1, 1, 1, Height1 - desfase_RGB_NIR, Width1)        </l>
+<l>    *endif</l>
+<l>  catch (Exception)</l>
+<l>  endtry</l>
+<c>    </c>
+<c></c>
+<l>return()</l>
+</body>
+<docu id="RC_optimar_preprocesar_imagenes">
+<short lang="en_US">Detect a fin</short>
+<parameters>
+<parameter id="CameraParameters"/>
+<parameter id="CameraPose"/>
+<parameter id="Image1"/>
+<parameter id="ImageOrg"/>
+<parameter id="ImagenRgbWhite"/>
+<parameter id="ROI_0"/>
+<parameter id="angle_belt"/>
+<parameter id="scale_x"/>
+<parameter id="scale_y"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

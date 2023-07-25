@@ -1,0 +1,144 @@
+<?xml version="1.0"?>
+<ArrayOfArrayOfIO_Parameter xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ArrayOfIO_Parameter />
+  <ArrayOfIO_Parameter>
+    <IO_Parameter>
+      <Name>GVL.CSR_LINE_1_AREA</Name>
+      <TypeStr>System.UInt32</TypeStr>
+      <Value xsi:type="xsd:int">0</Value>
+      <Redirections />
+    </IO_Parameter>
+    <IO_Parameter>
+      <Name>GVL.CSR_LINE_1_COUNTER</Name>
+      <TypeStr>System.UInt16</TypeStr>
+      <Value xsi:type="xsd:int">0</Value>
+      <Redirections />
+    </IO_Parameter>
+    <IO_Parameter>
+      <Name>GVL.CSR_LINE_1_ID</Name>
+      <TypeStr>System.UInt16</TypeStr>
+      <Value xsi:type="xsd:int">0</Value>
+      <Redirections />
+    </IO_Parameter>
+    <IO_Parameter>
+      <Name>GVL.CSR_LINE_1_LENGTH</Name>
+      <TypeStr>System.UInt32</TypeStr>
+      <Value xsi:type="xsd:int">0</Value>
+      <Redirections />
+    </IO_Parameter>
+    <IO_Parameter>
+      <Name>GVL.CSR_LINE_1_POS</Name>
+      <TypeStr>System.UInt16</TypeStr>
+      <Value xsi:type="xsd:int">0</Value>
+      <Redirections />
+    </IO_Parameter>
+    <IO_Parameter>
+      <Name>GVL.CSR_LINE_1_PROP_TIME</Name>
+      <TypeStr>System.UInt32</TypeStr>
+      <Value xsi:type="xsd:int">0</Value>
+      <Redirections />
+    </IO_Parameter>
+    <IO_Parameter>
+      <Name>GVL.CSR_LINE_1_SPECIES_CODE</Name>
+      <TypeStr>System.UInt32</TypeStr>
+      <Value xsi:type="xsd:int">0</Value>
+      <Redirections />
+    </IO_Parameter>
+    <IO_Parameter>
+      <Name>GVL.CSR_LINE_1_SPECIES_TYPE</Name>
+      <TypeStr>System.String</TypeStr>
+      <Value xsi:type="xsd:string" />
+      <Redirections />
+    </IO_Parameter>
+    <IO_Parameter>
+      <Name>GVL.CSR_LINE_1_TIME_STAMP</Name>
+      <TypeStr>System.UInt32</TypeStr>
+      <Value xsi:type="xsd:int">0</Value>
+      <Redirections />
+    </IO_Parameter>
+    <IO_Parameter>
+      <Name>GVL.CSR_LINE_1_WIDTH</Name>
+      <TypeStr>System.UInt32</TypeStr>
+      <Value xsi:type="xsd:int">0</Value>
+      <Redirections />
+    </IO_Parameter>
+    <IO_Parameter>
+      <Name>GVL.CSR_LINE_2_AREA</Name>
+      <TypeStr>System.UInt32</TypeStr>
+      <Value xsi:type="xsd:int">0</Value>
+      <Redirections />
+    </IO_Parameter>
+    <IO_Parameter>
+      <Name>GVL.CSR_LINE_2_COUNTER</Name>
+      <TypeStr>System.UInt16</TypeStr>
+      <Value xsi:type="xsd:int">0</Value>
+      <Redirections />
+    </IO_Parameter>
+    <IO_Parameter>
+      <Name>GVL.CSR_LINE_2_ID</Name>
+      <TypeStr>System.UInt16</TypeStr>
+      <Value xsi:type="xsd:int">0</Value>
+      <Redirections />
+    </IO_Parameter>
+    <IO_Parameter>
+      <Name>GVL.CSR_LINE_2_LENGTH</Name>
+      <TypeStr>System.UInt32</TypeStr>
+      <Value xsi:type="xsd:int">0</Value>
+      <Redirections />
+    </IO_Parameter>
+    <IO_Parameter>
+      <Name>GVL.CSR_LINE_2_POS</Name>
+      <TypeStr>System.UInt16</TypeStr>
+      <Value xsi:type="xsd:int">0</Value>
+      <Redirections />
+    </IO_Parameter>
+    <IO_Parameter>
+      <Name>GVL.CSR_LINE_2_PROP_TIME</Name>
+      <TypeStr>System.UInt32</TypeStr>
+      <Value xsi:type="xsd:int">0</Value>
+      <Redirections />
+    </IO_Parameter>
+    <IO_Parameter>
+      <Name>GVL.CSR_LINE_2_SPECIES_CODE</Name>
+      <TypeStr>System.UInt32</TypeStr>
+      <Value xsi:type="xsd:int">0</Value>
+      <Redirections />
+    </IO_Parameter>
+    <IO_Parameter>
+      <Name>GVL.CSR_LINE_2_SPECIES_TYPE</Name>
+      <TypeStr>System.String</TypeStr>
+      <Value xsi:type="xsd:string" />
+      <Redirections />
+    </IO_Parameter>
+    <IO_Parameter>
+      <Name>GVL.CSR_LINE_2_TIME_STAMP</Name>
+      <TypeStr>System.UInt32</TypeStr>
+      <Value xsi:type="xsd:int">0</Value>
+      <Redirections />
+    </IO_Parameter>
+    <IO_Parameter>
+      <Name>GVL.CSR_LINE_2_WIDTH</Name>
+      <TypeStr>System.UInt32</TypeStr>
+      <Value xsi:type="xsd:int">0</Value>
+      <Redirections />
+    </IO_Parameter>
+    <IO_Parameter>
+      <Name>GVL.CSR_SYSTEM_ALARMS</Name>
+      <TypeStr>System.UInt16</TypeStr>
+      <Value xsi:type="xsd:int">0</Value>
+      <Redirections />
+    </IO_Parameter>
+    <IO_Parameter>
+      <Name>GVL.CSR_SYSTEM_TIME_STAMP</Name>
+      <TypeStr>System.UInt32</TypeStr>
+      <Value xsi:type="xsd:int">0</Value>
+      <Redirections />
+    </IO_Parameter>
+    <IO_Parameter>
+      <Name>GVL.CSR_TIME_STAMP</Name>
+      <TypeStr>System.UInt32</TypeStr>
+      <Value xsi:type="xsd:int">0</Value>
+      <Redirections />
+    </IO_Parameter>
+  </ArrayOfIO_Parameter>
+</ArrayOfArrayOfIO_Parameter>

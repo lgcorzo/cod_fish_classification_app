@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.1">
+<procedure name="LeerImagenes">
+<interface>
+<oo>
+<par name="Image1RGB" base_type="iconic" dimension="0"/>
+<par name="Image1NIR" base_type="iconic" dimension="0"/>
+</oo>
+<ic>
+<par name="pathAnterior" base_type="ctrl" dimension="0"/>
+<par name="pathBase" base_type="ctrl" dimension="0"/>
+</ic>
+</interface>
+<body>
+<l>tuple_strstr(pathAnterior,'RGB',pos)</l>
+<l>tuple_str_last_n(pathAnterior,pos+3,namePost)</l>
+<l>pathImage1RGB:=pathBase+'/RGB'+namePost</l>
+<l>pathImage1NIR:=pathBase+'/NIR'+namePost</l>
+<c></c>
+<l>try</l>
+<l>    read_image(Image1RGB,pathImage1RGB)</l>
+<l>catch (Exception)</l>
+<l>  gen_empty_obj(Image1RGB)</l>
+<l>endtry</l>
+<c></c>
+<c></c>
+<l>try</l>
+<l>   read_image(Image1NIR,pathImage1NIR)</l>
+<l>catch (Exception)</l>
+<l>  gen_empty_obj(Image1NIR)</l>
+<l>endtry</l>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<l>return ()</l>
+</body>
+<docu id="LeerImagenes">
+<parameters>
+<parameter id="Image1NIR"/>
+<parameter id="Image1RGB"/>
+<parameter id="pathAnterior"/>
+<parameter id="pathBase"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

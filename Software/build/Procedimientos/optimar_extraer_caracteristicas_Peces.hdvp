@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.3">
+<procedure name="optimar_extraer_caracteristicas_Peces" access="local">
+<interface>
+<io>
+<par name="ImagenRGB" base_type="iconic" dimension="0"/>
+<par name="ImagenNIR" base_type="iconic" dimension="0"/>
+</io>
+<ic>
+<par name="ClassLUTHandle" base_type="ctrl" dimension="0"/>
+<par name="ParametrosCola" base_type="ctrl" dimension="0"/>
+</ic>
+</interface>
+<body>
+<c>*   Parámetros de entrada:</c>
+<c>*     - ImagenRGB</c>
+<c>*     - ImagenNIR</c>
+<c>*</c>
+<c>*   Parámetros de salida:</c>
+<c>*     - message_queue</c>
+<c>* </c>
+<l>    set_message_tuple (ParametrosCola, 'ID', 0)</l>
+<c></c>
+<c>************************************************** MÁSCARAS **************************************************</c>
+<c>**************************************************************************************************************</c>
+<l>    threshold (ImagenRGB, MascaraRGB, 10, 255)</l>
+<l>    threshold (ImagenNIR, MascaraNIR, 10, 255)    </l>
+<c></c>
+<c>*********************************************** NIVEL DE GRIS ************************************************</c>
+<c>**************************************************************************************************************</c>
+<c>    * Imagen escala de grises</c>
+<l>    rgb1_to_gray(ImagenRGB, Gray)   </l>
+<c>    * MeanGray, </c>
+<l>    intensity(MascaraRGB, Gray, MeanGray, DeviationGray)</l>
+<l>    set_message_tuple (ParametrosCola, 'MeanGray', MeanGray)</l>
+<l>    set_message_tuple (ParametrosCola, 'DeviationGray', DeviationGray) </l>
+<c>    * GrayPlaneDeviation</c>
+<l>    plane_deviation(MascaraRGB, Gray, GrayPlaneDeviation)</l>
+<l>    set_message_tuple (ParametrosCola, 'GrayPlaneDeviation', GrayPlaneDeviation)</l>
+<c>    * EntropyGray, AnisotropyGray</c>
+<l>    entropy_gray(MascaraRGB, Gray, EntropyGray, AnisotropyGray)</l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyGray', EntropyGray)</l>
+<l>    set_message_tuple (ParametrosCola, 'AnisotropyGray', AnisotropyGray)</l>
+<c>    * EntropyFuzzyGray</c>
+<l>    fuzzy_entropy(MascaraRGB, Gray, 0, 255, EntropyFuzzyGray)</l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyFuzzyGray', EntropyFuzzyGray)</l>
+<c>    * PerimeterFuzzyGray</c>
+<l>    fuzzy_perimeter(MascaraRGB, Gray, 0, 255, PerimeterFuzzyGray)</l>
+<l>    set_message_tuple (ParametrosCola, 'PerimeterFuzzyGray', PerimeterFuzzyGray)  </l>
+<c>    * Matriz de co-ocurrencia 0</c>
+<l>    gen_cooc_matrix(MascaraRGB, Gray, Matrix0Gray, 6, 0)</l>
+<c>    * Energy0gray, Correlation0gray, Homogeneity0gray, Contrast0gray</c>
+<l>    cooc_feature_matrix(Matrix0Gray, Energy0gray, Correlation0gray, Homogeneity0gray, Contrast0gray)</l>
+<l>    set_message_tuple (ParametrosCola, 'Energy0gray', Energy0gray)</l>
+<l>    set_message_tuple (ParametrosCola, 'Correlation0gray', Correlation0gray)</l>
+<l>    set_message_tuple (ParametrosCola, 'Homogeneity0gray', Homogeneity0gray)</l>
+<l>    set_message_tuple (ParametrosCola, 'Contrast0gray', Contrast0gray)   </l>
+<c>    * Matriz de co-ocurrencia 45</c>
+<l>    gen_cooc_matrix(MascaraRGB, Gray, Matrix45Gray, 6, 45)</l>
+<c>    * Energy45gray, Correlation45gray, Homogeneity45gray, Contrast45gray</c>
+<l>    cooc_feature_matrix(Matrix45Gray, Energy45gray, Correlation45gray, Homogeneity45gray, Contrast45gray)</l>
+<l>    set_message_tuple (ParametrosCola, 'Energy45gray', Energy45gray)</l>
+<l>    set_message_tuple (ParametrosCola, 'Correlation45gray', Correlation45gray)</l>
+<l>    set_message_tuple (ParametrosCola, 'Homogeneity45gray', Homogeneity45gray)</l>
+<l>    set_message_tuple (ParametrosCola, 'Contrast45gray', Contrast45gray)   </l>
+<c>    * Matriz de co-ocurrencia 90</c>
+<l>    gen_cooc_matrix(MascaraRGB, Gray, Matrix90Gray, 6, 90)</l>
+<c>    * Energy90gray, Correlation90gray, Homogeneity90gray, Contrast90gray</c>
+<l>    cooc_feature_matrix(Matrix90Gray, Energy90gray, Correlation90gray, Homogeneity90gray, Contrast90gray)</l>
+<l>    set_message_tuple (ParametrosCola, 'Energy90gray', Energy90gray)</l>
+<l>    set_message_tuple (ParametrosCola, 'Correlation90gray', Correlation90gray)</l>
+<l>    set_message_tuple (ParametrosCola, 'Homogeneity90gray', Homogeneity90gray)</l>
+<l>    set_message_tuple (ParametrosCola, 'Contrast90gray', Contrast90gray)    </l>
+<c>    * Matriz de co-ocurrencia 135</c>
+<l>    gen_cooc_matrix(MascaraRGB, Gray, Matrix135Gray, 6, 135)</l>
+<c>    * Energy135gray, Correlation135gray, Homogeneity135gray, Contrast135gray</c>
+<l>    cooc_feature_matrix(Matrix135Gray, Energy135gray, Correlation135gray, Homogeneity135gray, Contrast135gray)</l>
+<l>    set_message_tuple (ParametrosCola, 'Energy135gray', Energy135gray)</l>
+<l>    set_message_tuple (ParametrosCola, 'Correlation135gray', Correlation135gray)</l>
+<l>    set_message_tuple (ParametrosCola, 'Homogeneity135gray', Homogeneity135gray)</l>
+<l>    set_message_tuple (ParametrosCola, 'Contrast135gray', Contrast135gray)      </l>
+<c>**************************************************** RGB *****************************************************</c>
+<c>**************************************************************************************************************</c>
+<c>    * Canal R de la imagen RGB</c>
+<l>    access_channel (ImagenRGB, R, 1)</l>
+<c>    * MeanR, DeviationR</c>
+<l>    intensity(MascaraRGB, R, MeanR, DeviationR)</l>
+<l>    set_message_tuple (ParametrosCola, 'MeanR', MeanR)</l>
+<l>    set_message_tuple (ParametrosCola, 'DeviationR', DeviationR)</l>
+<c>    * RPlaneDeviation</c>
+<l>    plane_deviation(MascaraRGB, R, RPlaneDeviation)</l>
+<l>    set_message_tuple (ParametrosCola, 'RPlaneDeviation', RPlaneDeviation)</l>
+<c>    * EntropyR, AnisotropyR</c>
+<l>    entropy_gray(MascaraRGB, R, EntropyR, AnisotropyR)</l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyR', EntropyR)</l>
+<l>    set_message_tuple (ParametrosCola, 'AnisotropyR', AnisotropyR)</l>
+<c>    * EntropyFuzzyR</c>
+<l>    fuzzy_entropy(MascaraRGB, R, 0, 255, EntropyFuzzyR)</l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyFuzzyR', EntropyFuzzyR)</l>
+<c>    * PerimeterFuzzyR</c>
+<l>    fuzzy_perimeter(MascaraRGB, R, 0, 255, PerimeterFuzzyR)</l>
+<l>    set_message_tuple (ParametrosCola, 'PerimeterFuzzyR', PerimeterFuzzyR)   </l>
+<c>    * Canal G de la imagen RGB</c>
+<l>    access_channel (ImagenRGB, G, 1)</l>
+<c>    * MeanG, DeviationG</c>
+<l>    intensity(MascaraRGB, G, MeanG, DeviationG)</l>
+<l>    set_message_tuple (ParametrosCola, 'MeanG', MeanG)</l>
+<l>    set_message_tuple (ParametrosCola, 'DeviationG', DeviationG)</l>
+<c>    * GPlaneDeviation</c>
+<l>    plane_deviation(MascaraRGB, G, GPlaneDeviation)</l>
+<l>    set_message_tuple (ParametrosCola, 'GPlaneDeviation', GPlaneDeviation)</l>
+<c>    * EntropyG, AnisotropyG</c>
+<l>    entropy_gray(MascaraRGB, G, EntropyG, AnisotropyG)</l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyG', EntropyG)</l>
+<l>    set_message_tuple (ParametrosCola, 'AnisotropyG', AnisotropyG)</l>
+<c>    * EntropyFuzzyG</c>
+<l>    fuzzy_entropy(MascaraRGB, G, 0, 255, EntropyFuzzyG)</l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyFuzzyG', EntropyFuzzyG)</l>
+<c>    * PerimeterFuzzyG</c>
+<l>    fuzzy_perimeter(MascaraRGB, G, 0, 255, PerimeterFuzzyG)</l>
+<l>    set_message_tuple (ParametrosCola, 'PerimeterFuzzyG', PerimeterFuzzyG)  </l>
+<c>    * Canal B de la imagen RGB</c>
+<l>    access_channel (ImagenRGB, B, 3)</l>
+<c>    * MeanB, DeviationB</c>
+<l>    intensity(MascaraRGB, B, MeanB, DeviationB)</l>
+<l>    set_message_tuple (ParametrosCola, 'MeanB', MeanB)</l>
+<l>    set_message_tuple (ParametrosCola, 'DeviationB', DeviationB)</l>
+<c>    * BPlaneDeviation</c>
+<l>    plane_deviation(MascaraRGB, B, BPlaneDeviation)</l>
+<l>    set_message_tuple (ParametrosCola, 'BPlaneDeviation', BPlaneDeviation)</l>
+<c>    * EntropyB, AnisotropyB</c>
+<l>    entropy_gray(MascaraRGB, B, EntropyB, AnisotropyB)</l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyB', EntropyB)</l>
+<l>    set_message_tuple (ParametrosCola, 'AnisotropyB', AnisotropyB)</l>
+<c>    * EntropyFuzzyB</c>
+<l>    fuzzy_entropy(MascaraRGB, B, 0, 255, EntropyFuzzyB)</l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyFuzzyB', EntropyFuzzyB)</l>
+<c>    * PerimeterFuzzyB</c>
+<l>    fuzzy_perimeter(MascaraRGB, B, 0, 255, PerimeterFuzzyB)</l>
+<l>    set_message_tuple (ParametrosCola, 'PerimeterFuzzyB', PerimeterFuzzyB)</l>
+<c>**************************************************** HSV *****************************************************</c>
+<c>**************************************************************************************************************</c>
+<c>    * Imagen HSV</c>
+<l>    trans_from_rgb(R, G, B, H, S, V, 'hsv') </l>
+<c>    * Canal H de la imagen HSV</c>
+<c>    * MeanH, DeviationH</c>
+<l>    intensity(MascaraRGB, H, MeanH, DeviationH)</l>
+<l>    set_message_tuple (ParametrosCola, 'MeanH', MeanH)</l>
+<l>    set_message_tuple (ParametrosCola, 'DeviationH', DeviationH)</l>
+<c>    * HPlaneDeviation</c>
+<l>    plane_deviation(MascaraRGB, H, HPlaneDeviation)</l>
+<l>    set_message_tuple (ParametrosCola, 'HPlaneDeviation', HPlaneDeviation)</l>
+<c>    * EntropyH, AnisotropyH</c>
+<l>    entropy_gray(MascaraRGB, H, EntropyH, AnisotropyH)</l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyH', EntropyH)</l>
+<l>    set_message_tuple (ParametrosCola, 'AnisotropyH', AnisotropyH)</l>
+<c>    * EntropyFuzzyH</c>
+<l>    fuzzy_entropy(MascaraRGB, H, 0, 255, EntropyFuzzyH)</l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyFuzzyH', EntropyFuzzyH)</l>
+<c>    * PerimeterFuzzyH</c>
+<l>    fuzzy_perimeter(MascaraRGB, H, 0, 255, PerimeterFuzzyH)</l>
+<l>    set_message_tuple (ParametrosCola, 'PerimeterFuzzyH', PerimeterFuzzyH)    </l>
+<c>    * Canal S de la imagen HSV</c>
+<c>    * MeanS, DeviationS</c>
+<l>    intensity(MascaraRGB, S, MeanS, DeviationS)</l>
+<l>    set_message_tuple (ParametrosCola, 'MeanS', MeanS)</l>
+<l>    set_message_tuple (ParametrosCola, 'DeviationS', DeviationS)</l>
+<c>    * SPlaneDeviation</c>
+<l>    plane_deviation(MascaraRGB, S, SPlaneDeviation)</l>
+<l>    set_message_tuple (ParametrosCola, 'SPlaneDeviation', SPlaneDeviation)</l>
+<c>    * EntropyS, AnisotropyS</c>
+<l>    entropy_gray(MascaraRGB, S, EntropyS, AnisotropyS)</l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyS', EntropyS)</l>
+<l>    set_message_tuple (ParametrosCola, 'AnisotropyS', AnisotropyS)</l>
+<c>    * EntropyFuzzyS</c>
+<l>    fuzzy_entropy(MascaraRGB, S, 0, 255, EntropyFuzzyS)</l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyFuzzyS', EntropyFuzzyS)</l>
+<c>    * PerimeterFuzzyS</c>
+<l>    fuzzy_perimeter(MascaraRGB, S, 0, 255, PerimeterFuzzyS)</l>
+<l>    set_message_tuple (ParametrosCola, 'PerimeterFuzzyS', PerimeterFuzzyS)  </l>
+<c>    * Canal V de la imagen HSV</c>
+<c>    * MeanV, DeviationV</c>
+<l>    intensity(MascaraRGB, V, MeanV, DeviationV)</l>
+<l>    set_message_tuple (ParametrosCola, 'MeanV', MeanV)</l>
+<l>    set_message_tuple (ParametrosCola, 'DeviationV', DeviationV)</l>
+<c>    * VPlaneDeviation</c>
+<l>    plane_deviation(MascaraRGB, V, VPlaneDeviation)</l>
+<l>    set_message_tuple (ParametrosCola, 'VPlaneDeviation', VPlaneDeviation)</l>
+<c>    * EntropyV, AnisotropyV</c>
+<l>    entropy_gray(MascaraRGB, V, EntropyV, AnisotropyV)</l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyV', EntropyV)</l>
+<l>    set_message_tuple (ParametrosCola, 'AnisotropyV', AnisotropyV)</l>
+<c>    * EntropyFuzzyV</c>
+<l>    fuzzy_entropy(MascaraRGB, V, 0, 255, EntropyFuzzyV)</l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyFuzzyV', EntropyFuzzyV)</l>
+<c>    * PerimeterFuzzyV</c>
+<l>    fuzzy_perimeter(MascaraRGB, B, 0, 255, PerimeterFuzzyV)</l>
+<l>    set_message_tuple (ParametrosCola, 'PerimeterFuzzyV', PerimeterFuzzyV)   </l>
+<c>************************************************** CIElab ****************************************************</c>
+<c>**************************************************************************************************************</c>
+<c>    * Imagen CIElab</c>
+<l>    trans_from_rgb(R, G, B, l, a, b, 'cielab')   </l>
+<c>    * Canal l de la imagen CIElab</c>
+<c>    * Meanl, Deviationl</c>
+<l>    intensity(MascaraRGB, l, Meanl, Deviationl)</l>
+<l>    set_message_tuple (ParametrosCola, 'Meanl', Meanl)</l>
+<l>    set_message_tuple (ParametrosCola, 'Deviationl', Deviationl)</l>
+<c>    * lPlaneDeviation</c>
+<l>    plane_deviation(MascaraRGB, l, lPlaneDeviation)</l>
+<l>    set_message_tuple (ParametrosCola, 'lPlaneDeviation', lPlaneDeviation)</l>
+<c>    * Entropyl, Anisotropyl</c>
+<l>    entropy_gray(MascaraRGB, l, Entropyl, Anisotropyl)</l>
+<l>    set_message_tuple (ParametrosCola, 'Entropyl', Entropyl)</l>
+<l>    set_message_tuple (ParametrosCola, 'Anisotropyl', Anisotropyl)</l>
+<c>    * EntropyFuzzyl</c>
+<l>    fuzzy_entropy(MascaraRGB, l, 0, 255, EntropyFuzzyl)</l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyFuzzyl', EntropyFuzzyl)</l>
+<c>    * PerimeterFuzzyl</c>
+<l>    fuzzy_perimeter(MascaraRGB, l, 0, 255, PerimeterFuzzyl)</l>
+<l>    set_message_tuple (ParametrosCola, 'PerimeterFuzzyl', PerimeterFuzzyl)</l>
+<c>    </c>
+<c>    * Canal a de la imagen CIElab</c>
+<c>    * Meana, Deviationa</c>
+<l>    intensity(MascaraRGB, a, Meana, Deviationa)</l>
+<l>    set_message_tuple (ParametrosCola, 'Meana', Meana)</l>
+<l>    set_message_tuple (ParametrosCola, 'Deviationa', Deviationa)</l>
+<c>    * aPlaneDeviation</c>
+<l>    plane_deviation(MascaraRGB, a, aPlaneDeviation)</l>
+<l>    set_message_tuple (ParametrosCola, 'aPlaneDeviation', aPlaneDeviation)</l>
+<c>    * Entropya, Anisotropya</c>
+<l>    entropy_gray(MascaraRGB, a, Entropya, Anisotropya)</l>
+<l>    set_message_tuple (ParametrosCola, 'Entropya', Entropya)</l>
+<l>    set_message_tuple (ParametrosCola, 'Anisotropya', Anisotropya)</l>
+<c>    * EntropyFuzzya</c>
+<l>    fuzzy_entropy(MascaraRGB, a, 0, 255, EntropyFuzzya)</l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyFuzzya', EntropyFuzzya)</l>
+<c>    * PerimeterFuzzya</c>
+<l>    fuzzy_perimeter(MascaraRGB, a, 0, 255, PerimeterFuzzya)</l>
+<l>    set_message_tuple (ParametrosCola, 'PerimeterFuzzya', PerimeterFuzzya)</l>
+<c>    </c>
+<c>    * Canal b de la imagen CIElab</c>
+<c>    * Meanb, Deviationb</c>
+<l>    intensity(MascaraRGB, b, Meanb, Deviationb)</l>
+<l>    set_message_tuple (ParametrosCola, 'Meanb', Meanb)</l>
+<l>    set_message_tuple (ParametrosCola, 'Deviationb', Deviationb)</l>
+<c>    * bPlaneDeviation</c>
+<l>    plane_deviation(MascaraRGB, b, bPlaneDeviation)</l>
+<l>    set_message_tuple (ParametrosCola, 'bPlaneDeviation', bPlaneDeviation)</l>
+<c>    * Entropyb, Anisotropyb</c>
+<l>    entropy_gray(MascaraRGB, b, Entropyb, Anisotropyb)</l>
+<l>    set_message_tuple (ParametrosCola, 'Entropyb', Entropyb)</l>
+<l>    set_message_tuple (ParametrosCola, 'Anisotropyb', Anisotropyb)</l>
+<c>    * EntropyFuzzyb</c>
+<l>    fuzzy_entropy(MascaraRGB, b, 0, 255, EntropyFuzzyb)</l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyFuzzyb', EntropyFuzzyb)</l>
+<c>    * PerimeterFuzzyb</c>
+<l>    fuzzy_perimeter(MascaraRGB, b, 0, 255, PerimeterFuzzyb)</l>
+<l>    set_message_tuple (ParametrosCola, 'PerimeterFuzzyb', PerimeterFuzzyb)</l>
+<c>    </c>
+<l>    compose3(l,a,b,ImageLab)</l>
+<c></c>
+<c>************************************************* MORFOLOGÍA *************************************************</c>
+<c>**************************************************************************************************************</c>
+<c>    * Sacara la máscara del controno de la ImagenRBG (imagen sin fondo)</c>
+<c>    * Largo, ancho</c>
+<l>    smallest_rectangle2(MascaraRGB, Row, Column, Phi, Largo, Ancho)</l>
+<l>    set_message_tuple (ParametrosCola, 'Largo', Largo)</l>
+<l>    set_message_tuple (ParametrosCola, 'Ancho', Ancho)</l>
+<c>    * Área</c>
+<l>    area_center(MascaraRGB, Area, Row1, Column3)</l>
+<l>    set_message_tuple (ParametrosCola, 'Area', Area)   </l>
+<c>    * Ra / Rb</c>
+<l>    elliptic_axis(MascaraRGB, Ra, Rb, Phi)</l>
+<l>    tuple_div(Ra, Rb, Ra_Rb)</l>
+<l>    set_message_tuple (ParametrosCola, 'Ra_Rb', Ra_Rb)</l>
+<c>    * Circularity</c>
+<l>    circularity(MascaraRGB, Circularity)</l>
+<l>    set_message_tuple (ParametrosCola, 'Circularity', Circularity)</l>
+<c>    * Compactness</c>
+<l>    compactness(MascaraRGB, Compactness)</l>
+<l>    set_message_tuple (ParametrosCola, 'Compactness', Compactness)</l>
+<c>    * Roundness</c>
+<l>    roundness(MascaraRGB, Distance, Sigma, Roundness, Sides)</l>
+<l>    set_message_tuple (ParametrosCola, 'Roundness', Roundness)</l>
+<c>    * Convexity</c>
+<l>    convexity(MascaraRGB, Convexity)</l>
+<l>    set_message_tuple (ParametrosCola, 'Convexity', Convexity)</l>
+<c>    * Rectangularity</c>
+<l>    rectangularity(MascaraRGB, Rectangularity)</l>
+<l>    set_message_tuple (ParametrosCola, 'Rectangularity', Rectangularity)</l>
+<c>    * Anisometry, Bulkiness, StructureFactor</c>
+<l>    eccentricity(MascaraRGB, Anisometry, Bulkiness, StructureFactor)</l>
+<l>    set_message_tuple (ParametrosCola, 'Anisometry', Anisometry)</l>
+<l>    set_message_tuple (ParametrosCola, 'Bulkiness', Bulkiness)</l>
+<l>    set_message_tuple (ParametrosCola, 'StructureFactor', StructureFactor)</l>
+<c>    * PSI1, PSI2, PSI3, PSI4</c>
+<l>    moments_region_central_invar(MascaraRGB, PSI1, PSI2, PSI3, PSI4)</l>
+<l>    set_message_tuple (ParametrosCola, 'PSI1', PSI1)</l>
+<l>    set_message_tuple (ParametrosCola, 'PSI2', PSI2)</l>
+<l>    set_message_tuple (ParametrosCola, 'PSI3', PSI3)</l>
+<l>    set_message_tuple (ParametrosCola, 'PSI4', PSI4)</l>
+<c>    * M11, M20, M02</c>
+<l>    moments_region_2nd_invar(MascaraRGB, M11, M20, M02)</l>
+<l>    set_message_tuple (ParametrosCola, 'M11', M11)</l>
+<l>    set_message_tuple (ParametrosCola, 'M20', M20)</l>
+<l>    set_message_tuple (ParametrosCola, 'M02', M02)</l>
+<c>    * M21, M12, M03, M30</c>
+<l>    moments_region_3rd_invar(MascaraRGB, M21, M12, M03, M30)</l>
+<l>    set_message_tuple (ParametrosCola, 'M21', M21)</l>
+<l>    set_message_tuple (ParametrosCola, 'M12', M12)</l>
+<l>    set_message_tuple (ParametrosCola, 'M03', M03)</l>
+<l>    set_message_tuple (ParametrosCola, 'M30', M30)    </l>
+<c> ************************************************* Histograma de color ab*************************************************</c>
+<c>**************************************************************************************************************   </c>
+<l>ImageWorkingRGB := ImagenRGB</l>
+<l>MascaraWorking := MascaraRGB</l>
+<l>reduce_domain(ImageWorkingRGB,MascaraWorking,Imagenworking)</l>
+<l>decompose3(Imagenworking, ImR, ImG, ImB)</l>
+<l>convert_image_type(ImR,ImR,'real')</l>
+<l>convert_image_type(ImG,ImG,'real')</l>
+<l>convert_image_type(ImB,ImB,'real')</l>
+<l>scale_image(ImR,ImR,1/255.0,0.0)</l>
+<l>scale_image(ImG,ImG,1/255.0,0.0)</l>
+<l>scale_image(ImB,ImB,1/255.0,0.0)</l>
+<l>trans_from_rgb (ImR, ImG, ImB, L, a, b, 'cielab') </l>
+<l>compose3(L, a, b,ImageLAB)</l>
+<c> *funcion para el calculo del histograma de color ab</c>
+<l>reduce_domain(ImageWorkingRGB,MascaraWorking,ImageWorkingRGB)</l>
+<l>gaussSize := 0.2</l>
+<l>MAX_Val:= 20.0</l>
+<l>gen_empty_obj(ImageLabOut)</l>
+<c></c>
+<l>Histo_ab_generator (ImageWorkingRGB, MascaraWorking, ImageLAB, HistogramOut, gaussSize, MAX_Val)</l>
+<l>gen_rectangle1(Hist_domain,0,0,MAX_Val,MAX_Val)</l>
+<l>reduce_domain(HistogramOut,Hist_domain,HistogramOut)</l>
+<l>crop_domain(HistogramOut,HistogramOutlineal)</l>
+<c></c>
+<l>min_max_gray(HistogramOut,HistogramOut, 0, Min, Max, Range)</l>
+<l>threshold(HistogramOut,Maxpos,Max,Max)</l>
+<l>area_center(Maxpos,area, Max_x,Max_y)</l>
+<l>moments_gray_plane (HistogramOut, HistogramOut, MRow, MCol, Alpha, Beta, Mean)</l>
+<c></c>
+<c></c>
+<l>texto := 'COLOR_Histo_ab_'</l>
+<l>for Index1 := 0 to MAX_Val-1 by 1</l>
+<l>    for Index2 := 0 to MAX_Val-1 by 1</l>
+<l> textof := texto + Index1 + '_' + Index2</l>
+<l>        get_grayval (HistogramOut, Index1, Index2, Grayval)  </l>
+<l>        set_message_tuple (ParametrosCola, textof, Grayval)</l>
+<l>    endfor</l>
+<l>endfor</l>
+<l>texto := 'COLOR_Histo_ab_max_X'</l>
+<l> set_message_tuple (ParametrosCola, texto, Max_x)</l>
+<l>texto := 'COLOR_Histo_ab_max_Y'</l>
+<l> set_message_tuple (ParametrosCola, texto, Max_y)</l>
+<l> texto := 'COLOR_Histo_ab_Dev_X'</l>
+<l> set_message_tuple (ParametrosCola, texto, MCol)</l>
+<l>  texto := 'COLOR_Histo_ab_Dev_Y'</l>
+<l> set_message_tuple (ParametrosCola, texto, MRow)</l>
+<c>*************************************  Color LAB **************************************</c>
+<c>**************************************************************************************************************</c>
+<c>*Parametros color RGB Cuerpo</c>
+<l>ImageWorkingRGB := ImagenRGB</l>
+<l>MascaraWorking := MascaraRGB</l>
+<l>reduce_domain(ImageWorkingRGB,MascaraRGB,ImageWorkingRGB)</l>
+<c>*calcula los parametros PCA de la imagen y mascara asignados</c>
+<l>Calcula_PCA_lab_params (ImageWorkingRGB, MascaraWorking, ImageLAB, Trans, TransInv, MeanLab, CovLab, InfoPerComp)</l>
+<l>num := |TransInv|</l>
+<l>if (num == 0)</l>
+<l>    TransInv :=[0,0,0,0,0,0,0,0,0,0,0,0]</l>
+<l>endif</l>
+<l>MeanL := MeanLab[0]</l>
+<l>Meana := MeanLab[1]</l>
+<l>Meanb := MeanLab[2]</l>
+<l>DevL := sqrt(CovLab[0])</l>
+<l>Deva := sqrt(CovLab[4])</l>
+<l>Devb := sqrt(CovLab[8])</l>
+<c></c>
+<c>*parametros de color medias y desviaciones</c>
+<l>set_message_tuple (ParametrosCola, 'COLOR_Mean_cuerpo_lineal_L', MeanL)</l>
+<l>set_message_tuple (ParametrosCola, 'COLOR_Mean_cuerpo_lineal_a', Meana)</l>
+<l>set_message_tuple (ParametrosCola, 'COLOR_Mean_cuerpo_lineal_b', Meanb)</l>
+<l>set_message_tuple (ParametrosCola, 'COLOR_Dev_cuerpo_lineal_L', DevL)</l>
+<l>set_message_tuple (ParametrosCola, 'COLOR_Dev_cuerpo_lineal_a', Deva)</l>
+<l>set_message_tuple (ParametrosCola, 'COLOR_Dev_cuerpo_lineal_b', Devb)</l>
+<c>*vector Y</c>
+<l>set_message_tuple (ParametrosCola, 'COLOR_PCA_cuerpo_lineal_lab_X_1', TransInv[0])</l>
+<l>set_message_tuple (ParametrosCola, 'COLOR_PCA_cuerpo_lineal_lab_X_2', TransInv[4])</l>
+<l>set_message_tuple (ParametrosCola, 'COLOR_PCA_cuerpo_lineal_lab_X_3', TransInv[8])</l>
+<c>*vector Y</c>
+<l>set_message_tuple (ParametrosCola, 'COLOR_PCA_cuerpo_lineal_lab_Y_1', TransInv[1])</l>
+<l>set_message_tuple (ParametrosCola, 'COLOR_PCA_cuerpo_lineal_lab_Y_2', TransInv[5])</l>
+<l>set_message_tuple (ParametrosCola, 'COLOR_PCA_cuerpo_lineal_lab_Y_3', TransInv[9])</l>
+<c>*vector Z</c>
+<l>set_message_tuple (ParametrosCola, 'COLOR_PCA_cuerpo_lineal_lab_Z_1', TransInv[2])</l>
+<l>set_message_tuple (ParametrosCola, 'COLOR_PCA_cuerpo_lineal_lab_Z_2', TransInv[6])</l>
+<l>set_message_tuple (ParametrosCola, 'COLOR_PCA_cuerpo_lineal_lab_Z_3', TransInv[10])</l>
+<c>*origen de coordenadas</c>
+<l>set_message_tuple (ParametrosCola, 'COLOR_PCA_cuerpo_lineal_lab_O_1', TransInv[3])</l>
+<l>set_message_tuple (ParametrosCola, 'COLOR_PCA_cuerpo_lineal_lab_O_2', TransInv[7])</l>
+<l>set_message_tuple (ParametrosCola, 'COLOR_PCA_cuerpo_lineal_lab_O_3', TransInv[11])</l>
+<c> </c>
+<c></c>
+<c>************************************************SEGMENTACION COLOR********************************************</c>
+<c> ***************************************************************************************************</c>
+<l> ImageWorkingRGB := ImagenRGB</l>
+<l>MascaraWorking := MascaraRGB</l>
+<l>reduce_domain(ImageWorkingRGB,MascaraRGB,ImageWorkingRGB)</l>
+<l>median_image(ImageWorkingRGB,TiledImageRGB, 'circle', 2, 'mirrored')</l>
+<l>decimar_imagen (TiledImageRGB, Imagencolorconjuntoreduced)</l>
+<l>classify_image_class_lut (Imagencolorconjuntoreduced, ClassRegionsLUT, ClassLUTHandle)</l>
+<c></c>
+<l>get_domain(TiledImageRGB,totalRegionLUT)</l>
+<l>area_center(totalRegionLUT,AreaTotalLUT, RowTotalLUT, ColumnTotalLUT)</l>
+<l>area_center(ClassRegionsLUT,AreaLUT, RowLUT, ColumnLUT)</l>
+<l>tuple_real(AreaLUT,AreaLUT)</l>
+<l>tuple_real(AreaTotalLUT,AreaTotalLUT)</l>
+<c></c>
+<l>AreaLUT := 100*AreaLUT/AreaTotalLUT</l>
+<l>texto := 'Patt_Dist'</l>
+<l>count_obj(ClassRegionsLUT,pattern_elements)</l>
+<l>for Index1 := 1 to pattern_elements by 1 </l>
+<l>    textof := texto  + '_' + Index1      </l>
+<l>     set_message_tuple (ParametrosCola, textof, AreaLUT[Index1-1])</l>
+<l>endfor</l>
+<c></c>
+<c>*color mayoritario cuerpo area</c>
+<l>area_center(ClassRegionsLUT,AreaCuerpo,Row,Columm)</l>
+<c>*genero una region con los tres colores mayoritarios</c>
+<l>gen_empty_obj(ColorCuerpo)</l>
+<l>tuple_sort_index(AreaCuerpo, IndicesCuerpo)</l>
+<l>dimColores := |AreaCuerpo|</l>
+<l>for Index1 := 1 to dimColores by 1 </l>
+<l>    pos := IndicesCuerpo[dimColores-Index1]</l>
+<l>    select_obj(ClassRegionsLUT,slectedobj, pos+1 )</l>
+<l>    concat_obj(ColorCuerpo,slectedobj,ColorCuerpo)</l>
+<l>endfor</l>
+<l>*region_to_mean(ClassRegionsLUT, Imagencolorconjuntoreduced, ImageMean)</l>
+<l>decompose3 (ImageLAB, Hue, Saturation, Intensity)</l>
+<c>*escribe los colores en orden de la tabla </c>
+<l>texto := 'Color'</l>
+<l>dimColores := |AreaCuerpo|</l>
+<l>for Index1 := 1 to dimColores by 1 </l>
+<c>    *si se quiere por orden descendente ColorCuerpo</c>
+<l>    select_obj(ColorCuerpo,slectedobj,Index1 ) </l>
+<l>    intensity(slectedobj,Hue,MeanH,Dev)</l>
+<l>    intensity(slectedobj,Saturation,MeanS,Dev)</l>
+<l>    intensity(slectedobj,Intensity,MeanV,Dev)</l>
+<l>    tuple_real(MeanH,MeanH)</l>
+<l>     tuple_real(MeanS,MeanS)</l>
+<l>      tuple_real(MeanV,MeanV)</l>
+<l>     textof := texto  + '_Media_L_' + Index1      </l>
+<l>     set_message_tuple (ParametrosCola, textof, MeanH)</l>
+<l>     textof := texto  + '_Media_a_' + Index1      </l>
+<l>     set_message_tuple (ParametrosCola, textof, MeanS)</l>
+<l>     textof := texto  + '_Media_b_' + Index1      </l>
+<l>     set_message_tuple (ParametrosCola, textof, MeanV)</l>
+<c>     </c>
+<c></c>
+<l>endfor</l>
+<c></c>
+<c></c>
+<c>******************************************TEXTURA*************************************************</c>
+<c>**********************************************************************************************</c>
+<l>median_image(ImagenNIR,Image1Median5, 'circle', 2, 'mirrored')</l>
+<l>Difuminado_rapido_gauss (Image1Median5, MascaraNIR, ImagenFiltrada1, 10, 6)</l>
+<l>div_image(Image1Median5,ImagenFiltrada1,Image1NIR,124,0)</l>
+<l>Histo_gray_generator (Image1NIR, MascaraNIR, 100, HistogramGrayOut)</l>
+<l>create_funct_1d_array (HistogramGrayOut, Function)</l>
+<l>smooth_funct_1d_gauss (Function, 1, SmoothedFunction)</l>
+<l>funct_1d_to_pairs (SmoothedFunction, XValues, HistogramGrayOut)</l>
+<c></c>
+<c>* mensajes Histogramas color</c>
+<l>texto := 'TEXTURA_Histo'</l>
+<l>for Index1 := 0 to 100-1 by 1 </l>
+<l>    textof := texto  + '_' + Index1      </l>
+<l>    set_message_tuple (ParametrosCola, textof, HistogramGrayOut[Index1])</l>
+<l>endfor</l>
+<c></c>
+<c></c>
+<l>set_message_tuple (ParametrosCola, 'Categoria_pertenencia_1', 0)</l>
+<l>set_message_tuple (ParametrosCola, 'Categoria_pertenencia_2', 0)</l>
+<l>set_message_tuple (ParametrosCola, 'Categoria_pertenencia_3', 0)</l>
+<l>set_message_tuple (ParametrosCola, 'Categoria_pertenencia_4', 0)</l>
+<l>set_message_tuple (ParametrosCola, 'Categoria_pertenencia_5', 0)</l>
+<l>set_message_tuple (ParametrosCola, 'Categoria_asignada_1', 0)</l>
+<l>set_message_tuple (ParametrosCola, 'Categoria_asignada_2', 0)</l>
+<l>set_message_tuple (ParametrosCola, 'Categoria_asignada_3', 0)</l>
+<l>set_message_tuple (ParametrosCola, 'Categoria_asignada_4', 0)</l>
+<l>set_message_tuple (ParametrosCola, 'Categoria_asignada_5', 0)</l>
+<l>set_message_tuple (ParametrosCola, 'Categoria_asignada_ponderada', 0)          </l>
+<l>set_message_tuple (ParametrosCola, 'Categoria_asignada', 0)</l>
+<l>set_message_tuple (ParametrosCola, 'Categoria_Forzada', 0)</l>
+<c> </c>
+<l>return ()</l>
+</body>
+<docu id="optimar_extraer_caracteristicas_Peces">
+<short lang="en_US">Detect a fin</short>
+<parameters>
+<parameter id="ClassLUTHandle"/>
+<parameter id="ImagenNIR"/>
+<parameter id="ImagenRGB"/>
+<parameter id="ParametrosCola"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

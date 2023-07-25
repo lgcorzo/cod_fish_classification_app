@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.1">
+<procedure name="decimar_imagen">
+<interface>
+<io>
+<par name="ImagencolorconjuntoMala" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="ImagencolorconjuntoMalareduced" base_type="iconic" dimension="0"/>
+</oo>
+</interface>
+<body>
+<l>convert_image_type(ImagencolorconjuntoMala, ImageConverted, 'byte')</l>
+<c>*ESCALA LA IMAGEN PARA REDUCIR LA DIMENSIONALIDAD</c>
+<l>Max := 255.0</l>
+<l>Min := 0.0</l>
+<l>MAX_Val:= 16.0</l>
+<l>tuple_real(MAX_Val,MAX_Val)</l>
+<l>tuple_real(Max,Max)</l>
+<l>tuple_real(Min,Min)</l>
+<l>mult := MAX_Val/(Max - Min)</l>
+<l>add := -mult*Min</l>
+<l>scale_image (ImageConverted, ImageConvertedOut, mult, add)</l>
+<l>mult := 1/mult</l>
+<l>scale_image (ImageConvertedOut, ImagencolorconjuntoMalareduced, mult, add)</l>
+<c>*ImagencolorconjuntoMalareduced imagen con el numero de colores reducido MAX_Val^3</c>
+<l>return ()</l>
+</body>
+<docu id="decimar_imagen">
+<parameters>
+<parameter id="ImagencolorconjuntoMala"/>
+<parameter id="ImagencolorconjuntoMalareduced"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.3">
+<procedure name="main">
+<interface/>
+<body>
+<c></c>
+<c>*LGCORZO_INICIO</c>
+<c></c>
+<l>FileName := 'KNNClassifier.gnc'</l>
+<l>read_class_knn(FileName,KNNHandle)</l>
+<l>create_class_lut_knn (KNNHandle,['bit_depth','rejection_threshold'],[4,1000], ClassLUTHandle)</l>
+<l>count_seconds (End1)</l>
+<l>clear_class_knn (KNNHandle)</l>
+<l>scale_x := 1.24</l>
+<l>scale_y := 1.24</l>
+<l>scale_org := 1.24</l>
+<l>angle_belt := 0</l>
+<l>active_mosaicking_best_fit := 0</l>
+<l>active_preprocessing := 0</l>
+<l>active_caracteristicas_peces := 1</l>
+<l>active_mosaicking_desp := 0</l>
+<c></c>
+<l>if(active_preprocessing == 1)</l>
+<c></c>
+<l>read_image (Imagennir, '../conf/Patrones/Cam1/NIR_patron.jpg')</l>
+<l>read_image (Imagenrgb, '../conf/Patrones/Cam1/RGB_patron.jpg')</l>
+<c></c>
+<l>read_image (RGBBlanco, '../conf/Patrones/Cam1/RGB_blanco.jpg')</l>
+<l>read_image (NIRblanco, '../conf/Patrones/Cam1/NIR_blanco.jpg')</l>
+<l>read_image (RGBFondo, '../conf/Patrones/Cam1/RGB_fondo.jpg')</l>
+<l>read_image (NIRFondo, '../conf/Patrones/Cam1/NIR_fondo.jpg')</l>
+<c></c>
+<l>read_region(ROI_0, '../conf/Patrones/Cam1/region1.hobj')</l>
+<l>read_region(ROI_2, '../conf/Patrones/Cam1/region2.hobj')</l>
+<c></c>
+<l>zoom_image_factor(Imagennir,Imagennir,0.5, 0.5, 'constant')</l>
+<l>zoom_image_factor(Imagenrgb,Imagenrgb,0.5, 0.5, 'constant')</l>
+<l>zoom_image_factor(RGBBlanco,RGBBlanco,0.5, 0.5, 'constant')</l>
+<l>zoom_image_factor(NIRblanco,NIRblanco,0.5, 0.5, 'constant')</l>
+<c></c>
+<l>zoom_image_factor(RGBFondo,RGBFondo,0.5, 0.5, 'constant')</l>
+<l>zoom_image_factor(NIRFondo,NIRFondo,0.5, 0.5, 'constant')</l>
+<c></c>
+<l>zoom_region(ROI_0,ROI_0,0.5, 0.5)</l>
+<l>zoom_region(ROI_2,ROI_2,0.5, 0.5)</l>
+<c></c>
+<c></c>
+<l>read_cam_par('../conf/Patrones/Cam1/CameraParametersRGB.cal', CameraParam)</l>
+<l>read_pose('../conf/Patrones/Cam1/CameraPoseRGB.dat', Camerapose)</l>
+<c> *para reajustar las variables de la camara a la escala de la imagen</c>
+<c>*</c>
+<c></c>
+<l>read_image (Imagenrgb, '../Camera/Adquisition/20170926_172505_RAW/177513580_RGB_66.jpg')</l>
+<l>read_image (Imagennir, '../Camera/Adquisition/20170926_172505_RAW/177513580_NIR_66.jpg')</l>
+<c></c>
+<l>zoom_image_factor(Imagenrgb,Imagenrgb,0.5, 0.5, 'constant')</l>
+<l>zoom_image_factor(Imagennir,Imagennir,0.5, 0.5, 'constant')</l>
+<c></c>
+<c> </c>
+<c> </c>
+<l>RC_optimar_identificar_rapido (Imagenrgb, RGBBlanco, ROI_0, scale_org, Ystar, Y_start)</l>
+<l>RC_optimar_preprocesar_imagenes (Imagenrgb, RGBBlanco, ROI_2, ImagecorrejiadRGB, CameraParam,Camerapose, angle_belt,scale_x,scale_y)</l>
+<l>RC_optimar_preprocesar_imagenes (Imagennir, NIRblanco, ROI_2, ImagecorrejidaNIR, CameraParam,Camerapose, angle_belt,scale_x,scale_y)</l>
+<l>sinfondo := 0</l>
+<l>RC_optimar_contorno_imagen(ImagecorrejiadRGB, ImagecorrejidaNIR, Mascara, Contorno, ImagenSinFondoRGB, ImagenSinFondoNIR, sinfondo, iniPez, finPez, Largo, Ancho, Area, Fila1, Fila2)</l>
+<c></c>
+<l>decompose3(ImagecorrejiadRGB,R,G,B)</l>
+<l>div_image(G, B, ImageResult, 255, 0)</l>
+<l>threshold(ImageResult,Region, 180, 255)</l>
+<c></c>
+<l>endif</l>
+<l>diff_row0  := 0</l>
+<l>diff_col0 := 0</l>
+<c></c>
+<l>if(active_mosaicking_best_fit == 1)</l>
+<l>    read_image (Imagenfinnir, 'ImagenFinNIR.tif')</l>
+<l>    read_image (Imagenfinrgb, 'ImagenFinRGB.tif')</l>
+<l>    read_image (Imagenininir, 'ImagenIniNIR.tif')</l>
+<l>    read_image (Imageninirgb, 'ImagenIniRGB.tif')</l>
+<l>    read_image (Mosnir, 'mosNIR.tif')</l>
+<l>    read_image (Mosrgb, 'mosRGB.tif')</l>
+<l>    optimar_mosaiking_imagenes(Imagenfinnir,Imagenininir, Mosnir, ImagenMosaicking_NIR, diff_row0, diff_col0 , diff_row0, diff_col0, error)</l>
+<l>    optimar_mosaiking_imagenes(Imagenfinrgb,Imageninirgb, Mosrgb, ImagenMosaicking_RGB, diff_row0, diff_col0, diff_row0, diff_col0, error)</l>
+<c>   </c>
+<l>endif</l>
+<c></c>
+<c></c>
+<l>sinfondo := 0</l>
+<c></c>
+<l>if(active_mosaicking_desp == 1)</l>
+<c>    </c>
+<l>    read_image (Imagenininir1, '../conf/Patrones/PROCESSED_MOSAICK/0_NIR_1.jpg')</l>
+<l>    read_image (Imagenrgb1, '../conf/Patrones/PROCESSED_MOSAICK/0_RGB_1.jpg')</l>
+<l>    read_image (Imagenininir2, '../conf/Patrones/PROCESSED_MOSAICK/0_NIR_2.jpg')</l>
+<l>    read_image (Imagenrgb2, '../conf/Patrones/PROCESSED_MOSAICK/0_RGB_2.jpg')</l>
+<l>    read_image (Imagenininir3, '../conf/Patrones/PROCESSED_MOSAICK/0_NIR_3.jpg')</l>
+<l>    read_image (Imagenrgb3, '../conf/Patrones/PROCESSED_MOSAICK/0_RGB_3.jpg')</l>
+<c></c>
+<l>    gen_empty_obj(image_list_rgb) </l>
+<l>    concat_obj(image_list_rgb,Imagenrgb3,image_list_rgb)</l>
+<l>    concat_obj(image_list_rgb,Imagenrgb2,image_list_rgb)</l>
+<l>    concat_obj(image_list_rgb,Imagenrgb1,image_list_rgb)</l>
+<c>    </c>
+<l>     gen_empty_obj(image_list_nir) </l>
+<l>    concat_obj(image_list_nir,Imagenininir3,image_list_nir)</l>
+<l>    concat_obj(image_list_nir,Imagenininir2,image_list_nir)</l>
+<l>    concat_obj(image_list_nir,Imagenininir1,image_list_nir)</l>
+<c>   </c>
+<l>    diff_row0 := 30</l>
+<l>    diff_col0 := 0</l>
+<l>    correlated := 0</l>
+<l>    Tile_images_roboconcept(image_list_rgb, ImagenMosaickingRGB, diff_row0, diff_col0,correlated, error_mosaiking)</l>
+<l>    Tile_images_roboconcept(image_list_nir, ImagenMosaickingNIR, diff_row0, diff_col0,correlated, error_mosaiking)</l>
+<c>    </c>
+<l>    sinfondo := 0</l>
+<l>    RC_optimar_contorno_imagen(ImagenMosaickingRGB, ImagenMosaickingNIR, Mascara, Contorno, ImagenSinFondoRGB, ImagenSinFondoNIR, sinfondo, iniPez, finPez, Largo, Ancho, Area, Fila1, Fila2)</l>
+<l>    gen_empty_obj(imagenes)</l>
+<c>    </c>
+<l>    reduce_domain(ImagenMosaickingRGB,Mascara,ImagenMosaickingRGB)</l>
+<l>    reduce_domain(ImagenMosaickingNIR,Mascara,ImagenMosaickingNIR)</l>
+<c> </c>
+<c></c>
+<l>endif</l>
+<c></c>
+<c></c>
+<l> if(active_caracteristicas_peces == 1)</l>
+<l>        gen_empty_obj(imagenes)</l>
+<l>        read_image (rgb, 'C:/IMAGES/4_10_2017/Production/3_TORSK/RGB_63642827626200.jpg')</l>
+<l>        read_image (nir, 'C:/IMAGES/4_10_2017/Production/3_TORSK/NIR_63642827626200.jpg')      </l>
+<l>        concat_obj(imagenes,rgb,imagenes)</l>
+<l>        concat_obj(imagenes,nir,imagenes)</l>
+<l>        create_message(MessageHandle)</l>
+<l>        Process(imagenes,MessageHandle,ClassLUTHandle)</l>
+<l>    endif</l>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

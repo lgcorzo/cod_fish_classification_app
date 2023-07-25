@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.3">
+<procedure name="RC_optimar_contorno_imagen_sinfondo">
+<interface>
+<io>
+<par name="ImagenEntradaRGB" base_type="iconic" dimension="0"/>
+<par name="ImagenEntradaNIR" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="Mascara" base_type="iconic" dimension="0"/>
+<par name="Contorno" base_type="iconic" dimension="0"/>
+<par name="ImagenSinFondoRGB" base_type="iconic" dimension="0"/>
+<par name="ImagenSinFondoNIR" base_type="iconic" dimension="0"/>
+</oo>
+<ic>
+<par name="SinFondo" base_type="ctrl" dimension="0"/>
+</ic>
+<oc>
+<par name="iniPez" base_type="ctrl" dimension="0"/>
+<par name="finPez" base_type="ctrl" dimension="0"/>
+<par name="Largo" base_type="ctrl" dimension="0"/>
+<par name="Ancho" base_type="ctrl" dimension="0"/>
+<par name="Area" base_type="ctrl" dimension="0"/>
+<par name="Fila1" base_type="ctrl" dimension="0"/>
+<par name="Fila2" base_type="ctrl" dimension="0"/>
+</oc>
+</interface>
+<body>
+<c>*   Parámetros de entrada:</c>
+<c>*     - ImagenEntrada</c>
+<c>*</c>
+<c>*   Parámetros de salida:</c>
+<c>*     - Mascara</c>
+<c>*     - Contorno</c>
+<c>*     - ContornoSuavizado</c>
+<c>*     - MascaraFilaMin</c>
+<c>*     - MascaraFilaMax</c>
+<c>*     - ImagenSinFondo</c>
+<c>    </c>
+<l>   try</l>
+<c>         </c>
+<l>    ImagenNIR := ImagenEntradaNIR </l>
+<l>    ImagenRGB := ImagenEntradaRGB</l>
+<c>     </c>
+<l>    Largo := 0</l>
+<l>    Ancho := 0</l>
+<l>    iniPez := 0</l>
+<l>    finPez := 0</l>
+<l>    gen_empty_obj(ImagenSinFondoRGB)</l>
+<l>    gen_empty_obj(ImagenSinFondoNIR)</l>
+<c>   </c>
+<c>    *Ancho y largo de la imagen</c>
+<l>    get_image_size (ImagenEntradaRGB, Width, Height)  </l>
+<c>   </c>
+<l>    threshold(ImagenNIR, pezregion, 1, 255)</l>
+<c> </c>
+<c>   </c>
+<c>     </c>
+<c>    *sacar contorno</c>
+<l>    connection(pezregion,pezregion)</l>
+<l>    select_shape_std(pezregion, pezregion, 'max_area', 100)</l>
+<l>    erosion_circle(pezregion, pezregion, 1.5)</l>
+<l>    gen_contour_region_xld (pezregion, Contorno, 'border')</l>
+<l>    smooth_contours_xld(Contorno, ContornoSuavizado, 69)</l>
+<l>    gen_region_contour_xld(ContornoSuavizado, MascaraSuavizada, 'filled')</l>
+<c>    </c>
+<c>    *selecciono el de mayor area</c>
+<l>    select_shape_std(MascaraSuavizada, MascaraSuavizada, 'max_area', 100)</l>
+<c>    </c>
+<l>    Contorno := ContornoSuavizado</l>
+<l>    Mascara := MascaraSuavizada</l>
+<c></c>
+<c>    *mirar si hay pez</c>
+<l>    get_image_size (ImagenEntradaRGB, Width, Height)</l>
+<c>   </c>
+<c>    *ver si sólo hay un contorno</c>
+<l>    count_obj(Contorno, numContornos) </l>
+<l>    smallest_rectangle1 (Mascara, Fila1, Column1, Fila2, Column2)</l>
+<l>     iniPez := 0</l>
+<l>   if (Fila2 &lt; Height - 20)</l>
+<l>       iniPez := 1</l>
+<l>   endif</l>
+<c>   </c>
+<l>    finPez := 0</l>
+<l>    if (Fila1 &gt;  20)</l>
+<l>       finPez := 1</l>
+<l>    endif</l>
+<c>   </c>
+<l>   area_center(Mascara, Area, Row, Column)</l>
+<l>   smallest_rectangle2(Mascara, Row3, Column3, Phi, Length1, Length2)</l>
+<l>   Largo := Length1*2</l>
+<l>   Ancho := Length2*2</l>
+<l>    region_to_bin(Mascara,Mascarabin,255,0,Width, Height)</l>
+<c>    * Imagen Sin Fondo</c>
+<c> </c>
+<l>        smallest_rectangle1(Mascara, Row1, Column1, Row2, Column2)</l>
+<l>        reduce_domain(ImagenRGB, Mascara, ImagenSinFondoRGB)</l>
+<l>        reduce_domain(ImagenNIR, Mascara, ImagenSinFondoNIR)</l>
+<l>        reduce_domain(Mascarabin,Mascara,Mascarabin)</l>
+<l>        margen := 0</l>
+<l>        if ( SinFondo == 1)</l>
+<l>        crop_rectangle1 (ImagenSinFondoRGB, ImagenSinFondoRGB, Row1 - margen, Column1 - margen, Row2 + margen, Column2 + margen)</l>
+<l>        crop_rectangle1 (ImagenSinFondoNIR, ImagenSinFondoNIR, Row1 - margen, Column1 - margen, Row2 + margen, Column2 + margen)</l>
+<l>        crop_rectangle1 (Mascarabin, Mascarabin, Row1 - margen, Column1 - margen, Row2 + margen, Column2 + margen)</l>
+<c>       </c>
+<l>        threshold(Mascarabin, Region1, 128, 255)       </l>
+<l>        reduce_domain(ImagenSinFondoRGB, Region1, ImagenSinFondoRGB)</l>
+<l>        reduce_domain(ImagenSinFondoNIR, Region1, ImagenSinFondoNIR)</l>
+<l>        Mascara := Region1</l>
+<c>        </c>
+<l>        endif</l>
+<c>        </c>
+<c>        </c>
+<c>        </c>
+<l>    catch(Exception)</l>
+<c>        *No hay imagen</c>
+<l>    endtry</l>
+<c>    </c>
+<c></c>
+<l>return ()</l>
+</body>
+<docu id="RC_optimar_contorno_imagen_sinfondo">
+<short lang="en_US">Detect a fin</short>
+<parameters>
+<parameter id="Ancho"/>
+<parameter id="Area"/>
+<parameter id="Contorno"/>
+<parameter id="Fila1"/>
+<parameter id="Fila2"/>
+<parameter id="ImagenEntradaNIR"/>
+<parameter id="ImagenEntradaRGB"/>
+<parameter id="ImagenSinFondoNIR"/>
+<parameter id="ImagenSinFondoRGB"/>
+<parameter id="Largo"/>
+<parameter id="Mascara"/>
+<parameter id="SinFondo"/>
+<parameter id="finPez"/>
+<parameter id="iniPez"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

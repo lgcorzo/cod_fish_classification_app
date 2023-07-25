@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.3">
+<procedure name="Color_region_extractor">
+<interface>
+<io>
+<par name="ImageWorkingRGB" base_type="iconic" dimension="0"/>
+<par name="RegionWorking" base_type="iconic" dimension="0"/>
+<par name="ImageLabIn" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="Color_region" base_type="iconic" dimension="0"/>
+<par name="ImageLabOut" base_type="iconic" dimension="0"/>
+</oo>
+<ic>
+<par name="Radius" base_type="ctrl" dimension="0"/>
+<par name="Center" base_type="ctrl" dimension="0"/>
+</ic>
+</interface>
+<body>
+<c>*verde inicial para atinar</c>
+<c>*saca lo verde a partir de la imagen recuperada de iluminacion </c>
+<c></c>
+<l>get_domain(ImageWorkingRGB, Domain)</l>
+<c></c>
+<l>decompose3(ImageWorkingRGB,R,G,B)</l>
+<l>div_image(G, B, ImageResult, 255, 0)</l>
+<l>threshold(ImageResult,Region, 180, 255)</l>
+<c> </c>
+<l>difference(Domain, Region, Regions1diff)</l>
+<l>union1(Regions1diff,Regions1)</l>
+<l>Color_region := Regions1</l>
+<c></c>
+<c></c>
+<l>return ()</l>
+</body>
+<docu id="Color_region_extractor">
+<parameters>
+<parameter id="Center"/>
+<parameter id="Color_region"/>
+<parameter id="ImageLabIn"/>
+<parameter id="ImageLabOut"/>
+<parameter id="ImageWorkingRGB"/>
+<parameter id="Radius"/>
+<parameter id="RegionWorking"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

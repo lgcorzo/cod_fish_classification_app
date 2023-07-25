@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.1">
+<procedure name="Roboconcept_map_generator">
+<interface>
+<io>
+<par name="SortedRegions" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="Map" base_type="iconic" dimension="0"/>
+</oo>
+<ic>
+<par name="GridSpacing" base_type="ctrl" dimension="0"/>
+<par name="Height" base_type="ctrl" dimension="0"/>
+<par name="Width" base_type="ctrl" dimension="0"/>
+</ic>
+</interface>
+<body>
+<c></c>
+<l>smallest_rectangle1 (SortedRegions, Row1, Column1, Row2, Column2)</l>
+<l>GridSpacingy := GridSpacing *1</l>
+<l>numRegi := Height/GridSpacingy</l>
+<l>Rowgrid := []</l>
+<l>Columngrid := []</l>
+<l>numRegj := |Column1|</l>
+<l>indice := 0</l>
+<l>Row := 0</l>
+<l>for i := 0 to numRegi - 1 by 1</l>
+<l>    for j := 0 to numRegj- 1 by 1</l>
+<l>        Columngrid[indice] := Column1[j]</l>
+<l>        Rowgrid[indice] := Row</l>
+<l>        indice := indice + 1</l>
+<l>    endfor</l>
+<l>    Row := Row + GridSpacingy</l>
+<l>endfor</l>
+<c>*genero la grid a partir de la tabla de calibracio</c>
+<c>*calcula el mapa de distorsin para  la imagen real.</c>
+<l>gen_arbitrary_distortion_map (Map, GridSpacing, Rowgrid, Columngrid, numRegj, Width, Height, 'bilinear')</l>
+<c>  </c>
+<l>return ()</l>
+</body>
+<docu id="Roboconcept_map_generator">
+<parameters>
+<parameter id="GridSpacing"/>
+<parameter id="Height"/>
+<parameter id="Map"/>
+<parameter id="SortedRegions"/>
+<parameter id="Width"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

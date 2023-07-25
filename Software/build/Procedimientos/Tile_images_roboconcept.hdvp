@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.3">
+<procedure name="Tile_images_roboconcept">
+<interface>
+<io>
+<par name="Images_concat" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="ImagenMosaicking" base_type="iconic" dimension="0"/>
+</oo>
+<ic>
+<par name="offsetY" base_type="ctrl" dimension="0"/>
+<par name="offsetX" base_type="ctrl" dimension="0"/>
+<par name="correlated" base_type="ctrl" dimension="0"/>
+</ic>
+<oc>
+<par name="error_mosaiking" base_type="ctrl" dimension="0"/>
+</oc>
+</interface>
+<body>
+<l>count_obj (Images_concat, countelements)</l>
+<l>select_obj (Images_concat, ObjectSelected, 1)</l>
+<l>get_image_size(ObjectSelected, Width, Height)</l>
+<c></c>
+<l>ancho := 10</l>
+<l>salto := 2</l>
+<l>zona_busqueda := offsetY</l>
+<l>desplazy := Height - offsetY</l>
+<l>desplazx := offsetX</l>
+<l>count_obj (Images_concat, countelements)</l>
+<l>offset_heigth := 0</l>
+<l>offset_Width := 0</l>
+<l>defaultvect := -1</l>
+<l>value_heigth:= 0</l>
+<l>value_Width:= 0</l>
+<l>value := -1</l>
+<c>    </c>
+<c></c>
+<l>if (correlated == 0)</l>
+<c>   </c>
+<l>    for Index := 2 to countelements by 1</l>
+<l>        value_heigth := value_heigth + desplazy</l>
+<l>        value_Width := value_Width + desplazx</l>
+<l>       tuple_concat(offset_heigth,value_heigth,offset_heigth) </l>
+<l>       tuple_concat(offset_Width,value_Width,offset_Width) </l>
+<l>       tuple_concat(defaultvect,value,defaultvect) </l>
+<l>    endfor</l>
+<c>    </c>
+<l>    newwidth := Width + offset_Width[countelements-1]</l>
+<l>    newHeight := Height + offset_heigth[countelements-1]</l>
+<l>else </l>
+<c>    </c>
+<c>    *imagen a imagen comparando regiones</c>
+<l>     for Index := 2 to countelements by 1</l>
+<l>       select_obj (Images_concat, ObjectSelected1, Index-1)</l>
+<l>       select_obj (Images_concat, ObjectSelected2, Index)</l>
+<l>       get_domain(ObjectSelected1,Region1)</l>
+<l>       get_domain(ObjectSelected2,Region2)</l>
+<l>       Calculo_desplazamineto_regiones (Region2, Region1, patronfindmin, patron, Height, Width, ancho, zona_busqueda, salto, desplaza)</l>
+<l>       desplazy := Height - desplaza</l>
+<l>       value_heigth := value_heigth + desplazy</l>
+<l>       value_Width := value_Width + desplazx       </l>
+<l>       tuple_concat(offset_heigth,value_heigth,offset_heigth) </l>
+<l>       tuple_concat(offset_Width,value_Width,offset_Width) </l>
+<l>       tuple_concat(defaultvect,value,defaultvect) </l>
+<l>    endfor</l>
+<c>    </c>
+<l>    newwidth := Width + offset_Width[countelements-1]</l>
+<l>    newHeight := Height + offset_heigth[countelements-1]</l>
+<c>    </c>
+<l>endif</l>
+<c></c>
+<c></c>
+<c></c>
+<l>tile_images_offset (Images_concat, ImagenMosaicking, offset_heigth, offset_Width, defaultvect, defaultvect, defaultvect, defaultvect, newwidth, newHeight)</l>
+<l>error_mosaiking := 0</l>
+<l>return ()</l>
+</body>
+<docu id="Tile_images_roboconcept">
+<parameters>
+<parameter id="ImagenMosaicking"/>
+<parameter id="Images_concat"/>
+<parameter id="correlated"/>
+<parameter id="error_mosaiking"/>
+<parameter id="offsetX"/>
+<parameter id="offsetY"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

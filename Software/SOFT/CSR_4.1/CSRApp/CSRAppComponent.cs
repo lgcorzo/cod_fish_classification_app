@@ -1,0 +1,53 @@
+﻿using System;
+
+namespace CSRApp
+{
+    public class CSRAppComponent
+    {
+        ///////////////////////////////////////////////////////////
+        private string Id { get; set; }
+        private CSRAppComponentFunctions Functions { get; set; }
+
+        ///////////////////////////////////////////////////////////
+        public CSRAppComponent(string _id)
+        {
+            Id = _id;
+            Functions = new CSRAppComponentFunctions();
+        }
+
+        ///////////////////////////////////////////////////////////
+        protected void Log(string message)
+        {
+            Functions.Log(Id, message);
+        }
+
+        ///////////////////////////////////////////////////////////
+        protected void Notify(string message, bool writeInLog = false, bool isModal = true)
+        {
+            Functions.Notify(Id, message, writeInLog, isModal);
+        }
+
+        ///////////////////////////////////////////////////////////
+        protected void Error(string message, bool writeInLog = false, bool isModal = true)
+        {
+            Functions.Error(Id, message, writeInLog);
+        }
+
+        ///////////////////////////////////////////////////////////
+        protected void ConsoleWrite(string message, bool writeInLog = false)
+        {
+            Functions.ConsoleWrite(Id, message, writeInLog);
+        }
+
+        ///////////////////////////////////////////////////////////
+
+        protected void WriteExecutionTime(string message, DateTime time = new DateTime())
+        {
+            if (time == DateTime.MinValue)
+                time = DateTime.Now;
+            Functions.WriteExecutionTime(Id, message, time);
+        }
+
+        ///////////////////////////////////////////////////////////
+    }
+}

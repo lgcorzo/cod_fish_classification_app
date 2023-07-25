@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<AlarmasConf xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ipAddress1>192.168.11.80</ipAddress1>
+  <MAC1>00:01:05:2B:AC:83</MAC1>
+  <puerto1>8</puerto1>
+  <ActivarRemotamente1>false</ActivarRemotamente1>
+  <ipAddress2>192.168.12.80</ipAddress2>
+  <MAC2>30:5A:3A:E0:87:C4</MAC2>
+  <puerto2>9</puerto2>
+  <ActivarRemotamente2>false</ActivarRemotamente2>
+  <BAT_Path></BAT_Path>
+  <BAT_Path_stop>E:\Proyectos\OPTIMAR_BACALAO\software\CLASIFICACION_ESPECIES_GENERAL\CLASIFICACION_ESPECIES\CSR\Software\build\conf\Alarmas\Stop_CSRApp.bat</BAT_Path_stop>
+</AlarmasConf>

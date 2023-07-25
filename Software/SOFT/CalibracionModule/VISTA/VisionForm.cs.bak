@@ -1,0 +1,98 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using HalconDotNet;
+
+namespace VisionModule
+{
+    public partial class VisionForm : Form
+    {
+        private csr.modules.CSRFormModule parent;
+        HWindow Window1;
+        HWindow Window2;
+        HWindow Window3;
+        HWindow Window4;
+        HWindow Window5;
+
+        ModuleDelegates moduleDelegates;
+
+        public bool RGBMode { get { return rdRGB.Checked; } }
+        ///////////////////////////////////
+        ///////////////////////////////////
+
+        public VisionForm(csr.modules.CSRFormModule _parent, ModuleDelegates module_delegates)
+        { 
+            this.parent = _parent;
+            InitializeComponent();
+            this.moduleDelegates = module_delegates;
+            Init();
+        }
+
+        ///////////////////////////////////
+        private void Init()
+        {
+
+        }
+
+
+        public void DispImages(HImage img1, HImage img2, HImage img3,HImage img4,HImage img5)
+        {
+            hWindowControl1.SetFullImagePart(img1);
+            hWindowControl2.SetFullImagePart(img2);
+            hWindowControl3.SetFullImagePart(img3);
+            hWindowControl4.SetFullImagePart(img4);
+            hWindowControl5.SetFullImagePart(img5);
+
+            if (img1.CountChannels() == 3)
+                this.Window1.DispColor(img1);
+            else
+                this.Window1.DispImage(img1);
+
+            if (img2.CountChannels() == 3)
+                this.Window2.DispColor(img2);
+            else
+                this.Window2.DispImage(img2);
+
+            if (img3.CountChannels() == 3)
+                this.Window3.DispColor(img3);
+            else
+                this.Window3.DispImage(img3);
+
+            if (img4.CountChannels() == 3)
+                this.Window4.DispColor(img4);
+            else
+                this.Window4.DispImage(img4);
+
+            if (img5.CountChannels() == 3)
+                this.Window5.DispColor(img5);
+            else
+                this.Window5.DispImage(img5);
+        }
+
+        private void gbVisualizacion_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void VisionForm_Load(object sender, EventArgs e)
+        {
+            Window1 = hWindowControl1.HalconWindow;
+            Window2 = hWindowControl2.HalconWindow;
+            Window3 = hWindowControl3.HalconWindow;
+            Window4 = hWindowControl4.HalconWindow;
+            Window5 = hWindowControl5.HalconWindow;
+            rdRGB.Checked = true;
+        }
+
+        private void cb_SaveImage_CheckedChanged(object sender, EventArgs e)
+        {
+            moduleDelegates.ChangeSave(cb_SaveImage.Checked);
+        }
+    }
+}

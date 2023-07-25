@@ -1,0 +1,290 @@
+﻿using System;
+using System.Windows.Forms;
+
+using CSRApp.forms;
+using CSRApp.modules;
+using CSRApp.Logger;
+using CSRApp.communication;
+using System.Threading;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+
+namespace CSRApp
+{
+    public class CSRApp : CSRAppComponent
+    {
+        ///////////////////////////////////////////////////////////
+        private CSRFormContainer form_container;
+        private ModuleManager module_manager;
+        private CommunicationManager communication_manager;
+
+        private string config_filename = "config.xml";
+        private CSRAppComponentFunctions module_functions;
+
+        ///////////////////////////////////////////////////////////
+        public CSRApp(DateTime fechaInicio) : base("root")
+        {
+            // Init Global config manager
+            config.global.GlobalConfigManager.Init();
+
+            //Cargar el modo debug
+            try
+            {
+                if (File.Exists("Debug.txt"))
+                    config.global.GlobalConfigManager.SetParameter("Debug", Convert.ToBoolean(System.IO.File.ReadAllText("Debug.txt")));
+                else
+                    config.global.GlobalConfigManager.SetParameter("Debug", false);
+            }
+            catch (Exception e)
+            {
+                string textoOuterror = e.ToString();
+                Error("Error al abrir el archivo del modo depuración. Revisa el fichero Debug.txt, debe de contener únicamente el valor \"true\" o \"false\".", true);
+                config.global.GlobalConfigManager.SetParameter("Debug", false);
+            }
+
+            //[Debug] Cargar el escritor de tiempos de ejecución.
+            #region ExecutionTime
+            if (Convert.ToBoolean(config.global.GlobalConfigManager.GetParameter("Debug")))
+            {
+                CSRExecutionTimeWriter.Instance.Init(fechaInicio, "", "ExecutionTime.log", true);
+                WriteExecutionTime("Iniciacion del programa ", fechaInicio);
+            }
+            #endregion
+
+            // Get CSR version
+            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+            string CSRversion = fvi.FileVersion;
+
+            #region ExecutionTime
+            if (Convert.ToBoolean(config.global.GlobalConfigManager.GetParameter("Debug")))
+                WriteExecutionTime("Version del CSR cargada");
+            #endregion
+
+            // Init logger
+            CSRLogger.Instance.Init("CSR " + CSRversion, "CSR.log", Convert.ToBoolean(config.global.GlobalConfigManager.GetParameter("Debug")));
+
+            #region ExecutionTime
+            if (Convert.ToBoolean(config.global.GlobalConfigManager.GetParameter("Debug")))
+                WriteExecutionTime("Logger inicializado");
+            #endregion
+
+            // Load config
+            config.AppConfig app_config;
+            config.AppConfigLoader loader = new config.AppConfigLoader(config_filename);
+            if (!loader.Load(out app_config))
+                Error(String.Format("Error en la carga del fichero de configuración. [{0}]", config_filename),true);
+
+            #region ExecutionTime
+            if (Convert.ToBoolean(config.global.GlobalConfigManager.GetParameter("Debug")))
+                WriteExecutionTime("Configuracion del CSR cargada");
+            #endregion
+
+            //Save dummy Config
+            /*app_config = new config.AppConfig();
+            app_config.isMinimized = false;
+            app_config.AppName = "CSR Dummy";
+            app_config.AppSize = new System.Drawing.Size(600, 800);
+            System.Collections.Generic.Dictionary<string, config.ModuleInfo> aux = new System.Collections.Generic.Dictionary<string, config.ModuleInfo>();
+            config.ModuleInfoLocal mi = new config.ModuleInfoLocal();
+            mi.Id = "LocMod";
+            mi.Name = "LocalModule";
+            mi.Filename = "LocMod.dll";
+            mi.ModuleType = "csr.modules.CSRPageModule";
+            aux.Add(mi.Id, mi);
+            mi.Id += 1;
+            aux.Add(mi.Id + 1, mi);
+            config.ModuleInfoRemote miRemoto = new config.ModuleInfoRemote();
+            miRemoto.Id = "RemMod";
+            miRemoto.Name = "RemoteModule";
+            miRemoto.Filename = "RemMod.dll";
+            miRemoto.ModuleType = "csr.modules.CSRPageModule";
+            miRemoto.Ip = "192.168.10.10";
+            aux.Add(miRemoto.Id, miRemoto);
+            miRemoto.Id += 2;
+            aux.Add(miRemoto.Id + 2, miRemoto);
+            app_config.Modules = aux;
+            loader.Save(app_config);*/
+
+            // Load modules
+            module_manager = new ModuleManager(app_config);
+            if (!module_manager.LoadModules())
+                Error("Algunos módulos no se han podido cargar correctamente", true);
+
+            #region ExecutionTime
+            if (Convert.ToBoolean(config.global.GlobalConfigManager.GetParameter("Debug")))
+                WriteExecutionTime("Módulos cargados");
+            #endregion
+
+            // Load communications
+            // each handle message in a thread
+            communication_manager = new CommunicationManager(app_config);
+            communication_manager.EnableLocalModules(module_manager.GetLocalModules());
+
+            #region ExecutionTime
+            if (Convert.ToBoolean(config.global.GlobalConfigManager.GetParameter("Debug")))
+                WriteExecutionTime("Comunicaciones cargadas");
+            #endregion
+
+            // Load Container Form
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            form_container = new CSRFormContainer();
+            form_container.Text = "CSR " + CSRversion + " :: " + app_config.AppName;
+
+            //Set the Form Size
+
+            if (app_config.AppSize.Height == 0 && app_config.AppSize.Height == 0)// Full screen
+            {
+                //Si el modo ddebug está activo que la pantalla no sea completa del todo
+                if (Convert.ToBoolean(config.global.GlobalConfigManager.GetParameter("Debug")))
+                {
+                    form_container.Scale(new System.Drawing.Size(System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width, System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height));
+                }
+                else
+                {
+                    form_container.FormBorderStyle = FormBorderStyle.None;
+                    form_container.WindowState = FormWindowState.Maximized;
+                }
+
+            }
+            else
+                form_container.Scale(new System.Drawing.Size(app_config.AppSize.Width, app_config.AppSize.Height));
+
+            if(app_config.isMinimized)
+                form_container.WindowState = FormWindowState.Minimized;
+
+            #region ExecutionTime
+            if (Convert.ToBoolean(config.global.GlobalConfigManager.GetParameter("Debug")))
+                WriteExecutionTime("Formularios cargados");
+            #endregion
+
+            // Append ConsoleWrite delegate
+            CSRConsoleWriter.Instance.SetConsoleWriteDelegate(form_container.WriteConsole);
+
+            // Append delegates
+            module_functions = new CSRAppComponentFunctions();
+            csr.modules.CSRModuleDelegates module_delegates = new csr.modules.CSRModuleDelegates
+                (
+                communication_manager.SendMessage,
+                module_manager.GetAvailableModuleNames,
+                module_manager.GetLocalModules,
+                module_functions.Log,
+                module_functions.ConsoleWrite,
+                module_functions.Notify,
+                module_functions.Error,
+                module_functions.WriteExecutionTime,
+                config.global.GlobalConfigManager.SetParameter,
+                config.global.GlobalConfigManager.GetParameter,
+                form_container.GoToModule,
+                form_container.ButtonColor
+                );
+
+            module_manager.AppendDelegates(module_delegates);
+
+            #region ExecutionTime
+            if (Convert.ToBoolean(config.global.GlobalConfigManager.GetParameter("Debug")))
+                WriteExecutionTime("Delegados asociados");
+            #endregion
+
+            // Initialization of global parameters
+            config.global.GlobalConfigManager.SetParameter("Communication", "message");
+
+            #region ExecutionTime
+            if (Convert.ToBoolean(config.global.GlobalConfigManager.GetParameter("Debug")))
+                WriteExecutionTime("Parametros globales cargados");
+            if (Convert.ToBoolean(config.global.GlobalConfigManager.GetParameter("Debug")))
+                WriteExecutionTime("CSR Constructor OK");
+            #endregion
+
+        }
+
+        ///////////////////////////////////////////////////////////
+        public bool Init()
+        {
+            #region ExecutionTime
+            if (Convert.ToBoolean(config.global.GlobalConfigManager.GetParameter("Debug")))
+                WriteExecutionTime("Inicio de la inicialización del CSR");
+            #endregion
+
+
+
+            // Init modules and attach them to the view
+            if (!module_manager.InitModules(this.form_container.controls_panel.Size))
+                Error("Algunos módulos no se han podido iniciar correctamente.", true);
+            form_container.AttachModules(module_manager.GetLocalModules());
+
+            #region ExecutionTime
+            if (Convert.ToBoolean(config.global.GlobalConfigManager.GetParameter("Debug")))
+                WriteExecutionTime("Módulos inicializados");
+            #endregion
+
+            // Init communications
+            if( !communication_manager.Init())
+                Error("La counicación no se han podido iniciar correctamente.", true);
+
+            #region ExecutionTime
+            if (Convert.ToBoolean(config.global.GlobalConfigManager.GetParameter("Debug")))
+                WriteExecutionTime("Comunicaciones inicializadas");
+            #endregion
+
+            // Add module data to status
+            foreach (string module_id in module_manager.GetAvailableModuleNames().Keys)
+                form_container.AddModuleToStatus(module_id, module_manager.GetAvailableModuleNames()[module_id]);
+
+            #region ExecutionTime
+            if (Convert.ToBoolean(config.global.GlobalConfigManager.GetParameter("Debug")))
+                WriteExecutionTime("Añadidos los módulos al módulo Status");
+            if (Convert.ToBoolean(config.global.GlobalConfigManager.GetParameter("Debug")))
+                WriteExecutionTime("CSR Inicialización OK");
+            #endregion
+
+            return true;
+        }
+
+        ///////////////////////////////////////////////////////////
+        public bool Destroy()
+        {
+            #region ExecutionTime
+            if (Convert.ToBoolean(config.global.GlobalConfigManager.GetParameter("Debug")))
+                WriteExecutionTime("Programa cerrándose");
+            #endregion
+
+            //Destroy all modules
+            if (!module_manager.DestroyModules())
+            {
+                Error("Algunos módulos no se han podido destruir correctamente.", true);
+                return false;
+            }
+
+            #region ExecutionTime
+            if (Convert.ToBoolean(config.global.GlobalConfigManager.GetParameter("Debug")))
+                WriteExecutionTime("Programa cerrado.");
+            #endregion
+
+            Log("Todos los módulos cerrados correctamente.");
+
+            CSRExecutionTimeWriter.Instance.Close();
+            CSRLogger.Instance.Close();
+
+            return true;
+        }
+        ///////////////////////////////////////////////////////////
+        public void RunApp()
+        {
+            #region ExecutionTime
+            //[Debug] Guardar en el fichero el tiempo tardado en cargar e inicializar los modulos. 
+            if (Convert.ToBoolean(config.global.GlobalConfigManager.GetParameter("Debug")))
+                WriteExecutionTime("Carga e inicialización finalizadas.");
+            #endregion
+
+            Log("Carga e inicialización finalizadas.");
+            Application.Run(form_container);
+            
+        }
+
+        ///////////////////////////////////////////////////////////
+
+    }
+}

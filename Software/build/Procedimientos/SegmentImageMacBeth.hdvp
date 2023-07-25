@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.1">
+<procedure name="SegmentImageMacBeth">
+<interface>
+<io>
+<par name="Image" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="Region1" base_type="iconic" dimension="0"/>
+<par name="Image1" base_type="iconic" dimension="0"/>
+</oo>
+<ic>
+<par name="Linea" base_type="ctrl" dimension="0"/>
+<par name="path_image" base_type="ctrl" dimension="0"/>
+<par name="cameratype" base_type="ctrl" dimension="0"/>
+</ic>
+<oc>
+<par name="MatrixTransLCam1" base_type="ctrl" dimension="0"/>
+<par name="Texto_salida" base_type="ctrl" dimension="0"/>
+<par name="error" base_type="ctrl" dimension="0"/>
+<par name="ScaleX1" base_type="ctrl" dimension="0"/>
+<par name="ScaleY1" base_type="ctrl" dimension="0"/>
+</oc>
+</interface>
+<body>
+<l>try</l>
+<l>    Dimrealx := 105.0</l>
+<l>    Dimrealy := 140.0</l>
+<l>    get_domain(Image,RegionIn)</l>
+<l>    Region1 := RegionIn</l>
+<c>    *Image1RGB********************************************************* </c>
+<l>    calculo_matriz_color_macbeth_area (Image, RegionIn, Regions1, Image1, Dimrealx, Dimrealy, MatrixTransLCam1, ScaleX1, ScaleY1)</l>
+<c>        </c>
+<l>    Texto_salida := 'calibracion ok'</l>
+<l>    error := 0</l>
+<c></c>
+<l>catch (Exception)</l>
+<c>    </c>
+<l>    error := 1</l>
+<l>    Texto_salida := Exception</l>
+<c>    </c>
+<l>endtry</l>
+<c>*escalo las imagenes a la mitad, para la localizacion no hace falta toda la resolucion</c>
+<c></c>
+<c></c>
+<c></c>
+<l>return ()</l>
+<c></c>
+</body>
+<docu id="SegmentImageMacBeth">
+<parameters>
+<parameter id="Image"/>
+<parameter id="Image1"/>
+<parameter id="Linea"/>
+<parameter id="MatrixTransLCam1"/>
+<parameter id="Region1"/>
+<parameter id="ScaleX1"/>
+<parameter id="ScaleY1"/>
+<parameter id="Texto_salida"/>
+<parameter id="cameratype"/>
+<parameter id="error"/>
+<parameter id="path_image"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

@@ -1,0 +1,72 @@
+#
+# INTERNAL CAMERA PARAMETERS
+#
+
+# ===== generic parameter syntax ==========================================
+#
+# Syntax:      ParGroup: <pargroupname>;
+#                        <pargroup_description>;
+#
+#               <name> : <shortname> : <default_value>;
+#                        <type> : <lower_bound> : <upper_bound>;
+#                        <description>;
+#
+#                [ <type> ::= BOOL|XBOOL|INT|FLOAT|DOUBLE|STRING ]
+#
+# =========================================================================
+
+
+
+##############################################################################
+#
+#  Camera : Parameter
+#    >  Focus
+#    >  Kappa
+#    >  Sx
+#    >  Sy
+#    >  Cx
+#    >  Cy
+#    >  ImageWidth
+#    >  ImageHeight
+#
+##############################################################################
+
+ParGroup: Camera: Parameter;
+	"Internal camera parameters";
+
+Focus:foc:	0.00848891867025163;
+	DOUBLE:0.0:;
+	"Focal length of the lens";
+
+Kappa:kappa:	-7778.38280303022;
+	DOUBLE::;
+	"Radial distortion coefficient";
+
+Sx:sx:	8.28498497824406e-006;
+	DOUBLE:0.0:;
+	"Width of a cell on the sensor";
+
+Sy:sy:	8.3e-006;
+	DOUBLE:0.0:;
+	"Height of a cell on the sensor";
+
+Cx:cx:	269.526765094829;
+	DOUBLE::;
+	"X-coordinate of the image center";
+
+Cy:cy:	296.856923390248;
+	DOUBLE::;
+	"Y-coordinate of the image center";
+
+ImageWidth:imgw:	483;
+	INT:1:32768;
+	"Width of the images";
+
+ImageHeight:imgh:	648;
+	INT:1:32768;
+	"Height of the images";
+
+
+#
+# HALCON Version 12.0 --  Sun Sep 17 01:21:06 2017
+#

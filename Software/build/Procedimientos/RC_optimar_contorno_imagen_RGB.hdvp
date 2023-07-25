@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.1">
+<procedure name="RC_optimar_contorno_imagen_RGB">
+<interface>
+<io>
+<par name="ImagenEntradaRGB" base_type="iconic" dimension="0"/>
+<par name="ImagenEntradaNIR" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="MascaraRGB" base_type="iconic" dimension="0"/>
+<par name="ContornoRGB" base_type="iconic" dimension="0"/>
+<par name="ImagenSinFondoRGB" base_type="iconic" dimension="0"/>
+<par name="ImagenSinFondoNIR" base_type="iconic" dimension="0"/>
+</oo>
+</interface>
+<body>
+<c>*   Parámetros de entrada:</c>
+<c>*     - ImagenEntrada</c>
+<c>*</c>
+<c>*   Parámetros de salida:</c>
+<c>*     - Mascara</c>
+<c>*     - Contorno</c>
+<c>*     - ContornoSuavizado</c>
+<c>*     - MascaraFilaMin</c>
+<c>*     - MascaraFilaMax</c>
+<c>*     - ImagenSinFondo</c>
+<c>    *Guardar la imagen de entrada para el final</c>
+<l>    RGB := ImagenEntradaRGB</l>
+<c>    </c>
+<c>    *RGB</c>
+<l>    decompose3(RGB, R, G, B)</l>
+<c>    *canalR: blanco</c>
+<l>    threshold(R, RegionR, 40, 255)</l>
+<l>    connection(RegionR, ConnectedRegions)</l>
+<l>    select_shape(ConnectedRegions, SelectedRegions, 'area', 'and', 1000, 999999999)</l>
+<l>    union1(SelectedRegions, RegionUnion0)</l>
+<c>    *canal B: negro (quitar fondo)</c>
+<l>    threshold(B, RegionB, 1,40)</l>
+<l>    erosion_circle(RegionB, RegionErosion, 8.0)</l>
+<l>    connection(RegionErosion, ConnectedRegions)</l>
+<l>    select_shape(ConnectedRegions, SelectedRegions, 'area', 'and', 1000, 999999999)</l>
+<l>    union1(SelectedRegions, RegionUnion1)</l>
+<c>    *sumar</c>
+<l>    union2(RegionUnion0, RegionUnion1, RegionUnion)</l>
+<l>    dilation_circle(RegionUnion, RegionDilation, 10.0)</l>
+<l>    erosion_circle(RegionDilation, RegionErosion, 8.0)</l>
+<l>    fill_up(RegionErosion, RegionFillUp)</l>
+<l>    connection(RegionFillUp, ConnectedRegions)</l>
+<l>    select_shape(ConnectedRegions, SelectedRegions, 'area', 'and', 5000, 999999999)</l>
+<l>    union1(SelectedRegions, RegionUnion2)</l>
+<c>    </c>
+<c>    *sacar contorno</c>
+<l>    try</l>
+<l>        gen_contour_region_xld (RegionUnion2, Contorno, 'border')</l>
+<l>        smooth_contours_xld(Contorno, ContornoRGB, 169)</l>
+<l>        gen_region_contour_xld(ContornoRGB, MascaraRGB, 'filled')</l>
+<c>    </c>
+<c>        *sacar imagen sin fondo</c>
+<l>        smallest_rectangle1(MascaraRGB, Row1, Column1, Row2, Column2)</l>
+<l>        reduce_domain(RGB, MascaraRGB, ImagenReducidaRGB)</l>
+<l>        reduce_domain(ImagenEntradaNIR, MascaraRGB, ImageReducedNIR)</l>
+<l>        smallest_rectangle1 (MascaraRGB, Fila1, Column1, Fila2, Column2)</l>
+<l>        margen := 0</l>
+<c></c>
+<l>        crop_rectangle1 (ImagenReducidaRGB, ImagenSinFondoRGB, Row1 - margen, Column1 - margen, Row2 + margen, Column2 + margen)</l>
+<l>        crop_rectangle1 (ImageReducedNIR, ImagenSinFondoNIR, Row1 - margen, Column1 - margen, Row2 + margen, Column2 + margen)</l>
+<l>    catch (Exception)</l>
+<c>        </c>
+<l>    endtry</l>
+<c>    </c>
+<l>return()</l>
+</body>
+<docu id="RC_optimar_contorno_imagen_RGB">
+<short lang="en_US">Detect a fin</short>
+<parameters>
+<parameter id="ContornoRGB"/>
+<parameter id="ImagenEntradaNIR"/>
+<parameter id="ImagenEntradaRGB"/>
+<parameter id="ImagenSinFondoNIR"/>
+<parameter id="ImagenSinFondoRGB"/>
+<parameter id="MascaraRGB"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.1">
+<procedure name="Difuminado_rapido_gauss">
+<interface>
+<io>
+<par name="Rgb_blanco" base_type="iconic" dimension="0"/>
+<par name="region" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="Rgb_blancoOut" base_type="iconic" dimension="0"/>
+</oo>
+<ic>
+<par name="resize_factor" base_type="ctrl" dimension="0"/>
+<par name="gauss_size" base_type="ctrl" dimension="0"/>
+</ic>
+</interface>
+<body>
+<l>Rgb_blancoOut := Rgb_blanco</l>
+<l>count_channels(Rgb_blancoOut,numchanels)</l>
+<l>full_domain(Rgb_blancoOut,Rgb_blancoOut)</l>
+<l>get_image_size (Rgb_blancoOut, Width, Height)</l>
+<l>gen_rectangle1(total_reg,0,0,Height,Width)</l>
+<l>difference(total_reg,region,region_fondo)</l>
+<l>if (numchanels == 1)</l>
+<l>    intensity(region,Rgb_blancoOut,Mean, Deviation)</l>
+<l>    paint_region(region_fondo,Rgb_blancoOut,Rgb_blancoOut, Mean, 'fill')</l>
+<l>endif</l>
+<c></c>
+<l>if (numchanels == 3)</l>
+<l>    decompose3(Rgb_blancoOut,R,G,B)</l>
+<l>    intensity(region,R,Mean, Deviation)</l>
+<l>    paint_region(region_fondo,R,R, Mean, 'fill')</l>
+<l>    intensity(region,G,Mean, Deviation)</l>
+<l>    paint_region(region_fondo,G,G, Mean, 'fill')</l>
+<l>    intensity(region,B,Mean, Deviation)</l>
+<l>    paint_region(region_fondo,B,B, Mean, 'fill')</l>
+<l>    compose3(R,G,B,Rgb_blancoOut)</l>
+<l>endif</l>
+<c></c>
+<l>zoom_image_size (Rgb_blancoOut, Rgb_blancoOut, Width/resize_factor, Height/resize_factor, 'constant')</l>
+<l>smooth_image (Rgb_blancoOut, Rgb_blancoOut, 'gauss', gauss_size)</l>
+<l>zoom_image_size (Rgb_blancoOut, Rgb_blancoOut, Width, Height, 'constant')</l>
+<l>reduce_domain(Rgb_blancoOut,region,Rgb_blancoOut)</l>
+<l>return ()</l>
+</body>
+<docu id="Difuminado_rapido_gauss">
+<parameters>
+<parameter id="Rgb_blanco"/>
+<parameter id="Rgb_blancoOut"/>
+<parameter id="gauss_size"/>
+<parameter id="region"/>
+<parameter id="resize_factor"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

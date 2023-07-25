@@ -1,0 +1,120 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Xml;
+
+namespace AlarmModule
+{
+    public class AlarmBlock : BitArray
+    {
+        /*public delegate object Handler(string msgCaller);
+        private Handler listHandler;
+        public void Register(Handler methodo)
+            { listHandler = methodo; }*/
+
+        private Dictionary<string, int> m_AlarmBits;
+        private Dictionary<string, DescripcionAlarma> m_AlarmDescriptions;
+
+        ////////////////////////////////////////////////////////////////////////
+        //Constructor
+        public AlarmBlock()
+        {
+            this.Nombre = "";
+            this.Numero = 0;
+            this.BitResumen = true;
+
+            this.m_AlarmBits = new Dictionary<string, int>();
+            this.m_AlarmDescriptions = new Dictionary<string, DescripcionAlarma>();
+        }
+
+        ////////////////////////////////////////////////////////////////////////
+        //Constructor
+        public AlarmBlock(string name, bool bitResumen)
+        {
+            this.Nombre = name;
+            this.Numero = 0;
+            this.BitResumen = true;
+
+            this.m_AlarmBits = new Dictionary<string, int>();
+            this.m_AlarmDescriptions = new Dictionary<string, DescripcionAlarma>();
+        }
+
+        ////////////////////////////////////////////////////////////////////////
+        //Añadir nueva alarma al registro
+        public void añadirAlarma(string id, int bit, string titulo, string descripcion)
+        {
+            this.m_AlarmBits.Add(id, bit);
+            DescripcionAlarma da = new DescripcionAlarma(id, titulo, descripcion);
+            this.m_AlarmDescriptions.Add(id, da);
+        }
+
+        ////////////////////////////////////////////////////////////////////////
+        //Activar la alarma usando el ID
+        public bool activarAlarma(string id)
+        {
+            return this.activarBit(this.m_AlarmBits[id]);
+        }
+
+        ////////////////////////////////////////////////////////////////////////
+        //Desactivar la alarma usando el ID
+        public bool desactivarAlarma(string id)
+        {
+            return this.desactivarBit(this.m_AlarmBits[id]);
+        }
+
+        ////////////////////////////////////////////////////////////////////////
+        //Ver si la alarma con cierto Id está activa o no
+        public bool alarmaActiva(string id)
+        {
+            return bitActivo(this.m_AlarmBits[id]);
+        }
+
+        ////////////////////////////////////////////////////////////////////////
+        //Getter/setter de la cadena de bits de las alarmas
+        public uint AlarmNum
+        {
+            get { return this.Numero; }
+            set { this.Numero = value; }
+        }
+
+        ////////////////////////////////////////////////////////////////////////
+        //Get de la descripcion y titulo dependiendo del ID, si no existe devuelve null
+        public bool Descripcion(string id, out DescripcionAlarma value)
+        {
+            if (this.m_AlarmDescriptions.ContainsKey(id))
+            {
+                value = this.m_AlarmDescriptions[id];
+                return true;
+            }
+            value = null;
+            return false;
+        }
+
+        ////////////////////////////////////////////////////////////////////////
+        //Devuelve en el bool si hay algun valor, y en el out la lista de las claves con todos los ID
+        public bool getIds(out List<string> keys)
+        {
+            keys = new List<string>(this.m_AlarmBits.Keys);
+            return (keys.Count > 0);
+        }
+
+        ////////////////////////////////////////////////////////////////////////
+        //Devuelve la cantidad de alarmas
+        public int Count()
+        {
+            return m_AlarmBits.Count;
+        }
+
+        ////////////////////////////////////////////////////////////////////////
+        //Get/Set del Nombre del bloque
+        public string Name
+        {
+            get { return Nombre; }
+            set { Nombre = value; }
+        }
+    }
+}

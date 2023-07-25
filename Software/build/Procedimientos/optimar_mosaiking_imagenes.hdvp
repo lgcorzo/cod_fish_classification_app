@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.1">
+<procedure name="optimar_mosaiking_imagenes">
+<interface>
+<io>
+<par name="ImagenIni_NIR" base_type="iconic" dimension="0"/>
+<par name="ImagenFin_NIR" base_type="iconic" dimension="0"/>
+<par name="ImagenMos_NIR" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="ImagenMosaicking_NIR" base_type="iconic" dimension="0"/>
+</oo>
+<ic>
+<par name="diff_row_0" base_type="ctrl" dimension="0"/>
+<par name="diff_col_0" base_type="ctrl" dimension="0"/>
+</ic>
+<oc>
+<par name="diff_row0" base_type="ctrl" dimension="0"/>
+<par name="diff_col0" base_type="ctrl" dimension="0"/>
+<par name="error_mosaiking" base_type="ctrl" dimension="0"/>
+</oc>
+</interface>
+<body>
+<c>*   Parámetros de entrada:</c>
+<c>*     - ImagenIni</c>
+<c>*     - ImagenFin</c>
+<c>*</c>
+<c>*   Parámetros de salida:</c>
+<c>*     - ImagenMosaicking </c>
+<c>    </c>
+<l>    factor := 8</l>
+<l>    escala := 0.125</l>
+<l>    error_mosaiking := 1</l>
+<l>    imagenRGB := 1</l>
+<l>    try</l>
+<l>        decompose3(ImagenIni_NIR, R0, G, B)</l>
+<l>        decompose3(ImagenFin_NIR, R1, G, B)</l>
+<l>        ImagenMosIni := R0</l>
+<l>        ImagenFin_real := ImagenFin_NIR</l>
+<l>        ImagenIni_real := ImagenIni_NIR</l>
+<l>        ImagenFin_NIR := R1</l>
+<l>    catch (Exception)</l>
+<l>        ImagenMosIni := ImagenIni_NIR</l>
+<l>        imagenRGB := 0</l>
+<l>    endtry</l>
+<c>    </c>
+<c>    </c>
+<l>    get_image_size (ImagenMosIni, Width, Height)</l>
+<l>    tuple_div(Width,factor,W)</l>
+<l>    tuple_div(Height,factor,H)</l>
+<l>    zoom_image_size(ImagenMosIni,ImagenMosIni,W,H, 'constant')</l>
+<c>  </c>
+<l>    if(imagenRGB = 1)</l>
+<l>        threshold(ImagenIni_NIR, Mascara, 1, 255)</l>
+<l>        connection(Mascara,ConnectedRegions)</l>
+<l>        select_shape(ConnectedRegions, SelectedRegions, 'area', 'and', 1000, 99999999)</l>
+<l>        union1(SelectedRegions, Mascara)</l>
+<c>        </c>
+<c>        </c>
+<l>    else</l>
+<l>        threshold(ImagenIni_NIR, Mascara0, 0, 255)</l>
+<c>       </c>
+<l>        connection(Mascara0,ConnectedRegions)</l>
+<l>        select_shape(ConnectedRegions, SelectedRegions0, 'area', 'and', 1000, 99999999)</l>
+<c>        *para la parte oscura del SEI</c>
+<l>        threshold(ImagenIni_NIR, Mascara2, 0, 0)    </l>
+<l>        connection(Mascara2,ConnectedRegions)</l>
+<l>        select_shape(ConnectedRegions, SelectedRegions1, 'area', 'and', 1000, 99999999)</l>
+<l>        union2(SelectedRegions0, SelectedRegions1, Mascara)</l>
+<c>        *</c>
+<l>    endif</l>
+<c>   </c>
+<l>     get_domain(ImagenMosIni,Domain)</l>
+<l>     get_image_size(ImagenMosIni,Width1, Height1)</l>
+<l>     region_to_bin(Domain,ImageEquHisto, 255, 0, Width1, Height1)</l>
+<l>     full_domain(ImageEquHisto,ImageEquHisto)</l>
+<c>    * Create template</c>
+<l>     get_image_size (ImageEquHisto, Width, Height)</l>
+<l>     *dev_display (ImageEquHisto)</l>
+<c>     *centrar     </c>
+<l>     zoom_region(Mascara, Img1, escala, escala)</l>
+<l>     gen_rectangle1(Rectangle1, Height*1/4, 1, Height, Width)</l>
+<l>     intersection(Rectangle1,Img1,RegionIntersection)</l>
+<l>     area_center(RegionIntersection,Area, Row3, Column3)</l>
+<l>     if(Area &gt; 0)</l>
+<l>         smallest_rectangle1 (RegionIntersection, Row11, Column11, Row2, Column21) </l>
+<l>         Row := Height * 3 / 4</l>
+<c>         *(Row2 - Row11) / 2 + Row11</c>
+<l>         Column := (Column21 - Column11) / 2 + Column11</l>
+<l>         Phi := rad(0)</l>
+<l>         Length2 := Height / 4</l>
+<l>         Length1 := (Column21 - Column11) / 2 + 32 / factor</l>
+<l>         gen_rectangle2(Rectangle, Row, Column, Phi, Length1, Length2)</l>
+<c>        </c>
+<c>        </c>
+<l>        reduce_domain (ImageEquHisto, Rectangle, ImageReduced)</l>
+<l>        create_template (ImageReduced, 255, 1, 'sort', 'original', TemplateID)</l>
+<l>        Angle := 0</l>
+<l>        TemplH2 := Length2</l>
+<l>        TemplW2 := Length1</l>
+<l>        TemplPhi := Phi</l>
+<l>*        max_error := 40</l>
+<l>        max_error := 40</l>
+<l>*         ImagenMosFin_NIR := ImagenFin_NIR</l>
+<l>        get_domain(ImagenFin_NIR,Domain)</l>
+<l>        get_image_size(ImagenFin_NIR,Width1, Height1)</l>
+<l>        region_to_bin(Domain,ImagenMosFin_NIR, 255, 0, Width1, Height1)</l>
+<l>        full_domain(ImagenMosFin_NIR,ImagenMosFin_NIR)</l>
+<c>        </c>
+<l>        get_image_size (ImagenMosFin_NIR, Width, Height)</l>
+<l>        tuple_div(Width,factor,W)</l>
+<l>        tuple_div(Height,factor,H)</l>
+<l>        zoom_image_size(ImagenMosFin_NIR,ImagenMosFin_NIR,W,H, 'constant')</l>
+<c>        </c>
+<l>        *equ_histo_image (ImagenMosFin, ImageEquHisto2)</l>
+<l>        ImageEquHisto2_NIR := ImagenMosFin_NIR</l>
+<c>        </c>
+<c>        * Pattern Matching</c>
+<l>        *best_match_mg (ImagenMosFin_NIR, TemplateID, max_error, 'true', 1, 'all', Row1, Column1, Error)</l>
+<l>        *fast_match(ImagenMosFin_NIR, matches,TemplateID,max_error)</l>
+<c>         </c>
+<l>        best_match(ImagenMosFin_NIR,TemplateID,max_error,'false',Row1, Column1, Error)</l>
+<c>        </c>
+<l>        if (Error &lt; 255)</l>
+<l>             error_mosaiking := 0</l>
+<l>            diff_row0 := -1*(Row1 - Row) * factor</l>
+<l>            diff_col0 := -1*(Column1 -Column) * factor</l>
+<l>            tuple_abs(diff_col0 - diff_col_0,res)</l>
+<l>            if(res &lt; 125)</l>
+<l>                diff_row := diff_row0 </l>
+<l>                diff_col := diff_col0 </l>
+<l>                gen_rectangle2 (Rectangle1, Row1, Column1, TemplPhi + Angle, Length1, Length2)</l>
+<l>                *dev_display (ImageEquHisto2) </l>
+<l>                *dev_display (Rectangle1)</l>
+<l>                reduce_domain (ImageEquHisto2_NIR, Rectangle1, ImageReduced1_NIR)</l>
+<c>            </c>
+<l>                get_image_size(ImagenMos_NIR,Width,Height)</l>
+<l>                gen_empty_obj(Images)</l>
+<l>                gen_empty_obj(Images_NIR)</l>
+<l>                concat_obj(Images_NIR,ImagenMos_NIR,Images_NIR)</l>
+<l>                if(imagenRGB)</l>
+<l>                    concat_obj(Images_NIR,ImagenIni_real,Images_NIR)</l>
+<l>                else</l>
+<l>                    concat_obj(Images_NIR,ImagenIni_NIR,Images_NIR)</l>
+<l>                endif</l>
+<c>                *falta por hacer el blend de las imagens</c>
+<l>                tile_images_offset (Images_NIR, TiledImageOriginal_NIR, [diff_row,0], [diff_col,0], [-1,-1], [-1,-1], [-1,-1], [-1,-1], Width, Height*2)              </l>
+<l>                threshold(TiledImageOriginal_NIR,Region,0,255)</l>
+<l>                smallest_rectangle1 (Region, Fila1, Column1, Fila2, Column2)</l>
+<l>                crop_rectangle1 (TiledImageOriginal_NIR, ImagenMosaickingAux_NIR, 0, 0, Fila2, Width)</l>
+<l>                ImagenMosaicking_NIR := ImagenMosaickingAux_NIR</l>
+<c>                </c>
+<l>                clear_template (TemplateID)</l>
+<c>                         </c>
+<l>                 diff_row0 := diff_row </l>
+<l>                 diff_col0 := diff_col</l>
+<l>            else</l>
+<l>                ImagenMosaicking_NIR := ImagenMos_NIR          </l>
+<l>                clear_template (TemplateID)                   </l>
+<l>                diff_row0 := diff_row_0 </l>
+<l>                diff_col0 := diff_col_0</l>
+<l>            endif            </l>
+<l>        else</l>
+<l>                ImagenMosaicking_NIR := ImagenMos_NIR </l>
+<c>               * Perform the convolution in the frequency domain</c>
+<c>       </c>
+<c>            * Compute the auto-correlation of the wafer image</c>
+<l>            get_image_size(ImagenMosFin_NIR, Width, Height)</l>
+<l>            rft_generic (ImagenMosFin_NIR, ImageFFT, 'to_freq', 'n', 'complex', Width)</l>
+<l>            rft_generic (ImageReduced, ImageFFT2, 'to_freq', 'n', 'complex', Width)</l>
+<l>            correlation_fft (ImageFFT, ImageFFT2, ImageCorrelation)</l>
+<l>            rft_generic (ImageCorrelation, ImageFFTInv, 'from_freq', 'n', 'real', Width)</l>
+<c>            * Determine the distance between the dies</c>
+<l>            local_max_sub_pix (ImageFFTInv, 'gauss', 3, 0.0001, Row, Column)</l>
+<l>            *gen_cross_contour_xld (Cross, Row, Column, 20, rad(45))   </l>
+<c>            * Select indices of neighboring points manually</c>
+<l>            clear_template (TemplateID)                        </l>
+<l>            diff_row := Row[0] * factor</l>
+<l>            diff_col := Column[0]* factor</l>
+<c>            </c>
+<c>            *falta por hacer el blend de las imagens</c>
+<l>            gen_empty_obj(Images)</l>
+<l>            gen_empty_obj(Images_NIR)</l>
+<l>            concat_obj(Images_NIR,ImagenMos_NIR,Images_NIR)</l>
+<l>            if(imagenRGB)</l>
+<l>                concat_obj(Images_NIR,ImagenIni_real,Images_NIR)</l>
+<l>            else</l>
+<l>                concat_obj(Images_NIR,ImagenIni_NIR,Images_NIR)</l>
+<l>            endif</l>
+<l>            get_image_size(ImagenMos_NIR,Width,Height)</l>
+<l>            tile_images_offset (Images_NIR, TiledImageOriginal_NIR, [0,-(Height-diff_row)], [0,-(Width-diff_col)], [-1,-1], [-1,-1], [-1,-1], [-1,-1], Width, Height*2)              </l>
+<c></c>
+<l>        endif</l>
+<c>        </c>
+<l>  else</l>
+<l>    ImagenMosaicking_NIR := ImagenMos_NIR</l>
+<c>    </c>
+<l>     diff_row0 := diff_row_0</l>
+<l>     diff_col0 := diff_col_0</l>
+<l>  endif</l>
+<c>    </c>
+<l>return ()</l>
+</body>
+<docu id="optimar_mosaiking_imagenes">
+<short lang="en_US">Detect a fin</short>
+<parameters>
+<parameter id="ImagenFin_NIR"/>
+<parameter id="ImagenIni_NIR"/>
+<parameter id="ImagenMos_NIR"/>
+<parameter id="ImagenMosaicking_NIR"/>
+<parameter id="diff_col0"/>
+<parameter id="diff_col_0"/>
+<parameter id="diff_row0"/>
+<parameter id="diff_row_0"/>
+<parameter id="error_mosaiking"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

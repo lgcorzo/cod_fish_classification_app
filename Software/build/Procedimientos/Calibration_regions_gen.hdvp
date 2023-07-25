@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.1">
+<procedure name="Calibration_regions_gen">
+<interface>
+<io>
+<par name="Image_pattern" base_type="iconic" dimension="0"/>
+<par name="Domain_region" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="SortedRegions" base_type="iconic" dimension="0"/>
+</oo>
+<ic>
+<par name="DimY_Calibracion" base_type="ctrl" dimension="0"/>
+</ic>
+</interface>
+<body>
+<c>*tamaño de la imagen</c>
+<l>get_image_size(Image_pattern,Width, Height)</l>
+<c>*segmentacion del patrón para detectar las bandas verticales</c>
+<l>threshold(Image_pattern,ImageThresholded, 80,255)</l>
+<l>shape_trans(ImageThresholded,domain,'convex')</l>
+<c>*separación en elementos aislados</c>
+<l>connection(ImageThresholded, RegionsConnected)</l>
+<c>*selección de las bandas que cumplen con la condición de altura </c>
+<l>select_shape(RegionsConnected,RegionsConnected,'width','and', 10, Width/5)</l>
+<l>select_shape(RegionsConnected,RegionsConnected,'height','and', Height-30, Height+1)</l>
+<c>*modifica la forma a rectangulos perfecto.</c>
+<l>shape_trans(RegionsConnected,RegionTrans,'rectangle1')</l>
+<c>*union de todas las regiones para sacar la complemetaria</c>
+<l>union1(RegionTrans, RegionUnion)</l>
+<c>*imagen complementaria</c>
+<l>gen_rectangle1(Region_full,0,0,Height-2,Width-2)</l>
+<l>difference(domain,RegionUnion,RegionComplement)</l>
+<c></c>
+<c>*reordena las regiones para que esten ordenadas por columnas y las regiones estén seguidas una a la otra</c>
+<l>sort_region (RegionComplement, SortedRegion, 'upper_left', 'true', 'row')</l>
+<c></c>
+<c>* </c>
+<c>* Now fit these points to a quadratic function of the form</c>
+<c>* </c>
+<c>* f(x) = a*x^2 + b*x + c</c>
+<c>* </c>
+<c>* This can be achieved by solving the system of equations</c>
+<c>* </c>
+<c>* Ax = B</c>
+<c>* </c>
+<c>* where each line in A consists of [X^2, X, 1],</c>
+<c>* and each line of B consist of the corresponding Y value</c>
+<c>* </c>
+<c>* If this system of equations is solved for x, x will contain</c>
+<c>* the parameters of the quadratic function:</c>
+<c>* </c>
+<c>* x = [a, b, c]</c>
+<c>* </c>
+<l>connection(SortedRegion,SortedRegions)</l>
+<l>shape_trans(SortedRegion,DomainCalib,'convex')</l>
+<l>smallest_rectangle1 (SortedRegions, Row1, Column1, Row2, Column2)</l>
+<l>X := Column1</l>
+<l>Y := Column2 - Column1</l>
+<l>create_matrix (|X|, 3, 1.0, MatrixA)</l>
+<l>create_matrix (|X|, 1, X, MatrixACol1)</l>
+<l>create_matrix (|X|, 1, X * X, MatrixACol0)</l>
+<l>set_sub_matrix (MatrixA, MatrixACol1, 0, 1)</l>
+<l>set_sub_matrix (MatrixA, MatrixACol0, 0, 0)</l>
+<c>* </c>
+<l>create_matrix (|X|, 1, Y, MatrixB)</l>
+<l>solve_matrix (MatrixA, 'general', 0, MatrixB, MatrixX)</l>
+<c></c>
+<l>get_value_matrix (MatrixX, 0, 0, A)</l>
+<l>get_value_matrix (MatrixX, 1, 0, B)</l>
+<l>get_value_matrix (MatrixX, 2, 0, C)</l>
+<c></c>
+<l>Z := A * X * X + B * X + C</l>
+<c>*genero ROIs ajustados</c>
+<l>NumRegions := |Z|</l>
+<c></c>
+<l>Z := 0</l>
+<l>X := 0</l>
+<l>contador := 0</l>
+<l>Xfin:= 0</l>
+<c>*array de images para el reescalado.</c>
+<l>gen_empty_obj(ImagenRegionsFiltered)</l>
+<l>smallest_rectangle1(Domain_region,Row11, Column11, Row21, Column21)</l>
+<l>X := Column11</l>
+<l>WidthMax := Column21 </l>
+<l>step := 1</l>
+<l>while (Xfin &lt; WidthMax)</l>
+<l>       X := Z + X</l>
+<l>       Z := (A * X * X + B * X + C)*step</l>
+<l>       if (Z &lt; 20)</l>
+<l>           Z := 20</l>
+<l>       endif</l>
+<l>    Xfin:= Z+X</l>
+<l>    if(Xfin &gt;= WidthMax)</l>
+<l>        Xfin := WidthMax</l>
+<l>    endif</l>
+<l>    gen_rectangle1(Rectangle, 0, X, Height, Xfin)</l>
+<l>    concat_obj(ImagenRegionsFiltered,Rectangle,ImagenRegionsFiltered) </l>
+<l>    contador := contador + 1</l>
+<l>endwhile</l>
+<c>*grupo de  n elementos</c>
+<l>smallest_rectangle1 (ImagenRegionsFiltered, Row1, Column1, Row2, Column2)</l>
+<l>nunElments := |Column1| </l>
+<c></c>
+<l>* gen_empty_obj(ImagenRegionsfinal)</l>
+<l>* for i := 0 to nunElments-step-1 by step</l>
+<l>*     try</l>
+<l>*     gen_rectangle1(Rectangle, 0, Column1[i], Height,Column1[i + step])</l>
+<l>*     smallest_rectangle1 (Rectangle, Row, Column1b, Row, Column2b)</l>
+<l>*     distint := Column2b - Column1b</l>
+<c>    *reescalado de la imagen para recuperar la perspectiva</c>
+<l>*     if(distint  &gt; 20)</l>
+<l>*             concat_obj(ImagenRegionsfinal,Rectangle,ImagenRegionsfinal) </l>
+<l>*     endif</l>
+<c></c>
+<c>        *reescalado de la imagen para recuperar la perspectiva </c>
+<l>*     catch (Exception)</l>
+<l>*     endtry  </l>
+<l>* endfor</l>
+<c>*si no llega al final de la imagen de pone un del tamno que toque</c>
+<c>*si no ha llegado al final lo cierro con el final</c>
+<l>* if( i+1 &lt; nunElments)</l>
+<l>*     gen_rectangle1(Rectangle, 0, Column1[i], Height,Width)</l>
+<l>*      concat_obj(ImagenRegionsfinal,Rectangle,ImagenRegionsfinal)</l>
+<l>* endif</l>
+<c></c>
+<l>sort_region (ImagenRegionsFiltered, ImagenRegionsfinal, 'upper_left', 'true', 'row')</l>
+<c></c>
+<l>SortedRegions  := ImagenRegionsfinal</l>
+<l>return ()</l>
+</body>
+<docu id="Calibration_regions_gen">
+<parameters>
+<parameter id="DimY_Calibracion"/>
+<parameter id="Domain_region"/>
+<parameter id="Image_pattern"/>
+<parameter id="SortedRegions"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

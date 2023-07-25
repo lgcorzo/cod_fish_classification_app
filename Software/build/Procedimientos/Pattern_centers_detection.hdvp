@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.1">
+<procedure name="Pattern_centers_detection">
+<interface>
+<io>
+<par name="patternImage" base_type="iconic" dimension="0"/>
+</io>
+<oc>
+<par name="Rows" base_type="ctrl" dimension="0"/>
+<par name="Columm" base_type="ctrl" dimension="0"/>
+<par name="ScaleX" base_type="ctrl" dimension="0"/>
+<par name="ScaleY" base_type="ctrl" dimension="0"/>
+</oc>
+</interface>
+<body>
+<c>* ***********************************************************************</c>
+<l>scale_image_max(patternImage,patternImage)</l>
+<l>inici_threshold := 100</l>
+<l>regionnumber := 0</l>
+<l>while ( regionnumber != 49 and inici_threshold &lt;255)</l>
+<l>    threshold (patternImage, calib_pattern_region, 0, inici_threshold)</l>
+<l>    remove_noise_region (calib_pattern_region, calib_pattern_region, 'n_48')</l>
+<l>    connection (calib_pattern_region, calib_pattern_region)</l>
+<l>    select_shape (calib_pattern_region, SelectedRegions, ['outer_radius','area'], 'and', [5,25], [20, 400])</l>
+<l>    shape_trans (SelectedRegions, RegionTrans, 'outer_circle')</l>
+<l>    sort_region (SelectedRegions, SortedRegions1, 'upper_left', 'true', 'row')</l>
+<l>    count_obj (SortedRegions1, regionnumber)</l>
+<l>    inici_threshold := inici_threshold + 5</l>
+<l>endwhile</l>
+<c></c>
+<c>* extrae los centros de cada elipse o circulo</c>
+<l>area_center (SortedRegions1, Areas, Rows, Columm)</l>
+<c>*extreos 1(UL),7(UR),43(DL),49(DR)  dsitancia real 57 cm</c>
+<c>*distancias entre puntos UL y UR</c>
+<l>distance_pp(Rows[0],Columm[0],Rows[6],Columm[6],distULUR)</l>
+<l>ScaleX  :=  distULUR/57</l>
+<c>*distancias entre puntos UL y DL</c>
+<l>distance_pp(Rows[0],Columm[0],Rows[42],Columm[42],distULDL)</l>
+<l>ScaleY  :=  distULDL/57</l>
+<c>* *************************************************************************</c>
+<l>return ()</l>
+</body>
+<docu id="Pattern_centers_detection">
+<parameters>
+<parameter id="Columm"/>
+<parameter id="Rows"/>
+<parameter id="ScaleX"/>
+<parameter id="ScaleY"/>
+<parameter id="patternImage"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

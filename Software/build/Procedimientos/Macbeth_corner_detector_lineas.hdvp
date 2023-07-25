@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.1">
+<procedure name="Macbeth_corner_detector_lineas">
+<interface>
+<io>
+<par name="Macbeth" base_type="iconic" dimension="0"/>
+</io>
+<ic>
+<par name="width" base_type="ctrl" dimension="0"/>
+<par name="height" base_type="ctrl" dimension="0"/>
+</ic>
+<oc>
+<par name="Rows" base_type="ctrl" dimension="0"/>
+<par name="Columms" base_type="ctrl" dimension="0"/>
+</oc>
+</interface>
+<body>
+<l>pi := acos(0) * 2</l>
+<l>Eps := pi / 5</l>
+<l>tuple_rad(0,Phi)</l>
+<c>*calcula la matriz de correccion</c>
+<l>boundary(Macbeth,RegionBorder, 'outer')</l>
+<l>smallest_rectangle1(Macbeth,Row11, Column11, Row21, Column21)</l>
+<c></c>
+<c></c>
+<l>gen_region_line(LeftLine, Row11,Column11,Row21,Column11)</l>
+<l>gen_region_line(RightLine, Row11,Column21,Row21,Column21)</l>
+<l>gen_region_line(UpLine, Row11,Column11,Row11,Column21)</l>
+<l>gen_region_line(DownLine, Row21,Column11,Row21,Column21)</l>
+<c></c>
+<l>gen_empty_obj(lineasleft)</l>
+<l>gen_empty_obj(lineasRigth)</l>
+<l>gen_empty_obj(lineasUp)</l>
+<l>gen_empty_obj(lineasDown)</l>
+<c>*convertir el boundary a un contorno</c>
+<l>gen_contour_region_xld (RegionBorder, Contours, 'border')</l>
+<l>gen_polygons_xld (Contours, Polygons, 'ramer', 1)</l>
+<l>split_contours_xld (Polygons, SplitContours, 'polygon', 1, 5)</l>
+<l>regress_contours_xld (SplitContours, RegressContours, 'drop', 1)</l>
+<c></c>
+<l>select_contours_xld (RegressContours, SelectedContoursvert, 'direction', Phi + pi / 2 - Eps, Phi + pi / 2 + Eps, -0.5, 0.5)</l>
+<l>select_contours_xld (SelectedContoursvert, SelectedContoursFinalvert, 'length', 2, 200000, -0.5, 0.5)</l>
+<l>union_straight_contours_xld (SelectedContoursFinalvert, UnionContoursvert, 60, 0.2, 50, 'noparallel', 'maximum')</l>
+<c>*uno las rectas que tiene una distancia menor </c>
+<l>count_obj(UnionContoursvert, numerolineasverticales)</l>
+<l>for Index:= 1 to numerolineasverticales by 1</l>
+<l>    select_obj(UnionContoursvert,selected, Index)</l>
+<l>    distance_lc(selected,Row11,Column11,Row21,Column11,DistanceMinLeft, DistanceMax1L)</l>
+<l>    distance_lc(selected,Row11,Column21,Row21,Column21,DistanceMinRight, DistanceMax1R)</l>
+<l>    orientation_xld (selected, Phi1)</l>
+<l>    tuple_deg(Phi1,anglediff)</l>
+<l>    tuple_abs(anglediff,anglediff)</l>
+<l>    anglediff := 90 - anglediff</l>
+<l>    tuple_abs(anglediff,anglediff)</l>
+<c>   </c>
+<l>        if(DistanceMinLeft &lt; DistanceMinRight)</l>
+<l>            concat_obj(selected, lineasleft,lineasleft)   </l>
+<l>        else</l>
+<l>            concat_obj(selected,lineasRigth,lineasRigth)</l>
+<l>        endif</l>
+<c>  </c>
+<c>    </c>
+<l>endfor</l>
+<c></c>
+<l>Fit_lines_X (lineasleft, RowBeginverL, RowEndverL, ColBeginverL, ColEndverL)</l>
+<l>Fit_lines_X (lineasRigth, RowBeginverR, RowEndverR, ColBeginverR, ColEndverR)</l>
+<c></c>
+<l>gen_region_line(LeftLine, RowBeginverL, ColBeginverL, RowEndverL, ColEndverL)</l>
+<l>gen_region_line(RightLine, RowBeginverR, ColBeginverR, RowEndverR, ColEndverR)</l>
+<c></c>
+<c>***************************************</c>
+<c></c>
+<l>tuple_rad(90,Phi)</l>
+<l>select_contours_xld (RegressContours, SelectedContourshor, 'direction', Phi + pi / 2 - Eps, Phi + pi / 2 + Eps, -0.5, 0.5)</l>
+<l>select_contours_xld (SelectedContourshor, SelectedContoursFinalhor, 'length', 2, 200000, -0.5, 0.5)</l>
+<l>union_straight_contours_xld (SelectedContoursFinalhor, UnionContourshor, 60, 0.2, 50, 'noparallel', 'maximum')</l>
+<c></c>
+<l>count_obj(UnionContourshor, numerolineashorizontales)</l>
+<l>for Index:= 1 to numerolineashorizontales by 1</l>
+<l>    select_obj(UnionContourshor,selected, Index)</l>
+<l>    distance_lc(selected,Row11,Column11,Row11,Column21,DistanceMinUp, DistanceMax1R)</l>
+<l>    distance_lc(selected,Row21,Column11,Row21,Column21,DistanceMinDown, DistanceMax1R)</l>
+<l>    orientation_xld (selected, Phi1)</l>
+<l>     tuple_deg(Phi1,anglediff)</l>
+<l>    tuple_abs(anglediff,anglediff)</l>
+<l>    anglediff := 0 - anglediff</l>
+<l>    tuple_abs(anglediff,anglediff)</l>
+<c>   </c>
+<l>        if(DistanceMinUp &lt; DistanceMinDown)</l>
+<l>            concat_obj(selected, lineasUp,lineasUp)</l>
+<l>        else</l>
+<l>            concat_obj(selected,lineasDown,lineasDown)</l>
+<l>        endif</l>
+<c>  </c>
+<c>    </c>
+<l>endfor</l>
+<c></c>
+<c></c>
+<c></c>
+<l>Fit_lines_Y (lineasUp, RowBeginhorU, RowEndhorU, ColBeginhorU, ColEndhorU)</l>
+<l>Fit_lines_Y (lineasDown, RowBeginhorD, RowEndhorD, ColBeginhorD, ColEndhorD)</l>
+<c></c>
+<l>gen_region_line(UpLine, RowBeginhorU, ColBeginhorU, RowEndhorU, ColEndhorU)</l>
+<l>gen_region_line(DownLine, RowBeginhorD, ColBeginhorD, RowEndhorD, ColEndhorD)</l>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<l>RowBeg1 := RowBeginverL</l>
+<l>ColBeg1 := ColBeginverL</l>
+<l>RowEnd1 := RowEndverL</l>
+<l>ColEnd1 := ColEndverL</l>
+<l>RowBeg3 := RowBeginverR</l>
+<l>ColBeg3 := ColBeginverR</l>
+<l>RowEnd3 := RowEndverR</l>
+<l>ColEnd3 := ColEndverR</l>
+<c></c>
+<l>RowBeg2 := RowBeginhorU</l>
+<l>ColBeg2 := ColBeginhorU</l>
+<l>RowEnd2 := RowEndhorU</l>
+<l>ColEnd2 := ColEndhorU</l>
+<l>RowBeg4 := RowBeginhorD</l>
+<l>ColBeg4 := ColBeginhorD</l>
+<l>RowEnd4 := RowEndhorD</l>
+<l>ColEnd4 := ColEndhorD</l>
+<c></c>
+<c>*UL</c>
+<l>intersection_lines (RowBeg1, ColBeg1, RowEnd1, ColEnd1,RowBeg2, ColBeg2, RowEnd2, ColEnd2 , Row1, Column1, IsOverlapping)</l>
+<c></c>
+<c>*UR</c>
+<l>intersection_lines (RowBeg2, ColBeg2, RowEnd2, ColEnd2,RowBeg3, ColBeg3, RowEnd3, ColEnd3 , Row2, Column2, IsOverlapping)</l>
+<c></c>
+<c>*DR</c>
+<l>intersection_lines (RowBeg3, ColBeg3, RowEnd3, ColEnd3,RowBeg4, ColBeg4, RowEnd4, ColEnd4 , Row3, Column3, IsOverlapping)</l>
+<c></c>
+<c>*DL</c>
+<l>intersection_lines (RowBeg4, ColBeg4, RowEnd4, ColEnd4,RowBeg1, ColBeg1, RowEnd1, ColEnd1 , Row4, Column4, IsOverlapping)</l>
+<c></c>
+<c></c>
+<c></c>
+<l>Rowf := [Row2,Row3,Row4,Row1]</l>
+<l>Columnf := [Column2,Column3,Column4,Column1]</l>
+<l>smallest_rectangle1(Macbeth,Row11rec, Column11rec, Row21rec, Column21rec)</l>
+<l>gen_rectangle1(RegUL,Row11rec,Column11rec,Row11rec,Column11rec)</l>
+<l>gen_rectangle1(RegUR,Row11rec,Column21rec,Row11rec,Column21rec)</l>
+<l>gen_rectangle1(RegDL,Row21rec,Column11rec,Row21rec,Column11rec)</l>
+<l>gen_rectangle1(RegDR,Row21rec,Column21rec,Row21rec,Column21rec)</l>
+<c></c>
+<l>distance_pr(RegUL,Rowf,Columnf,DistanceMinUL, DistanceMax)</l>
+<l>distance_pr(RegUR,Rowf,Columnf,DistanceMinUR, DistanceMax)</l>
+<l>distance_pr(RegDL,Rowf,Columnf,DistanceMinDL, DistanceMax)</l>
+<l>distance_pr(RegDR,Rowf,Columnf,DistanceMinDR, DistanceMax)</l>
+<c></c>
+<l>tuple_sort_index(DistanceMinUL,IndicesUL)</l>
+<l>tuple_sort_index(DistanceMinUR,IndicesUR)</l>
+<l>tuple_sort_index(DistanceMinDL,IndicesDL)</l>
+<l>tuple_sort_index(DistanceMinDR,IndicesDR)</l>
+<c></c>
+<l>* dev_get_window(handle)</l>
+<c></c>
+<l>* Rows := [Rowf[IndicesUR[0]],Rowf[IndicesDR[0]],Rowf[IndicesDL[0]],Rowf[IndicesUL[0]]]</l>
+<l>* Columms := [Columnf[IndicesUR[0]],Columnf[IndicesDR[0]],Columnf[IndicesDL[0]],Columnf[IndicesUL[0]]]</l>
+<c></c>
+<l>Rows := [Row2,Row3,Row4,Row1]</l>
+<l>Columms := [Column2,Column3,Column4,Column1]</l>
+<c></c>
+<c>*ordeno los vertices desde el mas cercano al 00 </c>
+<l>* tuple_sort_index(Distances,Indices)</l>
+<c></c>
+<l>* dev_get_window(handle)</l>
+<l>* dev_display(Macbeth)</l>
+<l>* dev_set_color('red')</l>
+<l>* disp_cross(handle,Rows[0],Columms[0],12,0)</l>
+<l>* dev_set_color('green')</l>
+<l>* disp_cross(handle,Rows[1],Columms[1],12,0)</l>
+<l>* dev_set_color('blue')</l>
+<l>* disp_cross(handle,Rows[2],Columms[2],12,0)</l>
+<l>* dev_set_color('pink')</l>
+<l>* disp_cross(handle,Rows[3],Columms[3],12,0)</l>
+<c></c>
+<c></c>
+<l>return ()</l>
+<c></c>
+</body>
+<docu id="Macbeth_corner_detector_lineas">
+<parameters>
+<parameter id="Columms"/>
+<parameter id="Macbeth"/>
+<parameter id="Rows"/>
+<parameter id="height"/>
+<parameter id="width"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

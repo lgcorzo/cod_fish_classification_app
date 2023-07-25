@@ -1,0 +1,1 @@
+Los ficheros de configuracion de las camaras son para sotware triger y sincronizadas las dos camaras

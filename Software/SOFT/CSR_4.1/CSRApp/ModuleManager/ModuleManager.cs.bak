@@ -1,0 +1,231 @@
+﻿using System;
+using System.Linq;
+using System.Collections.Generic;
+
+
+namespace CSRApp.modules
+{
+    public class ModuleManager : CSRAppComponent
+    {
+        ///////////////////////////////////////////////////////////
+        private config.AppConfig appConfig;
+        private Dictionary<string, string> available_module_names;
+        private Dictionary<string, csr.modules.CSRModule> available_local_modules;
+
+        private int count;
+
+        ///////////////////////////////////////////////////////////
+        public ModuleManager(config.AppConfig _config) : base ("ModuleManager")
+        {
+            appConfig = _config;
+            count = appConfig.Modules.Count;
+        }
+
+        ///////////////////////////////////////////////////////////
+        public bool LoadModules()
+        {
+            bool errors_found = false;
+            // Load modules
+            available_module_names = new Dictionary<string, string>();
+            available_local_modules = new Dictionary<string, csr.modules.CSRModule>();
+
+            int ind = 0;
+            foreach (KeyValuePair<string, config.ModuleInfo> kvp in appConfig.Modules)
+            {
+                if (kvp.Key != kvp.Value.Id)
+                    Error("Fichero de configuración mal configurado. El campo <a:Key> debe de ser igual que su identificador.", true);
+
+                ind++;
+
+                if (!available_module_names.ContainsKey(kvp.Key))
+                {
+                    CSRCarga.Status = "Loading " + kvp.Value.Name + " module";
+                    Log("Loading " + kvp.Value.Name + " module.");
+                    available_module_names.Add(kvp.Key, kvp.Value.Name);
+
+                    //Load Local module
+                    if (kvp.Value is config.ModuleInfoLocal)
+                    {
+                        AssemblyInfo assembly_info = new AssemblyInfo(kvp.Key, ((config.ModuleInfoLocal)kvp.Value).Filename);
+                        Assembly<csr.modules.CSRModule> assembly = new Assembly<csr.modules.CSRModule>(assembly_info);
+                        if (!assembly.Load())
+                        {
+                            Error(String.Format("No se ha podido cargar el modulo \"{0}\"!\nCompruebe que la ruta a la librería es correcta y que contiene algún tipo de módulo CSRModule o derivado.", kvp.Key), true);
+                            errors_found = true;
+                        }
+                        else
+                        {
+                            try
+                            {
+                                //Create instance of the module and fill it.
+                                available_local_modules.Add(kvp.Key, assembly.CreateInstance(new object[] { kvp.Key }));
+                                available_local_modules[kvp.Key].Name = kvp.Value.Name;
+
+                                Log("Módulo " + kvp.Value.Name + " cargado correctamente.");
+                            }
+                            catch (Exception e)
+                            {
+                                Error(String.Format("No se ha podido cargar el modulo \"{0}\"!\nCompruebe que no hay errores en su constructor.\nExceptionMessage:{1}\nInnerMessage:{2}", kvp.Key, e.Message, e.InnerException), true);
+                                errors_found = true;
+                            }
+                        }
+                    }
+
+                    else if (kvp.Value is config.ModuleInfoRemote)
+                    {
+                        new NotImplementedException("Servicio aún no disponible");
+                    }
+
+                    #region ExecutionTime
+                    if (available_local_modules.ContainsKey(kvp.Key) && Convert.ToBoolean(config.global.GlobalConfigManager.GetParameter("Debug")))
+                        WriteExecutionTime("Módulo " + kvp.Value.Name + " cargado.");
+                    #endregion
+
+                    CSRCarga.Progress = Convert.ToInt32((((float)ind) / ((float)count)) * 50);
+                }
+                else
+                    Error("Hay 2 módulos del CSR con el identificador " + kvp.Key, true);
+            }
+
+            // Set Names to modules
+            //SetModuleNames();
+
+            return !errors_found;
+        }
+
+        ///////////////////////////////////////////////////////////
+        public bool InitModules(System.Drawing.Size size)
+        {
+            bool errors_found = false;
+            int ind = 0;
+            foreach (csr.modules.CSRModule module in available_local_modules.Values)
+            {
+                try
+                {
+                    ind++;
+                    CSRCarga.Status = "Initializing " + module.Id + " module";
+                    Log("Initializing " + module.Id + " module");
+                    if (module is csr.modules.CSRFormModule)
+                    {
+                        if (!(module as csr.modules.CSRFormModule).Init())
+                        {
+                            errors_found = true;
+                            throw new Exception("FormModule init exception");
+                        }
+                    }
+                    else if (module is csr.modules.CSRBackgroundModule)
+                    {
+                        if (!(module as csr.modules.CSRBackgroundModule).Init())
+                        {
+                            errors_found = true;
+                            throw new Exception("BackgroundModule init exception");
+                        }
+                    }
+                    else
+                    {
+                        if (!module.Init())
+                        {
+                            errors_found = true;
+                            throw new Exception("Module init exception");
+                        }
+                    }
+
+                    #region ExecutionTime
+                    if (Convert.ToBoolean(module.GetGlobalParameter("Debug")))
+                        WriteExecutionTime("Módulo " + module.Name + " inizializado.");
+                    #endregion
+
+                    ConsoleWrite("Módulo " + module.Name + " cargado correctamente.", true);
+
+                    CSRCarga.Progress = 50 + Convert.ToInt32((((float)ind) / ((float)count)) * 50);
+                } 
+                catch(Exception e)
+                {
+                    Error(String.Format("Ocurrió un error durante la inicialización del módulo \"{0}\".\n{1}", module.Id,e.ToString()), true);
+                }
+            }
+            return !errors_found;
+        }
+
+        ///////////////////////////////////////////////////////////
+        public bool DestroyModules()
+        {
+            bool errors_found = false;
+            foreach (csr.modules.CSRModule module in available_local_modules.Values)
+                module.Status = csr.modules.CSRModuleStatus.Closing;
+            foreach (csr.modules.CSRModule module in available_local_modules.Values)
+            {
+                try
+                {
+                    if (module is csr.modules.CSRFormModule)
+                    {
+                        if (!(module as csr.modules.CSRFormModule).Destroy())
+                        {
+                            errors_found = true;
+                            Error("El módulo " + module.Name + " no se ha podido cerrar correctamente.", true);
+                        }
+                        else
+                            Log("El módulo " + module.Name + " se ha cerrado correctamente.");
+                    }
+                    else if (module is csr.modules.CSRBackgroundModule)
+                    {
+                        if (!(module as csr.modules.CSRBackgroundModule).Destroy())
+                        {
+                            errors_found = true;
+                            Error("El módulo " + module.Name + " no se ha podido cerrar correctamente.", true);
+                        }
+                        else
+                            Log("El módulo " + module.Name + " se ha cerrado correctamente.");
+                    }
+                    else
+                    {
+                        if (!module.Destroy())
+                        {
+                            errors_found = true;
+                            Error("El módulo " + module.Name + " no se ha podido cerrar correctamente.", true);
+                        }
+                        else
+                            Log("El módulo " + module.Name + " se ha cerrado correctamente.");
+                    }
+
+                    #region ExecutionTime
+                    if (Convert.ToBoolean(module.GetGlobalParameter("Debug")))
+                        WriteExecutionTime("Módulo " + module.Name + " cerrado.");
+                    #endregion
+                }
+                catch (Exception e)
+                {
+                    Error(String.Format("Ocurrió un error durante la destrucción del módulo \"{0}\".\n{1}", module.Id, e.ToString()), true);
+                }
+            }
+            return !errors_found;
+        }
+
+        ///////////////////////////////////////////////////////////
+        public void AppendDelegates(csr.modules.CSRModuleDelegates module_delegates) 
+        {
+            foreach (csr.modules.CSRModule local_module in available_local_modules.Values)
+                local_module.AppendDelegates(module_delegates);
+        }
+
+        ///////////////////////////////////////////////////////////
+        public Dictionary<string,string> GetAvailableModuleNames()
+        {
+            return available_module_names;
+        }
+
+        ///////////////////////////////////////////////////////////
+        public Dictionary<string, csr.modules.CSRModule> GetLocalModules()
+        {
+            return available_local_modules;
+        }
+
+        ///////////////////////////////////////////////////////////
+        private void SetModuleNames()
+        {
+            foreach (string module_id in available_local_modules.Keys) { }
+                
+        }
+        ///////////////////////////////////////////////////////////
+    }
+}

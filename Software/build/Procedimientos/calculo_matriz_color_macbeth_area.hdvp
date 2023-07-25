@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.1">
+<procedure name="calculo_matriz_color_macbeth_area">
+<interface>
+<io>
+<par name="Image" base_type="iconic" dimension="0"/>
+<par name="RegionIn" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="Regions4" base_type="iconic" dimension="0"/>
+<par name="Image4" base_type="iconic" dimension="0"/>
+</oo>
+<ic>
+<par name="Dimrealx" base_type="ctrl" dimension="0"/>
+<par name="Dimrealy" base_type="ctrl" dimension="0"/>
+</ic>
+<oc>
+<par name="MatrixTransLCam4" base_type="ctrl" dimension="0"/>
+<par name="ScaleX2" base_type="ctrl" dimension="0"/>
+<par name="ScaleY2" base_type="ctrl" dimension="0"/>
+</oc>
+</interface>
+<body>
+<l>ImageOut := Image</l>
+<l>ImageOrg := Image</l>
+<l>Widthtest := 800</l>
+<l>Heightest := 400</l>
+<l>reduce_domain(ImageOut,RegionIn,ImageOut)</l>
+<l>get_domain(ImageOut,RegionMacbeth)</l>
+<l>decompose3(ImageOut,R,G,B)</l>
+<l>median_image(R, ImageMedian, 'circle', 5, 'mirrored')</l>
+<l>min_max_gray(RegionIn, ImageMedian ,0, Min, Max, Range)</l>
+<l>scale_image (ImageMedian, Rmax, 255 / Range, -Min * 255 / Range)</l>
+<l>threshold(Rmax,Regionmacbeth, 100,255)</l>
+<l>get_image_size (ImageOut, width, height)</l>
+<l>select_shape_std(Regionmacbeth, SelectedRegionMax, 'max_area', 100)</l>
+<l>fill_up(SelectedRegionMax,SelectedRegionMaxfill)</l>
+<l>difference(SelectedRegionMaxfill,SelectedRegionMax, macbeth)</l>
+<l>connection(macbeth,macbeth)</l>
+<l>select_shape_std(macbeth, macbeth, 'max_area', 100)</l>
+<l>shape_trans(macbeth, macbeth, 'convex')</l>
+<l>Macbeth_corner_detector_lineas (macbeth, width, height, Rows, Columms)</l>
+<l>Macbeth_color_matrix_calc (ImageOut, macbeth4, Heightest, Widthtest, Rows, Columms, Dimrealx, Dimrealy, MatrixTransLCam4, ScaleX2, ScaleY2)</l>
+<l>image_test := macbeth4</l>
+<l>get_full_matrix(MatrixTransLCam4,Values)</l>
+<l>linear_trans_color(image_test,ImageTrans, Values)</l>
+<l>convert_image_type (ImageTrans, Image4, 'byte')</l>
+<l>return ()</l>
+</body>
+<docu id="calculo_matriz_color_macbeth_area">
+<parameters>
+<parameter id="Dimrealx"/>
+<parameter id="Dimrealy"/>
+<parameter id="Image"/>
+<parameter id="Image4"/>
+<parameter id="MatrixTransLCam4"/>
+<parameter id="RegionIn"/>
+<parameter id="Regions4"/>
+<parameter id="ScaleX2"/>
+<parameter id="ScaleY2"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<ParamConf xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Area_min_pix>5000</Area_min_pix>
+  <Area_min_fish>100</Area_min_fish>
+  <ROI1_Row1>260</ROI1_Row1>
+  <ROI1_Row2>1090</ROI1_Row2>
+  <ROI1_Col1>151</ROI1_Col1>
+  <ROI1_Col2>782</ROI1_Col2>
+  <ROI2_Row1>260</ROI2_Row1>
+  <ROI2_Row2>1090</ROI2_Row2>
+  <ROI2_Col1>179</ROI2_Col1>
+  <ROI2_Col2>836</ROI2_Col2>
+  <Angle_belt>0</Angle_belt>
+  <Image_scale_fr>0.5</Image_scale_fr>
+   <Rotation_camera>90</Rotation_camera>
+  <X_Scale>1.143</X_Scale>
+  <Y_Scale>1.143</Y_Scale>
+  <X_Scale_W>1</X_Scale_W>
+  <Y_Scale_W>1</Y_Scale_W>
+  <X_Scale_pix_cm>1</X_Scale_pix_cm>
+  <Y_Scale_pix_cm>1</Y_Scale_pix_cm> 
+  <RGB_name>000cdf0802b8_JAILtdJapan_AD130GE0</RGB_name>
+  <NIR_name>000cdf0812b8_JAILtdJapan_AD130GE1</NIR_name>
+  <Line_ID>0</Line_ID>
+  <Sync>false</Sync>
+  <Mosaick_desp_y>300</Mosaick_desp_y>
+  <Mosaick_desp_x>0</Mosaick_desp_x>  
+  <Mosaick_Correl_activ>0</Mosaick_Correl_activ> 
+  <Save_image_vision>0</Save_image_vision> 
+  <exposure1_RGB>239</exposure1_RGB> 
+  <exposure2_RGB>92</exposure2_RGB> 
+  <exposure1_NIR>216</exposure1_NIR> 
+  <exposure2_NIR>216</exposure2_NIR> 
+  <Save_images_step>1</Save_images_step> 
+ </ParamConf>
+  

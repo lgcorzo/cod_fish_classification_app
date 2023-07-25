@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<RDPComConf xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Comunication_Params_server>
+    <_ipAddress>192.168.11.80</_ipAddress>
+    <_port>8010</_port>
+    <_username>Roboconcept</_username>
+    <_password>R7D-t=KM</_password>
+  </Comunication_Params_server>
+  <Comunication_Params_server>
+    <_ipAddress>192.168.12.80</_ipAddress>
+    <_port>8010</_port>
+    <_username>Roboconcept</_username>
+    <_password>R7D-t=KM</_password>
+  </Comunication_Params_server>
+</RDPComConf>

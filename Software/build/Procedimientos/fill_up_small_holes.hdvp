@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.1">
+<procedure name="fill_up_small_holes">
+<interface>
+<io>
+<par name="Region" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="RegionFilled" base_type="iconic" dimension="0"/>
+</oo>
+<ic>
+<par name="MaxArea" base_type="ctrl" dimension="0"/>
+</ic>
+</interface>
+<body>
+<l>fill_up (Region, RegionFillUp)</l>
+<l>difference (RegionFillUp, Region, RegionDifference)</l>
+<l>connection (RegionDifference, ConnectedRegions)</l>
+<l>select_shape (ConnectedRegions, SelectedRegions, 'area', 'and', 0, MaxArea)</l>
+<l>union2 (Region, SelectedRegions, RegionFilled)</l>
+<l>return ()</l>
+</body>
+<docu id="fill_up_small_holes">
+<parameters>
+<parameter id="MaxArea"/>
+<parameter id="Region"/>
+<parameter id="RegionFilled"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.1">
+<procedure name="Image_calibration">
+<interface>
+<io>
+<par name="SortedRegions" base_type="iconic" dimension="0"/>
+<par name="Image_in" base_type="iconic" dimension="0"/>
+<par name="Domain_region" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="TiledImage" base_type="iconic" dimension="0"/>
+</oo>
+<ic>
+<par name="Width_desired_region" base_type="ctrl" dimension="0"/>
+</ic>
+</interface>
+<body>
+<c>*reescalo cado uno de las regiones a un tamaño fijo</c>
+<c></c>
+<c>*array de images para el reescalado.</c>
+<l>gen_empty_obj(ImagenRegions)</l>
+<l>full_domain(Image_in,Image_in)</l>
+<l>get_domain(Image_in,Domain)</l>
+<l>count_obj (SortedRegions, NumRegions)</l>
+<c></c>
+<l>for i := 1 to NumRegions by 1</l>
+<l>    select_obj(SortedRegions,SelectedRegion,i)</l>
+<l>    intersection(Domain,SelectedRegion,SelectedRegion)</l>
+<l>    reduce_domain(Image_in,SelectedRegion,ImageReduced)</l>
+<l>    area_center (SelectedRegion, Area, Row, Column)</l>
+<l>    if(Area == 0)</l>
+<l>        break</l>
+<l>    endif</l>
+<l>    crop_domain(ImageReduced,ImageReduced)</l>
+<l>    get_image_size(ImageReduced,width,height)</l>
+<c>    *reescalado de la imagen para recuperar la perspectiva</c>
+<l>    zoom_image_size(ImageReduced,ImageZoom, Width_desired_region,height,'bilinear')</l>
+<l>    concat_obj(ImagenRegions,ImageZoom,ImagenRegions) </l>
+<l>endfor</l>
+<l>widthFinal := Width_desired_region*i</l>
+<l>tile_images(ImagenRegions, TiledImage, NumRegions, 'horizontal')</l>
+<l>gen_rectangle1(finalreg,0,0,height,widthFinal-1)</l>
+<l>reduce_domain(TiledImage,finalreg,TiledImage)</l>
+<l>crop_domain(TiledImage,TiledImage)</l>
+<l>*dev_clear_obj(ImagenRegions)</l>
+<l>return ()</l>
+</body>
+<docu id="Image_calibration">
+<parameters>
+<parameter id="Domain_region"/>
+<parameter id="Image_in"/>
+<parameter id="SortedRegions"/>
+<parameter id="TiledImage"/>
+<parameter id="Width_desired_region"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

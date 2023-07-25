@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.1">
+<procedure name="Correccion_individual">
+<interface>
+<io>
+<par name="Image" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="Imageresultado" base_type="iconic" dimension="0"/>
+</oo>
+<oc>
+<par name="Texto_salida" base_type="ctrl" dimension="0"/>
+</oc>
+</interface>
+<body>
+<l>Widthtest := 800</l>
+<l>Heightest := 400</l>
+<l>count_channels(Image,counchannels)</l>
+<l>get_domain(Image,region)</l>
+<l>Imageresultado := Image</l>
+<l>if (counchannels == 1)</l>
+<l>    Difuminado_rapido_gauss (Image, region, ImagenFiltrada, 5, 3)</l>
+<l>    div_image(Image,ImagenFiltrada,Imageresultado,124,0)</l>
+<l>endif</l>
+<c></c>
+<c></c>
+<l>Texto_salida := 'ok'</l>
+<l>return () </l>
+</body>
+<docu id="Correccion_individual">
+<parameters>
+<parameter id="Image"/>
+<parameter id="Imageresultado"/>
+<parameter id="Texto_salida"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

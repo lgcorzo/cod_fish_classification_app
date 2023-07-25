@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.1">
+<procedure name="Macbeth_corner_detector">
+<interface>
+<io>
+<par name="Macbeth" base_type="iconic" dimension="0"/>
+</io>
+<ic>
+<par name="width" base_type="ctrl" dimension="0"/>
+<par name="height" base_type="ctrl" dimension="0"/>
+</ic>
+<oc>
+<par name="Rows" base_type="ctrl" dimension="0"/>
+<par name="Columms" base_type="ctrl" dimension="0"/>
+</oc>
+</interface>
+<body>
+<c></c>
+<c>*calcula la matriz de correccion</c>
+<l>* boundary(Macbeth,RegionBorder, 'outer')</l>
+<c></c>
+<c>*convertir el boundary a un contorno</c>
+<l>* gen_contour_region_xld (RegionBorder, Contours, 'border')</l>
+<l>* segment_contours_xld (Contours, ContoursSplit, 'lines_circles', 6, 4, 4)</l>
+<c>*ordeno los contornos de </c>
+<c>*linea1</c>
+<l>* select_obj(ContoursSplit,line1,1)</l>
+<l>* fit_line_contour_xld (line1, 'tukey', -1, 0, 10, 2, RowBegHor1, ColBegHor1, RowEndHor1, ColEndHor1, NrHor1, NcHor1, DistHor1)</l>
+<c>*linea4</c>
+<l>* select_obj(ContoursSplit,line4,4)</l>
+<l>* fit_line_contour_xld (line4, 'tukey', -1, 0, 10, 2, RowBegHor4, ColBegHor4, RowEndHor4, ColEndHor4, NrHor4, NcHor4, DistHor4)</l>
+<c>* After we have sorted the sides, we can intersect the appropriate sidessort_region</c>
+<c>*linea2</c>
+<l>* select_obj(ContoursSplit,line2,2)</l>
+<l>* fit_line_contour_xld (line2, 'tukey', -1, 0, 10, 2, RowBegHor2, ColBegHor2, RowEndHor2, ColEndHor2, NrHor2, NcHor2, DistHor2)</l>
+<c>*linea3</c>
+<l>* select_obj(ContoursSplit,line3,3)</l>
+<l>* fit_line_contour_xld (line3, 'tukey', -1, 0, 10, 2, RowBegHor3, ColBegHor3, RowEndHor3, ColEndHor3, NrHor3, NcHor3, DistHor3)</l>
+<c></c>
+<c></c>
+<c></c>
+<c>*UL</c>
+<l>* intersection_lines (RowBegHor1, ColBegHor1, RowEndHor1, ColEndHor1,RowBegHor2, ColBegHor2, RowEndHor2, ColEndHor2 , Row1, Column1, IsOverlapping)</l>
+<c>*UR</c>
+<l>* intersection_lines (RowBegHor2, ColBegHor2, RowEndHor2, ColEndHor2,RowBegHor3, ColBegHor3, RowEndHor3, ColEndHor3 , Row2, Column2, IsOverlapping)</l>
+<c>*LL</c>
+<l>* intersection_lines (RowBegHor3, ColBegHor3, RowEndHor3, ColEndHor4,RowBegHor4, ColBegHor4, RowEndHor4, ColEndHor4 , Row3, Column3, IsOverlapping)</l>
+<c>*LR</c>
+<l>* intersection_lines (RowBegHor4, ColBegHor4, RowEndHor4, ColEndHor4,RowBegHor1, ColBegHor1, RowEndHor1, ColEndHor1 , Row4, Column4, IsOverlapping)</l>
+<c></c>
+<l>* distance_pp(0, 0, Row1, Column1, Distance1)</l>
+<l>* distance_pp(0, 0, Row2, Column2, Distance2)</l>
+<l>* distance_pp(0, 0, Row3, Column4, Distance3)</l>
+<l>* distance_pp(0, 0, Row4, Column4, Distance4)</l>
+<l>* Row := [Row1,Row2,Row3,Row4]</l>
+<l>* Columm := [Column1,Column2,Column3,Column4]</l>
+<l>* Distances := [Distance1,Distance2,Distance3,Distance4]</l>
+<c>*ordeno los vertices desde el mas cercano al 00 </c>
+<l>* tuple_sort_index(Distances,Indices)</l>
+<c></c>
+<l>* if (Indices[0] == 0)</l>
+<l>* Rows := [Row1,Row2,Row3,Row4]</l>
+<l>* Columms := [Column1,Column2,Column3,Column4]</l>
+<l>* endif</l>
+<c></c>
+<l>* if (Indices[0] == 1)</l>
+<l>* Rows := [Row2,Row3,Row4,Row1]</l>
+<l>* Columms := [Column2,Column3,Column4,Column1]</l>
+<l>* endif</l>
+<c></c>
+<l>* if (Indices[0] == 2)</l>
+<l>* Rows := [Row3,Row4,Row1,Row2]</l>
+<l>* Columms := [Column3,Column4,Column1,Column2]</l>
+<l>* endif</l>
+<c></c>
+<l>* if (Indices[0] == 3)</l>
+<l>* Rows := [Row4,Row1,Row2,Row3]</l>
+<l>* Columms := [Column4,Column1,Column2,Column3]</l>
+<l>* endif</l>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<c>**para calcular los vertices miro distancias respecto al cuadrado inscrito</c>
+<l>smallest_rectangle1 (Macbeth, Row11, Column11, Row21, Column21)</l>
+<c>*divido en cuatro regiones mas pequeñas</c>
+<c></c>
+<l>gen_rectangle1(regionLU,Row11, Column11,Row11  + (Row21 - Row11)/4,Column11 + (Column21 - Column11)/4)</l>
+<l>gen_rectangle1(regionRU,Row11, Column21 - (Column21 - Column11)/4, Row11  + (Row21 - Row11)/4, Column21)</l>
+<l>gen_rectangle1(regionLD,Row21 - (Row21 - Row11)/4, Column11,Row21,Column11 + (Column21 - Column11)/4)</l>
+<l>gen_rectangle1(regionRD,Row21 - (Row21 - Row11)/4, Column21 - (Column21 - Column11)/4, Row21, Column21)</l>
+<c></c>
+<l>rowcenter := Row11 + (Row21 - Row11)/2</l>
+<l>colummcenter := Column11 + (Column21 - Column11)/2</l>
+<l>gen_rectangle1(regionCenter, rowcenter, colummcenter, rowcenter+1, colummcenter+1)</l>
+<c></c>
+<c>*detecto las esquinas del cuadarado</c>
+<l>gen_rectangle1(regionUL, Row11, Column11, Row11+1, Column11+1)</l>
+<l>distance_rr_min(Macbeth,regionUL,MinDistance, Row1, Column1, Row22, Column22)</l>
+<c></c>
+<l>gen_rectangle1(regionUR,Row11, Column21, Row11+1, Column21+1)</l>
+<l>distance_rr_min(Macbeth,regionUR,MinDistance, Row2, Column2, Row22, Column22)</l>
+<c></c>
+<l>gen_rectangle1(regionDR,Row21, Column21, Row21+1, Column21+1)</l>
+<l>distance_rr_min(Macbeth,regionDR,MinDistance, Row3, Column3, Row22, Column22)</l>
+<c></c>
+<l>gen_rectangle1(regionDL,Row21, Column11, Row21+1, Column11+1)</l>
+<l>distance_rr_min(Macbeth,regionDL,MinDistance, Row4, Column4, Row22, Column22)</l>
+<c>*reordeno para que las equinas tengan el orden necesaio de laa macbeth</c>
+<c></c>
+<c></c>
+<l>Rows := [Row2,Row3,Row4,Row1]</l>
+<l>Columms := [Column2,Column3,Column4,Column1]</l>
+<c></c>
+<l>*dev_get_window(handle)</l>
+<l>*dev_display(Macbeth)</l>
+<l>*dev_set_color('red')</l>
+<l>* disp_cross(handle,Rows,Columms,12,0)</l>
+<c></c>
+<l>return ()</l>
+</body>
+<docu id="Macbeth_corner_detector">
+<parameters>
+<parameter id="Columms"/>
+<parameter id="Macbeth"/>
+<parameter id="Rows"/>
+<parameter id="height"/>
+<parameter id="width"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

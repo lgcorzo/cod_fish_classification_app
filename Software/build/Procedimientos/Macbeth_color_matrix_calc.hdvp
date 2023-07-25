@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.1">
+<procedure name="Macbeth_color_matrix_calc">
+<interface>
+<io>
+<par name="ImageWorking" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="macbeth" base_type="iconic" dimension="0"/>
+</oo>
+<ic>
+<par name="Heightest" base_type="ctrl" dimension="0"/>
+<par name="Widthtest" base_type="ctrl" dimension="0"/>
+<par name="Rows" base_type="ctrl" dimension="0"/>
+<par name="Columms" base_type="ctrl" dimension="0"/>
+<par name="Dimrealx" base_type="ctrl" dimension="0"/>
+<par name="Dimrealy" base_type="ctrl" dimension="0"/>
+</ic>
+<oc>
+<par name="MatrixTrans" base_type="ctrl" dimension="0"/>
+<par name="ScaleX" base_type="ctrl" dimension="0"/>
+<par name="ScaleY" base_type="ctrl" dimension="0"/>
+</oc>
+</interface>
+<body>
+<l>RowFinal := [0,0,Heightest,Heightest ]</l>
+<l>Colfinal :=[0,Widthtest,Widthtest,0]</l>
+<l>count_channels(ImageWorking,Channels)</l>
+<l>full_domain(ImageWorking, ImageFull)</l>
+<l>if(Channels == 4)</l>
+<l>    decompose4(ImageFull,R,G,B,NIR)</l>
+<l>else</l>
+<l>     decompose3(ImageFull,R,G,B)</l>
+<l>endif</l>
+<c></c>
+<l>compose3(R,G,B,RGB)</l>
+<c>*calcula las escala X e Y</c>
+<c>*800</c>
+<l>distance_pp(Rows[0],Columms[0],Rows[1],Columms[1], distancia1)</l>
+<l>angle_lx(Rows[0],Columms[0],Rows[1],Columms[1], angle1)</l>
+<c>*400</c>
+<l>distance_pp(Rows[0],Columms[0],Rows[3],Columms[3], distancia2)</l>
+<l>angle_lx(Rows[0],Columms[0],Rows[3],Columms[3], angle2)</l>
+<c></c>
+<l>tuple_sin(angle1,sinamgle1)</l>
+<l>tuple_cos(angle2,cosamgle2)</l>
+<c></c>
+<l>tuple_abs((distancia1/Dimrealy)*sinamgle1,ScaleY)</l>
+<l>tuple_abs((distancia2/Dimrealx)*cosamgle2,ScaleX)</l>
+<c></c>
+<l>* dev_display(RGB)</l>
+<l>* dev_set_color('red')</l>
+<l> gen_cross_contour_xld(redcross,Rows[0], Columms[0], 6, 0.785398)</l>
+<l>* dev_set_color('green')</l>
+<l> gen_cross_contour_xld(greencross,Rows[1], Columms[1], 6, 0.785398)</l>
+<l>* dev_set_color('yellow')</l>
+<l> gen_cross_contour_xld(yellowcross,Rows[3], Columms[3], 6, 0.785398)</l>
+<l>* dev_set_color('pink')</l>
+<l> gen_cross_contour_xld(pinkcross,Rows[2], Columms[2], 6, 0.785398)</l>
+<l>* dev_display(pinkcross)</l>
+<l>* stop()</l>
+<c>*corta la imagen por el rectangulo calulado</c>
+<c>* Now we can determine a projective transformation that will map our extracted</c>
+<c>* quadrilateral to a rectangle of given dimensions.  Note that we have to</c>
+<c>* add 0.5 to the coordinates to make the extracted pixel positions fit the</c>
+<c>* coordinate system that is used by perspective_trans_image.</c>
+<l>vector_to_proj_hom_mat2d (Rows + 0.5, Columms + 0.5, RowFinal + 0.5, Colfinal + 0.5, 'normalized_dlt', [], [], [], [], [], [], HomMat2D, Covariance)</l>
+<c>* Now we can map the image and the quadrilateral.</c>
+<l>projective_trans_image_size (RGB, ImageMacbeth, HomMat2D, 'bilinear',Widthtest ,  Heightest, 'false')</l>
+<c>*genero los 24 rois para el calculo de la matriz</c>
+<l>pattern_width := (Widthtest)/6 </l>
+<l>pattern_Heigh := (Heightest)/4 </l>
+<l>gen_rectangle1(ROI,0,0,Heightest,Widthtest)</l>
+<l>partition_rectangle (ROI, Partitioned, pattern_width,pattern_Heigh)</l>
+<l>erosion_circle(Partitioned,Partitioned,40)</l>
+<c>*calcula la media de cada ROI para pasarlo al calculo de la matriz de transformacion de color</c>
+<l>* dev_clear_window()</l>
+<l>* dev_display(ImageMacbeth)</l>
+<l>* gen_contour_region_xld(Partitioned,Contours, 'border')</l>
+<l>* dev_display(Contours)</l>
+<l>* stop()</l>
+<l>gen_rectangle1 (ROI_0, 306.833, 675.391, 374.167, 777.697)</l>
+<l>gen_rectangle1 (ROI_1, 20.7329, 682.929, 78.2671, 782.357)</l>
+<l>gen_rectangle1 (ROI_2, 24.1575, 18.9286, 78.9521, 111.5)</l>
+<l>gen_rectangle1 (ROI_3, 316.623, 18.9286, 379.637, 111.5)</l>
+<c></c>
+<l>decompose3(ImageMacbeth,R,G,B)</l>
+<l>threshold(R,Regioncolor, 1, 255)</l>
+<c></c>
+<l>intersection(Regioncolor,ROI_0,ROI_0)</l>
+<l>intersection(Regioncolor,ROI_1,ROI_1)</l>
+<l>intersection(Regioncolor,ROI_2,ROI_2)</l>
+<l>intersection(Regioncolor,ROI_3,ROI_3)</l>
+<c></c>
+<l>erosion_circle(ROI_0, ROI_0, 10)</l>
+<l>erosion_circle(ROI_1, ROI_1, 10)</l>
+<l>erosion_circle(ROI_2, ROI_2, 10)</l>
+<l>erosion_circle(ROI_3, ROI_3, 10)</l>
+<c></c>
+<l>concat_obj(ROI_0,ROI_1,ROIs)</l>
+<l>concat_obj(ROIs,ROI_2,ROIs)</l>
+<l>concat_obj(ROIs,ROI_3,ROIs)</l>
+<c></c>
+<l>scale_image_max(R,Rmax)</l>
+<l>scale_image_max(G,Gmax)</l>
+<l>scale_image_max(B,Bmax)</l>
+<l>intensity (ROIs, Rmax, MeanR, DeviationR)</l>
+<l>intensity (ROIs, Gmax, MeanG, DeviationG)</l>
+<l>intensity (ROIs, Bmax, MeanB, DeviationB)</l>
+<l>IMean := (MeanR*MeanG/MeanB)</l>
+<c></c>
+<c>*busco el blanco y modifico la posicion para que coincida con los valores que quiero</c>
+<l>tuple_sort_index(IMean,Indices)</l>
+<c>*posicion del blanco</c>
+<l>White_pos := Indices[3]</l>
+<l>black_pos := Indices[0]</l>
+<c></c>
+<l>if(White_pos ==  1)</l>
+<l>    mirror_image(ImageMacbeth,ImageMacbeth,'row')</l>
+<c></c>
+<l>endif</l>
+<l>if(White_pos ==  2)</l>
+<l>    mirror_image(ImageMacbeth,ImageMacbeth,'row')</l>
+<l>    mirror_image(ImageMacbeth,ImageMacbeth,'column')</l>
+<l>endif</l>
+<l>if(White_pos ==  3)</l>
+<l>    mirror_image(ImageMacbeth,ImageMacbeth,'column')</l>
+<c>    </c>
+<l>endif</l>
+<c></c>
+<c></c>
+<l>reduce_domain(ImageMacbeth,ROI,ImageMacbeth)</l>
+<l>decompose3(ImageMacbeth,R,G,B)</l>
+<c>*R</c>
+<l>intensity (Partitioned, R, MeanR, DeviationR)</l>
+<c>*G</c>
+<l>intensity (Partitioned, G, MeanG, DeviationG)</l>
+<c>*B</c>
+<l>intensity (Partitioned, B, MeanB, DeviationB)</l>
+<c>*visualizacion</c>
+<c>*valores RGB tabla macbeth (1,2,3,4,5,6,7,8,9,10,11,12,13,14,...24 Izq-Der Arr-Aba  ultima fila negro blanco</c>
+<l>R_macbeth :=[120,146,103,112,205,129,233,173,107,203, 91,223,  0,197,240,186, 88, 65, 65, 99,136,173,211,249]</l>
+<l>G_macbeth :=[198,142,121,135,163, 96,175,197, 74,106,106,141,146,103,208, 70,160, 75, 65, 99,135,172,209,248]</l>
+<l>B_macbeth :=[182,188,121,169,144, 82, 61, 78,122,114,178, 57,178,162, 47, 73, 87,163, 65, 99,135,173,210,248]             </l>
+<c></c>
+<l>* R_macbeth  := R_macbeth - 65</l>
+<l>* G_macbeth  := G_macbeth - 65</l>
+<l>* B_macbeth  := B_macbeth - 65</l>
+<c></c>
+<l>create_matrix (24, 1, 1.0, TempColumm)     </l>
+<l>create_matrix (24, 4, 1.0, MatrixA)</l>
+<l>create_matrix (24, 3, 1.0, MatrixB)</l>
+<c>*matriz B con los valores de la tabla macbeth</c>
+<l>set_full_matrix(TempColumm,R_macbeth)</l>
+<l>set_sub_matrix (MatrixB, TempColumm, 0, 0)</l>
+<l>set_full_matrix(TempColumm,G_macbeth)</l>
+<l>set_sub_matrix (MatrixB, TempColumm, 0, 1)</l>
+<l>set_full_matrix(TempColumm,B_macbeth)</l>
+<l>set_sub_matrix (MatrixB, TempColumm, 0, 2)</l>
+<c>*matriz A con los valores de la tabla macbeth</c>
+<l>set_full_matrix(TempColumm,MeanR)</l>
+<l>set_sub_matrix (MatrixA, TempColumm, 0, 0)</l>
+<l>set_full_matrix(TempColumm,MeanG)</l>
+<l>set_sub_matrix (MatrixA, TempColumm, 0, 1)</l>
+<l>set_full_matrix(TempColumm,MeanB)</l>
+<l>set_sub_matrix (MatrixA, TempColumm, 0, 2)</l>
+<l>solve_matrix (MatrixA, 'general', 0, MatrixB, MatrixX)</l>
+<c>*ver los resultados</c>
+<l>mult_matrix(MatrixA,MatrixX,'AB', MatrixMultID)</l>
+<l>get_full_matrix(MatrixB,Valuestest1)</l>
+<l>get_full_matrix(MatrixMultID,Valuestest2)</l>
+<c>************</c>
+<l>diff :=Valuestest1 -Valuestest2</l>
+<l>transpose_matrix(MatrixX,MatrixTrans)</l>
+<l>get_full_matrix(MatrixTrans,Values)</l>
+<l>union1(Partitioned,Partitioned)</l>
+<l>boundary(Partitioned,RegionBorder, 'inner')</l>
+<l>decompose3(ImageMacbeth,R,G,B)</l>
+<c></c>
+<l>paint_region(Partitioned,R, R , 255, 'fill')</l>
+<c></c>
+<l>compose3(R,G,B,ImageMacbeth)</l>
+<l>macbeth := ImageMacbeth</l>
+<c></c>
+<l>return ()</l>
+</body>
+<docu id="Macbeth_color_matrix_calc">
+<parameters>
+<parameter id="Columms"/>
+<parameter id="Dimrealx"/>
+<parameter id="Dimrealy"/>
+<parameter id="Heightest"/>
+<parameter id="ImageWorking"/>
+<parameter id="MatrixTrans"/>
+<parameter id="Rows"/>
+<parameter id="ScaleX"/>
+<parameter id="ScaleY"/>
+<parameter id="Widthtest"/>
+<parameter id="macbeth"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

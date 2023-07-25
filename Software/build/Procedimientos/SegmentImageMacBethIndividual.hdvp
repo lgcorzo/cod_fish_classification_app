@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.1">
+<procedure name="SegmentImageMacBethIndividual">
+<interface>
+<io>
+<par name="Image" base_type="iconic" dimension="0"/>
+<par name="UL" base_type="iconic" dimension="0"/>
+<par name="UR" base_type="iconic" dimension="0"/>
+<par name="DL" base_type="iconic" dimension="0"/>
+<par name="DR" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="Imageresultado" base_type="iconic" dimension="0"/>
+<par name="Region" base_type="iconic" dimension="0"/>
+</oo>
+<ic>
+<par name="camera_type" base_type="ctrl" dimension="0"/>
+</ic>
+<oc>
+<par name="MatrixTransLCam" base_type="ctrl" dimension="0"/>
+<par name="Texto_salida" base_type="ctrl" dimension="0"/>
+<par name="ScaleX2" base_type="ctrl" dimension="0"/>
+<par name="ScaleY2" base_type="ctrl" dimension="0"/>
+</oc>
+</interface>
+<body>
+<l>Widthtest := 800</l>
+<l>Heightest := 400</l>
+<l>Dimrealx := 105.0</l>
+<l>Dimrealy := 140.0</l>
+<c></c>
+<l>get_domain(Image,regdomain)</l>
+<l>full_domain(Image,Image)</l>
+<c></c>
+<l>* write_image(Image, 'tiff', 0, 'C:/Users/Usuari/Desktop/LAUNION/CSR/Software/build/Procedimientos/imagePrueba')</l>
+<l>* write_region(UL, 'C:/Users/Usuari/Desktop/LAUNION/CSR/Software/build/Procedimientos/regionUL.hobj')</l>
+<l>* write_region(UR, 'C:/Users/Usuari/Desktop/LAUNION/CSR/Software/build/Procedimientos/regionUR.hobj')</l>
+<l>* write_region(DR, 'C:/Users/Usuari/Desktop/LAUNION/CSR/Software/build/Procedimientos/regionDR.hobj')</l>
+<l>* write_region(DL, 'C:/Users/Usuari/Desktop/LAUNION/CSR/Software/build/Procedimientos/regionDL.hobj')</l>
+<c></c>
+<l>ImageComp := Image</l>
+<c></c>
+<c>* Rows := UL,UR,DL,DR orden de las bordes</c>
+<l>get_region_points(UL,RowsUL, ColumnsUL)</l>
+<l>get_region_points(UR,RowsUR, ColumnsUR)</l>
+<l>get_region_points(DR,RowsDR, ColumnsDR)</l>
+<l>get_region_points(DL,RowsDL, ColumnsDL)</l>
+<l>Rows := [RowsUL,RowsUR,RowsDL,RowsDR]</l>
+<l>Columms := [ColumnsUL,ColumnsUR,ColumnsDL,ColumnsDR]</l>
+<l>Macbeth_color_matrix_calc_noauto (ImageComp, macbeth, Heightest, Widthtest, Rows, Columms, Dimrealx, Dimrealy, MatrixTransLCam, ScaleX2, ScaleY2)</l>
+<l>image_test := macbeth</l>
+<l>get_full_matrix(MatrixTransLCam,Values)</l>
+<l>linear_trans_color(image_test,ImageTrans, Values)</l>
+<l>convert_image_type (ImageTrans, Imageresultado, 'byte')</l>
+<c></c>
+<l>* Imageresultado:= macbeth</l>
+<l>Texto_salida := 'ok'</l>
+<l>return () </l>
+</body>
+<docu id="SegmentImageMacBethIndividual">
+<parameters>
+<parameter id="DL"/>
+<parameter id="DR"/>
+<parameter id="Image"/>
+<parameter id="Imageresultado"/>
+<parameter id="MatrixTransLCam"/>
+<parameter id="Region"/>
+<parameter id="ScaleX2"/>
+<parameter id="ScaleY2"/>
+<parameter id="Texto_salida"/>
+<parameter id="UL"/>
+<parameter id="UR"/>
+<parameter id="camera_type"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

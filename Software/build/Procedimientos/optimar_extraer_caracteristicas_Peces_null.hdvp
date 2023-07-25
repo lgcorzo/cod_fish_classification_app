@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.3">
+<procedure name="optimar_extraer_caracteristicas_Peces_null" access="local">
+<interface>
+<ic>
+<par name="ParametrosCola" base_type="ctrl" dimension="0"/>
+</ic>
+</interface>
+<body>
+<c>*   Parámetros de entrada:</c>
+<c>*     - ImagenRGB</c>
+<c>*     - ImagenNIR</c>
+<c>*</c>
+<c>*   Parámetros de salida:</c>
+<c>*     - message_queue</c>
+<c>*</c>
+<c></c>
+<l>    set_message_tuple (ParametrosCola, 'ID', 1) </l>
+<c>*********************************************** NIVEL DE GRIS ************************************************</c>
+<c>************************************************************************************************************** </c>
+<c>    * MeanGray, </c>
+<l>    set_message_tuple (ParametrosCola, 'MeanGray', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'DeviationGray', 0)  </l>
+<l>    set_message_tuple (ParametrosCola, 'GrayPlaneDeviation', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyGray', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'AnisotropyGray', 0)  </l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyFuzzyGray', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'PerimeterFuzzyGray', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Energy0gray', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Correlation0gray', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Homogeneity0gray', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Contrast0gray', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Energy45gray', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Correlation45gray', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Homogeneity45gray', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Contrast45gray', 0)  </l>
+<l>    set_message_tuple (ParametrosCola, 'Energy90gray', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Correlation90gray', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Homogeneity90gray', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Contrast90gray', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Energy135gray', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Correlation135gray', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Homogeneity135gray', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Contrast135gray', 0) </l>
+<l>    set_message_tuple (ParametrosCola, 'MeanR', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'DeviationR', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'RPlaneDeviation', 0) </l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyR', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'AnisotropyR', 0) </l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyFuzzyR', 0) </l>
+<l>    set_message_tuple (ParametrosCola, 'PerimeterFuzzyR', 0)  </l>
+<l>    set_message_tuple (ParametrosCola, 'MeanG', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'DeviationG', 0) </l>
+<l>    set_message_tuple (ParametrosCola, 'GPlaneDeviation', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyG', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'AnisotropyG', 0)  </l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyFuzzyG', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'PerimeterFuzzyG', 0)</l>
+<c>    </c>
+<c>  </c>
+<l>    set_message_tuple (ParametrosCola, 'MeanB', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'DeviationB', 0)  </l>
+<l>    set_message_tuple (ParametrosCola, 'BPlaneDeviation', 0) </l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyB', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'AnisotropyB', 0) </l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyFuzzyB', 0)  </l>
+<l>    set_message_tuple (ParametrosCola, 'PerimeterFuzzyB', 0)</l>
+<c></c>
+<c>    </c>
+<c>    </c>
+<c>**************************************************** HSV *****************************************************</c>
+<c>**************************************************************************************************************</c>
+<l>    set_message_tuple (ParametrosCola, 'MeanH', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'DeviationH', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'HPlaneDeviation', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyH', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'AnisotropyH', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyFuzzyH', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'PerimeterFuzzyH', 0) </l>
+<l>    set_message_tuple (ParametrosCola, 'MeanS', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'DeviationS', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'SPlaneDeviation', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyS', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'AnisotropyS', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyFuzzyS', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'PerimeterFuzzyS', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'MeanV', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'DeviationV', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'VPlaneDeviation', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyV', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'AnisotropyV', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyFuzzyV', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'PerimeterFuzzyV', 0)</l>
+<c>    </c>
+<c>    </c>
+<c>   </c>
+<c>************************************************** CIElab ****************************************************</c>
+<c>**************************************************************************************************************</c>
+<l>    set_message_tuple (ParametrosCola, 'Meanl', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Deviationl', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'lPlaneDeviation', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Entropyl', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Anisotropyl', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyFuzzyl', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'PerimeterFuzzyl', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Meana', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Deviationa', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'aPlaneDeviation', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Entropya', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Anisotropya', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyFuzzya', 0) </l>
+<l>    set_message_tuple (ParametrosCola, 'PerimeterFuzzya', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Meanb', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Deviationb', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'bPlaneDeviation', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Entropyb', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Anisotropyb', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'EntropyFuzzyb', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'PerimeterFuzzyb', 0)</l>
+<c>************************************************* MORFOLOGÍA *************************************************</c>
+<c>**************************************************************************************************************</c>
+<c>    * Sacara la máscara del controno de la ImagenRBG (imagen sin fondo)</c>
+<c>    * Largo, ancho</c>
+<l>    set_message_tuple (ParametrosCola, 'Largo', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Ancho', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Area', 0) </l>
+<l>    set_message_tuple (ParametrosCola, 'Ra_Rb', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Circularity', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Compactness', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Roundness', 0)    </l>
+<l>    set_message_tuple (ParametrosCola, 'Convexity', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Rectangularity', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Anisometry', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'Bulkiness', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'StructureFactor', 0)  </l>
+<l>    set_message_tuple (ParametrosCola, 'PSI1', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'PSI2', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'PSI3', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'PSI4', 0)   </l>
+<l>    set_message_tuple (ParametrosCola, 'M11', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'M20', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'M02', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'M21', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'M12', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'M03', 0)</l>
+<l>    set_message_tuple (ParametrosCola, 'M30', 0)   </l>
+<c> ************************************************* Histograma de color ab*************************************************</c>
+<c>**************************************************************************************************************   </c>
+<l> MAX_Val:= 20.0 </l>
+<l> texto := 'COLOR_Histo_ab_'</l>
+<l>for Index1 := 0 to MAX_Val-1 by 1</l>
+<l>    for Index2 := 0 to MAX_Val-1 by 1</l>
+<l> textof := texto + Index1 + '_' + Index2</l>
+<c>      </c>
+<l>        set_message_tuple (ParametrosCola, textof, 0)</l>
+<l>    endfor</l>
+<l>endfor</l>
+<c></c>
+<c></c>
+<c></c>
+<l>texto := 'COLOR_Histo_ab_max_X'</l>
+<l> set_message_tuple (ParametrosCola, texto, 0)</l>
+<l>texto := 'COLOR_Histo_ab_max_Y'</l>
+<l> set_message_tuple (ParametrosCola, texto, 0)</l>
+<l> texto := 'COLOR_Histo_ab_Dev_X'</l>
+<l> set_message_tuple (ParametrosCola, texto, 0)</l>
+<l>  texto := 'COLOR_Histo_ab_Dev_Y'</l>
+<l> set_message_tuple (ParametrosCola, texto, 0)</l>
+<c></c>
+<c>*************************************  Color LAB **************************************</c>
+<c>**************************************************************************************************************</c>
+<c></c>
+<l>num := 0</l>
+<l>if (num == 0)</l>
+<l>    TransInv :=[0,0,0,0,0,0,0,0,0,0,0,0]</l>
+<l>endif</l>
+<l>MeanL := 0</l>
+<l>Meana :=0</l>
+<l>Meanb := 0</l>
+<l>DevL := 0</l>
+<l>Deva := 0</l>
+<l>Devb := 0</l>
+<c></c>
+<c>*parametros de color medias y desviaciones</c>
+<l>set_message_tuple (ParametrosCola, 'COLOR_Mean_cuerpo_lineal_L', MeanL)</l>
+<l>set_message_tuple (ParametrosCola, 'COLOR_Mean_cuerpo_lineal_a', Meana)</l>
+<l>set_message_tuple (ParametrosCola, 'COLOR_Mean_cuerpo_lineal_b', Meanb)</l>
+<l>set_message_tuple (ParametrosCola, 'COLOR_Dev_cuerpo_lineal_L', DevL)</l>
+<l>set_message_tuple (ParametrosCola, 'COLOR_Dev_cuerpo_lineal_a', Deva)</l>
+<l>set_message_tuple (ParametrosCola, 'COLOR_Dev_cuerpo_lineal_b', Devb)</l>
+<l>set_message_tuple (ParametrosCola, 'COLOR_PCA_cuerpo_lineal_lab_X_1', TransInv[0])</l>
+<l>set_message_tuple (ParametrosCola, 'COLOR_PCA_cuerpo_lineal_lab_X_2', TransInv[4])</l>
+<l>set_message_tuple (ParametrosCola, 'COLOR_PCA_cuerpo_lineal_lab_X_3', TransInv[8])</l>
+<l>set_message_tuple (ParametrosCola, 'COLOR_PCA_cuerpo_lineal_lab_Y_1', TransInv[1])</l>
+<l>set_message_tuple (ParametrosCola, 'COLOR_PCA_cuerpo_lineal_lab_Y_2', TransInv[5])</l>
+<l>set_message_tuple (ParametrosCola, 'COLOR_PCA_cuerpo_lineal_lab_Y_3', TransInv[9])</l>
+<l>set_message_tuple (ParametrosCola, 'COLOR_PCA_cuerpo_lineal_lab_Z_1', TransInv[2])</l>
+<l>set_message_tuple (ParametrosCola, 'COLOR_PCA_cuerpo_lineal_lab_Z_2', TransInv[6])</l>
+<l>set_message_tuple (ParametrosCola, 'COLOR_PCA_cuerpo_lineal_lab_Z_3', TransInv[10])</l>
+<l>set_message_tuple (ParametrosCola, 'COLOR_PCA_cuerpo_lineal_lab_O_1', TransInv[3])</l>
+<l>set_message_tuple (ParametrosCola, 'COLOR_PCA_cuerpo_lineal_lab_O_2', TransInv[7])</l>
+<l>set_message_tuple (ParametrosCola, 'COLOR_PCA_cuerpo_lineal_lab_O_3', TransInv[11])</l>
+<c> </c>
+<c>************************************************SEGMENTACION COLOR********************************************</c>
+<c> ***************************************************************************************************</c>
+<c> </c>
+<l>texto := 'Patt_Dist'</l>
+<c></c>
+<l>for Index1 := 1 to 88 by 1 </l>
+<l>    textof := texto  + '_' + Index1      </l>
+<l>     set_message_tuple (ParametrosCola, textof,0)</l>
+<l>endfor</l>
+<c></c>
+<c>*c</c>
+<l>texto := 'Color'</l>
+<l>dimColores := 88</l>
+<l>for Index1 := 1 to dimColores by 1 </l>
+<c>   </c>
+<l>     textof := texto  + '_Media_L_' + Index1      </l>
+<l>     set_message_tuple (ParametrosCola, textof, 0)</l>
+<l>     textof := texto  + '_Media_a_' + Index1      </l>
+<l>     set_message_tuple (ParametrosCola, textof, 0)</l>
+<l>     textof := texto  + '_Media_b_' + Index1      </l>
+<l>     set_message_tuple (ParametrosCola, textof, 0)</l>
+<c>     </c>
+<l>endfor</l>
+<c>******************************************TEXTURA*************************************************</c>
+<c>**********************************************************************************************</c>
+<c></c>
+<c></c>
+<c>* mensajes Histogramas color</c>
+<l>texto := 'TEXTURA_Histo'</l>
+<l>for Index1 := 0 to 100-1 by 1 </l>
+<l>    textof := texto  + '_' + Index1      </l>
+<l>    set_message_tuple (ParametrosCola, textof, 0)</l>
+<l>endfor</l>
+<c></c>
+<c> ***************************************************************************************************</c>
+<c> ***************************************************************************************************</c>
+<c> </c>
+<c>  </c>
+<l>set_message_tuple (ParametrosCola, 'Categoria_pertenencia_1', 0)</l>
+<l>set_message_tuple (ParametrosCola, 'Categoria_pertenencia_2', 0)</l>
+<l>set_message_tuple (ParametrosCola, 'Categoria_pertenencia_3', 0)</l>
+<l>set_message_tuple (ParametrosCola, 'Categoria_pertenencia_4', 0)</l>
+<l>set_message_tuple (ParametrosCola, 'Categoria_pertenencia_5', 0)</l>
+<l>set_message_tuple (ParametrosCola, 'Categoria_asignada_1', 0)</l>
+<l>set_message_tuple (ParametrosCola, 'Categoria_asignada_2', 0)</l>
+<l>set_message_tuple (ParametrosCola, 'Categoria_asignada_3', 0)</l>
+<l>set_message_tuple (ParametrosCola, 'Categoria_asignada_4', 0)</l>
+<l>set_message_tuple (ParametrosCola, 'Categoria_asignada_5', 0)</l>
+<l>set_message_tuple (ParametrosCola, 'Categoria_asignada_ponderada', 0)          </l>
+<l>set_message_tuple (ParametrosCola, 'Categoria_asignada', 0)</l>
+<l>set_message_tuple (ParametrosCola, 'Categoria_Forzada', 0)</l>
+<c></c>
+<c>    </c>
+<c> </c>
+<l>return ()</l>
+</body>
+<docu id="optimar_extraer_caracteristicas_Peces_null">
+<short lang="en_US">Detect a fin</short>
+<parameters>
+<parameter id="ParametrosCola"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

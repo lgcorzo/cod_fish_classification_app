@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.1">
+<procedure name="Calib_tables_extractor">
+<interface>
+<io>
+<par name="TiledImage" base_type="iconic" dimension="0"/>
+<par name="Domain_region" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="Macbeth" base_type="iconic" dimension="0"/>
+<par name="Calib_pattern" base_type="iconic" dimension="0"/>
+<par name="ROI" base_type="iconic" dimension="0"/>
+</oo>
+<ic>
+<par name="Manual_mode" base_type="ctrl" dimension="0"/>
+</ic>
+</interface>
+<body>
+<c></c>
+<c>* </c>
+<c>* *localiza la tabla macbeth en Domain_region</c>
+<l>get_image_size (TiledImage, width, height)</l>
+<l>reduce_domain (TiledImage, Domain_region, ImageWorking)</l>
+<l>decompose4(TiledImage,Rb,Gb,Bb,NIRb)</l>
+<l>compose3(Rb,Gb,Bb,RGBimage)</l>
+<c></c>
+<l>threshold := 25</l>
+<l>dilation := 6</l>
+<l>areaMin := 1000</l>
+<l>areaMax := 10000000000</l>
+<l>borde := 10</l>
+<l>Parameters:=[threshold,dilation,areaMin,areaMax,borde]</l>
+<c></c>
+<l>   dev_get_window(handle)</l>
+<l>   dev_clear_window()</l>
+<l>   scale_image_max(RGBimage,RGBimagedisp)</l>
+<l>   dev_display(RGBimagedisp)</l>
+<l>   write_string(handle,'localiza la tabla blanca, pulsa F5')</l>
+<l>   new_line (handle)</l>
+<l>   stop()</l>
+<c>   *localiza la tabla blanca manualmente</c>
+<l>   write_string(handle,'localiza la tabla UL, pulsa F5')</l>
+<l>   new_line (handle)</l>
+<l>   stop()</l>
+<l>   get_mbutton_sub_pix( handle, Row, Column, Button)</l>
+<l>   disp_cross(handle,Row, Column,5,5)</l>
+<l>   write_string(handle,'localiza la tabla UR, pulsa F5')</l>
+<l>   new_line (handle)</l>
+<l>   stop()</l>
+<l>   get_mbutton_sub_pix( handle, Row1, Column1, Button)</l>
+<l>   disp_cross(handle,Row1, Column1,5,5)</l>
+<l>   write_string(handle,'localiza la tabla DR, pulsa F5')</l>
+<l>   new_line (handle)</l>
+<l>   stop()</l>
+<l>   get_mbutton_sub_pix( handle, Row2, Column2, Button)</l>
+<l>   disp_cross(handle,Row2, Column2,5,5)</l>
+<l>   write_string(handle,'localiza la tabla DL, pulsa F5')</l>
+<l>   new_line (handle)</l>
+<l>   stop()</l>
+<l>   get_mbutton_sub_pix( handle, Row3, Column3, Button)</l>
+<l>   disp_cross(handle,Row3, Column3,5,5)</l>
+<c>   </c>
+<l>    Rows := [Row,Row1,Row2,Row3]</l>
+<l>    Columns := [Column,Column1,Column2,Column3]</l>
+<c>    </c>
+<l>    gen_region_polygon_filled (SelectedRegionFill, Rows, Columns)</l>
+<l>    Calib_pattern := SelectedRegionFill</l>
+<l>    Macbeth := SelectedRegionFill</l>
+<l>    stop()</l>
+<c>        * modifico el ROI para que sean tan alto como la imagen</c>
+<l>    shape_trans (SelectedRegionFill, ROI_ajusted, 'rectangle1')</l>
+<l>    region_features (ROI_ajusted, 'row1', row1)</l>
+<l>    region_features (ROI_ajusted, 'row2', row2)</l>
+<l>    region_features (ROI_ajusted, 'column1', column1)</l>
+<l>    region_features (ROI_ajusted, 'column2', column2)</l>
+<c>    *genero los rois desde la mitad de la imagen</c>
+<l>    if (column1 &gt; width/2)</l>
+<l>        column1 := width/2</l>
+<l>    endif</l>
+<c>    </c>
+<l>    if (column2 &lt; width/2)</l>
+<l>        column2 := width/2</l>
+<l>    endif</l>
+<c></c>
+<l>    gen_rectangle1 (ROI, 0, column1-20, height, column2+20)</l>
+<c>    </c>
+<c>    </c>
+<c>    </c>
+<l>   dev_get_window(handle)</l>
+<l>   dev_clear_window()</l>
+<l>   scale_image_max(RGBimage,RGBimagedisp)</l>
+<l>   dev_display(RGBimagedisp)</l>
+<l>   write_string(handle,'localiza la tabla interna, pulsa F5')</l>
+<l>   new_line (handle)</l>
+<l>   stop()</l>
+<c>   *localiza la tabla blanca manualmente</c>
+<l>   write_string(handle,'localiza la tabla UL, pulsa F5')</l>
+<l>   new_line (handle)</l>
+<l>   stop()</l>
+<l>   get_mbutton_sub_pix( handle, Row, Column, Button)</l>
+<l>   disp_cross(handle,Row, Column,5,5)</l>
+<l>   write_string(handle,'localiza la tabla UR, pulsa F5')</l>
+<l>   new_line (handle)</l>
+<l>   stop()</l>
+<l>   get_mbutton_sub_pix( handle, Row1, Column1, Button)</l>
+<l>   disp_cross(handle,Row1, Column1,5,5)</l>
+<l>   write_string(handle,'localiza la tabla DR, pulsa F5')</l>
+<l>   new_line (handle)</l>
+<l>   stop()</l>
+<l>   get_mbutton_sub_pix( handle, Row2, Column2, Button)</l>
+<l>   disp_cross(handle,Row2, Column2,5,5)</l>
+<l>   write_string(handle,'localiza la tabla DL, pulsa F5')</l>
+<l>   new_line (handle)</l>
+<l>   stop()</l>
+<l>   get_mbutton_sub_pix( handle, Row3, Column3, Button)</l>
+<l>   disp_cross(handle,Row3, Column3,5,5)</l>
+<c>   </c>
+<l>    Rows := [Row,Row1,Row2,Row3]</l>
+<l>    Columns := [Column,Column1,Column2,Column3]</l>
+<c>    </c>
+<l>    gen_region_polygon_filled (SelectedRegionFill, Rows, Columns)</l>
+<l>    Calib_pattern := SelectedRegionFill</l>
+<l>    Macbeth := SelectedRegionFill</l>
+<c>    </c>
+<c>    </c>
+<c></c>
+<c></c>
+<l>return ()</l>
+</body>
+<docu id="Calib_tables_extractor">
+<parameters>
+<parameter id="Calib_pattern"/>
+<parameter id="Domain_region"/>
+<parameter id="Macbeth"/>
+<parameter id="Manual_mode"/>
+<parameter id="ROI"/>
+<parameter id="TiledImage"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

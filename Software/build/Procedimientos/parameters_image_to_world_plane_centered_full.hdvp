@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.3">
+<procedure name="parameters_image_to_world_plane_centered_full">
+<interface>
+<io>
+<par name="Image1" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="ImageWorld" base_type="iconic" dimension="0"/>
+</oo>
+<ic>
+<par name="CameraParameters" base_type="ctrl" dimension="0"/>
+<par name="CameraPose" base_type="ctrl" dimension="0"/>
+</ic>
+</interface>
+<body>
+<l>    get_image_size (Image1, Width, Height)</l>
+<l>    get_image_size (Image1, WidthMappedImage, HeightMappedImage)</l>
+<l>    CenterRow := HeightMappedImage/2</l>
+<l>    CenterCol := WidthMappedImage/2</l>
+<c>    *parameters_image_to_world_plane_centered</c>
+<l>    Dist_ICS := 10</l>
+<l>    image_points_to_world_plane (CameraParameters, CameraPose, CenterRow, CenterCol,'m', CenterX, CenterY)</l>
+<l>    image_points_to_world_plane (CameraParameters, CameraPose, CenterRow + Dist_ICS, CenterCol, 'm', BelowCenterX, BelowCenterY)</l>
+<l>    image_points_to_world_plane (CameraParameters, CameraPose, CenterRow, CenterCol + Dist_ICS, 'm', RightOfCenterX, RightOfCenterY)</l>
+<l>    distance_pp (CenterY, CenterX, BelowCenterY, BelowCenterX, Dist_WCS_Vertical)</l>
+<l>    distance_pp (CenterY, CenterX, RightOfCenterY, RightOfCenterX, Dist_WCS_Horizontal)</l>
+<l>    ScaleVertical := Dist_WCS_Vertical / Dist_ICS</l>
+<l>    ScaleHorizontal := Dist_WCS_Horizontal / Dist_ICS</l>
+<l>    ScaleForCenteredImage := (ScaleVertical + ScaleHorizontal) / 2.0</l>
+<c>    * Determine the parameters for set_origin_pose such</c>
+<c>    * that the point given via get_mbutton will be in the center of the</c>
+<c>    * mapped image</c>
+<l>    image_points_to_world_plane (CameraParameters, CameraPose, 0, 0,'m', CenterX0, CenterY0)</l>
+<l>    DX := CenterX0</l>
+<l>    DY := CenterY0</l>
+<l>    DZ := 0</l>
+<c></c>
+<l>    set_origin_pose (CameraPose, DX, DY, DZ, PoseForCenteredImage)       </l>
+<l>    image_to_world_plane (Image1, ImageWorld, CameraParameters, PoseForCenteredImage,WidthMappedImage, HeightMappedImage, ScaleForCenteredImage, 'bilinear')</l>
+<c></c>
+<c>    * Now determine scale and pose such that the entire image</c>
+<c>     * fits into the rectified image.</c>
+<l>   * parameters_image_to_world_plane_entire (Image1, CameraParameters, CameraPose, WidthMappedImage, HeightMappedImage, ScaleForEntireImage, PoseForEntireImage)</l>
+<l>   * image_to_world_plane (Image1, ImageWorld, CameraParameters, PoseForEntireImage, HeightMappedImage, WidthMappedImage, ScaleForEntireImage, 'bilinear')</l>
+<c></c>
+<c>      </c>
+<c>    </c>
+<c>    </c>
+<l>    return ()</l>
+<c></c>
+<c>     </c>
+</body>
+<docu id="parameters_image_to_world_plane_centered_full">
+<parameters>
+<parameter id="CameraParameters"/>
+<parameter id="CameraPose"/>
+<parameter id="Image1"/>
+<parameter id="ImageWorld"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

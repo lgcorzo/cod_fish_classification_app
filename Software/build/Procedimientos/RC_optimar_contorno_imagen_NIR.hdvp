@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.1">
+<procedure name="RC_optimar_contorno_imagen_NIR">
+<interface>
+<io>
+<par name="ImagenEntradaNIR" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="MascaraNIR" base_type="iconic" dimension="0"/>
+<par name="ContornoNIR" base_type="iconic" dimension="0"/>
+<par name="ImagenSinFondoNIR" base_type="iconic" dimension="0"/>
+</oo>
+</interface>
+<xb>Gu2tZu1E0jgo62K/x0+eP8/ij+AAB3VBpsmW+B6CQaVDkRq4lVYCQOquK0zll5CxM1ByRYS4cxzkuMjjarjf7xjGvF4B9UM54m4hzQnEiU5Ta9W1D2mxjJAzbPoPHy9e1z6ydUVGguwsoXYKJ9PdaLxIBoFRmzUmJnBR0cdtX+beioyLoDdCLThGIzl/jhaWOEjOdc7nafPDQjhiaYmThiBSndQ/46tsgZ2tdroeiB/KdRAqHB9Wfa3CvVx0wScbVy0CXHz+h930v0II5rbzLnBQ7ZW13J0Hh9HuHPeN7Yf/K9+V1uPKnrfdpZB8EFqTuDelXqUkdWsCQOOQ8b4ueK1Aw59IW2qVcjM2R4FPPkaqZGGphFQM75u5AA6cy825FasRjnbaZL+lwTFi+cMI0wwypll+XHUX6qKpQirHn/ifmu0Fae2qKfLLa6ztITT1GXi7bwcUunawdAWMp87cyAOhvUWLFzJi6/wlqf/Tlh8pwhwdPVI/f4ackOKZN+z3sOmPv/excf0rdLVMeIonnyK3JClnzyO65pujd3tn88ZKSA6a1DzpyyRgavXUNVHFhNOoVLfSsS8oyUlxpUjpVXUAYYO//Z6GqcAbFQREqsSMyFBIUY12fBfB8Ew2d3tCKkqXulSfmV3fNViMn3e4lNizzYg5IFlAMuHZIMSjY294VbmAv4iEvFwqqeHKu72uL3OJiFglBkYR80xDygzLovVc4ZvcyoOQdSA84VxkFPfJxVGb4kZH92WABE83fEyZdH2dxgU69ANta6ryKSAR1T09Uo8IOnMUW9RH9NuvRYkSraSlmNapdK2FpFB9439VK+0JWYpdoYOu63JAMdoWokv8IErlzPqS+Ehwn+cKNZvq1STdUh+0GLiGN78KViT+A1uC16Fzugt9alcd11NmOlC0gvsSbbK+OZp0h2Di7Q9lmVW+6uUANeqqBjGoGthJGpO5WrujPoY0BB/qVytLe8UF1/D3+RoM94s4xz3sGcQzQ06OiyohpjQGkIczfirG3y0g7QKsozsnYPGcXBBa3Ha2uac42LAG1AOtm6h3ayUf0PW5zvl4/z/HL754UY4xN9p9AuLsVEZE5yUj/W+BuL+gfYLUJ7L7PrsODOzurEqlejq3Nc9BhEIb4JOGADxk06U2NJKkz3gsRodNZaDvs/Lo6N0FHcrGpAzibGktg8xO+Gdz4fkr2TjU2WaGGtbUR4Nycfd3gN/MyVq1o5lrzFFOv9wjsODNC+OynsHBw27cUArTMLXz+LAPakdiO+JabG3KJpmloeKO8R+jUmN227AVGOG6wD+YtxGNoXlMtabNZYOBPCcNkN6SCMh4IsG/aIeKfxwHwyJoR4uDwvHM31qcbEvf7VsBF4IP9AhfqBl28vr3JhEme3ngXsCGNHJb+mQDJu07+Z9nFnUqRNCPZHXNes/7M8gWd5XiCVdp5kP8kfIXA3ILsiMMgxozaxz8uENAj8bYPYBP8EsrzuXi3LKocOG7eoFnsXw2gAq250oD8InCGIDEJNXXy7ouXU1jIeYRO5azcC7QkWRHONHDY6KEfm7VLCJSk49OAv+5TMtBC+9EjK0/5KYDVxji4sBk9ZGYuLFYXJQA+QNy+m4Vtft0uqYprz/kZemfY8zJpORumXN/275TppHoLioQmcqM80mKPb9nrIM9Y2UTQHZIy9hIzVq3tGx9fVKX6ggRepWRlph7FwC/UYzyoTwNU9/8Hp4LPu4tWNW6cY2v914+uusHztUWmQEfYT+rzLE7u2KRc+vr6Ghqc+tQbIM5zwfQSDfiiRGvtqrQxC5J3vXw1mhIVUWNHhVXtWfFmc80SMzkuwqqoMBeuToE+wH5xp+7FfqTZ9wxwZBwSnL5SS8RScM0dHQCAFK2QJOVC2p8JXCRSwYYy2LdvHLc1hv9ulVxrr/MFaMcyda9Dgc3C4G6u1ou3wriwU+NVTJ/g/oyseeDhPEmbkddEg</xb>
+<docu id="RC_optimar_contorno_imagen_NIR">
+<short lang="en_US">Detect a fin</short>
+<parameters>
+<parameter id="ContornoNIR"/>
+<parameter id="ImagenEntradaNIR"/>
+<parameter id="ImagenSinFondoNIR"/>
+<parameter id="MascaraNIR"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

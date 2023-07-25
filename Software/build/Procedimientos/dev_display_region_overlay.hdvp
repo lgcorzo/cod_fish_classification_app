@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.1">
+<procedure name="dev_display_region_overlay">
+<interface>
+<io>
+<par name="Image" base_type="iconic" dimension="0"/>
+<par name="Region" base_type="iconic" dimension="0"/>
+</io>
+</interface>
+<body>
+<l>reduce_domain (Image, Region, ImageReduced)</l>
+<l>scale_image (ImageReduced, ImageRG, 1.25, 0)</l>
+<l>scale_image (ImageReduced, ImageB, 0.75, 0)</l>
+<l>compose3 (ImageRG, ImageRG, ImageB, MultiChannelImage)</l>
+<l>dev_display (MultiChannelImage)</l>
+<l>dev_get_window (WindowHandle)</l>
+<l>get_draw (WindowHandle, DrawMode)</l>
+<l>dev_set_draw ('margin')</l>
+<l>dev_set_color ('yellow')</l>
+<l>dev_display (Region)</l>
+<l>dev_set_draw (DrawMode)</l>
+<l>return ()</l>
+</body>
+<docu id="dev_display_region_overlay">
+<parameters>
+<parameter id="Image"/>
+<parameter id="Region"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

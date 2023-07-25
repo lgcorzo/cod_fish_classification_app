@@ -1,0 +1,75 @@
+/////////////////////////////////////////////////
+/////  CSR 4.2.9.0 :: Logger             
+/////////////////////////////////////////////////
+
+
+[10:38:12.755-ModuleManager]::Loading Acquisition module.
+[10:38:12.768-ModuleManager]::Módulo Acquisition cargado correctamente.
+[10:38:12.768-ModuleManager]::Loading Alarms module.
+[10:38:12.814-ModuleManager]::Módulo Alarms cargado correctamente.
+[10:38:12.814-ModuleManager]::Loading Vision module.
+[10:38:15.526-ModuleManager]::Error -> No se ha podido cargar el modulo "Vision"!
+Compruebe que no hay errores en su constructor.
+ExceptionMessage:Exception has been thrown by the target of an invocation.
+InnerMessage:HalconDotNet.HOperatorException: HALCON error #2041: Invalid host in operator read_class_knn
+   at HalconDotNet.HOperatorException.throwOperator(Int32 err, Int32 procIndex)
+   at HalconDotNet.HalconAPI.PostCall(IntPtr proc, Int32 procResult)
+   at HalconDotNet.HOperatorSet.ReadClassKnn(HTuple fileName, HTuple& KNNHandle)
+   at ProcesadoEspecies.Procesado.Load_Knn_color_segmentation(String Path) in C:\INSER\CSR_V_2_1_4\Software\SOFT\ProcesadoEspecies\Procesado.cs:line 117
+   at VisionModule.VisionModule..ctor(String _id) in C:\INSER\CSR_V_2_1_4\Software\SOFT\VisionModule\MODULO\VisionModule.cs:line 41
+[10:38:18.558-ModuleManager]::Loading Training module.
+[10:38:18.650-ModuleManager]::Error -> No se ha podido cargar el modulo "Training"!
+Compruebe que no hay errores en su constructor.
+ExceptionMessage:Exception has been thrown by the target of an invocation.
+InnerMessage:HalconDotNet.HOperatorException: HALCON error #2041: Invalid host in operator read_class_knn
+   at HalconDotNet.HOperatorException.throwOperator(Int32 err, Int32 procIndex)
+   at HalconDotNet.HalconAPI.PostCall(IntPtr proc, Int32 procResult)
+   at HalconDotNet.HOperatorSet.ReadClassKnn(HTuple fileName, HTuple& KNNHandle)
+   at ProcesadoEspecies.Procesado.Load_Knn_color_segmentation(String Path) in C:\INSER\CSR_V_2_1_4\Software\SOFT\ProcesadoEspecies\Procesado.cs:line 117
+   at TrainingModule.TrainingModule..ctor(String _id) in C:\INSER\CSR_V_2_1_4\Software\SOFT\TraningModule\MODULO\TrainingModule.cs:line 41
+[10:38:19.406-ModuleManager]::Loading Calibration module.
+[10:38:19.408-ModuleManager]::Módulo Calibration cargado correctamente.
+[10:38:19.408-ModuleManager]::Loading WCF module.
+[10:38:19.419-ModuleManager]::Módulo WCF cargado correctamente.
+[10:38:19.419-ModuleManager]::Loading RDP module.
+[10:38:19.422-ModuleManager]::Módulo RDP cargado correctamente.
+[10:38:19.422-ModuleManager]::Loading Communication module.
+[10:38:19.425-ModuleManager]::Módulo Communication cargado correctamente.
+[10:38:19.425-root]::Error -> Algunos módulos no se han podido cargar correctamente
+[10:38:21.785-ModuleManager]::Initializing Adquisicion module
+[10:38:35.621-ModuleManager]::Error -> Ocurrió un error durante la inicialización del módulo "Adquisicion".
+HalconDotNet.HOperatorException: HALCON error #2041: Invalid host in operator set_part
+   at HalconDotNet.HOperatorException.throwOperator(Int32 err, Int32 procIndex)
+   at HalconDotNet.HalconAPI.PostCall(IntPtr proc, Int32 procResult)
+   at HalconDotNet.HWindow.SetPart(Int32 row1, Int32 column1, Int32 row2, Int32 column2)
+   at HalconDotNet.HWindowControl.UpdatePart()
+   at HalconDotNet.HWindowControl.set_ImagePart(Rectangle value)
+   at AdquisitionModule.AdquisitionForm.InitializeComponent() in C:\INSER\CSR_V_2_1_4\Software\SOFT\AdquisitionModule\VISTA\AdquisitionForm.Designer.cs:line 567
+   at AdquisitionModule.AdquisitionForm..ctor(CSRFormModule _parent) in C:\INSER\CSR_V_2_1_4\Software\SOFT\AdquisitionModule\VISTA\AdquisitionForm.cs:line 37
+   at AdquisitionModule.AdquisitionModule.Init() in C:\INSER\CSR_V_2_1_4\Software\SOFT\AdquisitionModule\MODULO\AdquisitionModule.cs:line 149
+   at CSRApp.modules.ModuleManager.InitModules(Size size) in C:\INSER\CSR_V_2_1_4\Software\SOFT\CSR_4.1\CSRApp\ModuleManager\ModuleManager.cs:line 107
+[10:38:38.647-ModuleManager]::Initializing alarm module
+[10:38:38.661-alarm]::Script start no encontrado
+[10:38:38.661-ModuleManager]::Módulo Alarms cargado correctamente.
+[10:38:38.662-ModuleManager]::Initializing Calibracion module
+[10:38:39.099-ModuleManager]::Error -> Ocurrió un error durante la inicialización del módulo "Calibracion".
+HalconDotNet.HOperatorException: HALCON error #2041: Invalid host in operator set_part
+   at HalconDotNet.HOperatorException.throwOperator(Int32 err, Int32 procIndex)
+   at HalconDotNet.HalconAPI.PostCall(IntPtr proc, Int32 procResult)
+   at HalconDotNet.HWindow.SetPart(Int32 row1, Int32 column1, Int32 row2, Int32 column2)
+   at HalconDotNet.HWindowControl.UpdatePart()
+   at HalconDotNet.HWindowControl.set_ImagePart(Rectangle value)
+   at CalibracionModule.CalibracionForm.InitializeComponent() in C:\INSER\CSR_V_2_1_4\Software\SOFT\CalibracionModule\VISTA\CalibracionForm.Designer.cs:line 140
+   at CalibracionModule.CalibracionForm..ctor(CSRFormModule _parent, ModuleDelegates module_delegates) in C:\INSER\CSR_V_2_1_4\Software\SOFT\CalibracionModule\VISTA\CalibracionForm.cs:line 37
+   at CalibracionModule.CalibracionModule.Init() in C:\INSER\CSR_V_2_1_4\Software\SOFT\CalibracionModule\MODULO\CalibracionModule.cs:line 37
+   at CSRApp.modules.ModuleManager.InitModules(Size size) in C:\INSER\CSR_V_2_1_4\Software\SOFT\CSR_4.1\CSRApp\ModuleManager\ModuleManager.cs:line 107
+[10:38:39.984-ModuleManager]::Initializing WCF module
+[10:38:39.999-WCF]::Módulo cargado correctamente.
+[10:38:39.999-ModuleManager]::Módulo WCF cargado correctamente.
+[10:38:40.001-ModuleManager]::Initializing RDP module
+[10:38:40.018-RDP]::Módulo cargado correctamente.
+[10:38:40.018-ModuleManager]::Módulo RDP cargado correctamente.
+[10:38:40.022-ModuleManager]::Initializing Communication module
+[10:39:05.113-WCF]::Service opening ... Stand by: net.tcp://127.0.0.1:8010/WCFService
+[10:39:05.128-WCF]::Error can not open the server
+[10:39:06.780-ModuleManager]::Módulo Communication cargado correctamente.

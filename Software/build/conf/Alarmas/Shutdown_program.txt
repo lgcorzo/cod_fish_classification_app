@@ -1,0 +1,2 @@
+ECHO OFF
+start /B  schtasks /End /TN CSRApp_server

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.3">
+<procedure name="Calculo_desplazamineto_regiones">
+<interface>
+<io>
+<par name="Region" base_type="iconic" dimension="0"/>
+<par name="Region2" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="patronfindmin" base_type="iconic" dimension="0"/>
+<par name="patron" base_type="iconic" dimension="0"/>
+</oo>
+<ic>
+<par name="Height" base_type="ctrl" dimension="0"/>
+<par name="Width" base_type="ctrl" dimension="0"/>
+<par name="ancho" base_type="ctrl" dimension="0"/>
+<par name="zona_busqueda" base_type="ctrl" dimension="0"/>
+<par name="salto" base_type="ctrl" dimension="0"/>
+</ic>
+<oc>
+<par name="desplaza" base_type="ctrl" dimension="0"/>
+</oc>
+</interface>
+<body>
+<l>RegionOut := Region</l>
+<l>Region2Out := Region2</l>
+<c></c>
+<c>*elimino los agujeros si los hay</c>
+<l>fill_up (RegionOut, RegionOut)</l>
+<l>fill_up (Region2Out, Region2Out)</l>
+<c>*creo region en la zona de coincidencia.</c>
+<l>gen_rectangle1(RectangleFind, 0,0 ,ancho,Width)</l>
+<c>*interseccion de la dos regiones</c>
+<l>intersection (RectangleFind, RegionOut, patron)</l>
+<l>smallest_rectangle1 (patron, Row1, Column1, Row2, Column2)</l>
+<l>inner_rectangle1(patron, Row1in, Column1in, Row2in, Column2in)</l>
+<c></c>
+<l>anchura_buscar_patron := Column2 -Column1</l>
+<l>anchura_buscar_patron_in := Column2in -Column1in</l>
+<c>*busca en el final de la imagen siguiente</c>
+<l>anchura_buscar_list:=[]</l>
+<l>pos_min := 0</l>
+<l>minimo := Width</l>
+<l>zona_trabajo := Height-zona_busqueda</l>
+<l>rango_busqueda := 40</l>
+<c>*desde el final de la imaaen hacia rriba busco esa distancia</c>
+<l>for Index := zona_trabajo + rango_busqueda to zona_trabajo-rango_busqueda by - salto</l>
+<l>    gen_rectangle1(Regiondesp, Index-ancho,0 , Index,Width)</l>
+<l>    intersection (Region2Out, Regiondesp, patronfind)</l>
+<l>    smallest_rectangle1 (patronfind, Row1, Column1, Row2, Column2)</l>
+<l>    inner_rectangle1(patronfind, Row1in, Column1in, Row2in, Column2in)</l>
+<l>    anchura_buscar := Column2 -Column1</l>
+<l>    anchura_buscar_in := Column2in -Column1in</l>
+<l>    diff_anchuras := abs((anchura_buscar_patron - anchura_buscar)) + abs((anchura_buscar_patron_in - anchura_buscar_in)) </l>
+<l>    if ( diff_anchuras &lt; minimo)</l>
+<l>        pos_min := Index</l>
+<l>        minimo := diff_anchuras</l>
+<l>        patronfindmin := patronfind</l>
+<c>         </c>
+<l>    endif</l>
+<l>endfor</l>
+<l>desplaza := Height - pos_min</l>
+<l>return ()</l>
+</body>
+<docu id="Calculo_desplazamineto_regiones">
+<parameters>
+<parameter id="Height"/>
+<parameter id="Region"/>
+<parameter id="Region2"/>
+<parameter id="Width"/>
+<parameter id="ancho"/>
+<parameter id="desplaza"/>
+<parameter id="patron"/>
+<parameter id="patronfindmin"/>
+<parameter id="salto"/>
+<parameter id="zona_busqueda"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

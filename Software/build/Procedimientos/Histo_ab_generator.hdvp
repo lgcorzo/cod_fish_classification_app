@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.1">
+<procedure name="Histo_ab_generator">
+<interface>
+<io>
+<par name="ImageWorkingRGB" base_type="iconic" dimension="0"/>
+<par name="Mascara" base_type="iconic" dimension="0"/>
+<par name="ImageLabIn" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="HistogramOut" base_type="iconic" dimension="0"/>
+</oo>
+<ic>
+<par name="gaussSize" base_type="ctrl" dimension="0"/>
+<par name="MAX_Val" base_type="ctrl" dimension="0"/>
+</ic>
+</interface>
+<body>
+<l>count_obj(ImageLabIn,num)</l>
+<l>if (num == 0)</l>
+<l>reduce_domain(ImageWorkingRGB,Mascara,Imagenworking)</l>
+<l>decompose3(Imagenworking, ImR, ImG, ImB)</l>
+<l>convert_image_type(ImR,ImR,'real')</l>
+<l>convert_image_type(ImG,ImG,'real')</l>
+<l>convert_image_type(ImB,ImB,'real')</l>
+<l>scale_image(ImR,ImR,1/255.0,0.0)</l>
+<l>scale_image(ImG,ImG,1/255.0,0.0)</l>
+<l>scale_image(ImB,ImB,1/255.0,0.0)</l>
+<l>trans_from_rgb (ImR, ImG, ImB, L, a, b, 'cielab') </l>
+<l>compose3(L, a, b,ImageLAB)</l>
+<l>reduce_domain(ImageLAB,Mascara,ImageLAB)</l>
+<l>reduce_domain(L,Mascara,L)</l>
+<l>reduce_domain(a,Mascara,a)</l>
+<l>reduce_domain(b,Mascara,b)</l>
+<l>else</l>
+<l>    ImageLAB := ImageLabIn </l>
+<l>    decompose3(ImageLAB, L, a, b)</l>
+<l>endif</l>
+<c>*espacio de color Lab</c>
+<l>Max := 98.0</l>
+<l>Min := -86.0</l>
+<l>tuple_real(MAX_Val,MAX_Val)</l>
+<l>tuple_real(Max,Max)</l>
+<l>tuple_real(Min,Min)</l>
+<l>mult := MAX_Val/(Max - Min)</l>
+<l>add := -mult*Min</l>
+<l>scale_image(a,a,mult,add)</l>
+<c></c>
+<l>Max := 95.0</l>
+<l>Min := -108.0</l>
+<l>tuple_real(MAX_Val,MAX_Val)</l>
+<l>tuple_real(Max,Max)</l>
+<l>tuple_real(Min,Min)</l>
+<l>mult := MAX_Val/(Max - Min)</l>
+<l>add := -mult*Min</l>
+<l>scale_image(b,b,mult,add)</l>
+<c></c>
+<l>convert_image_type(a,a,'byte')</l>
+<l>convert_image_type(b,b,'byte')</l>
+<l>reduce_domain(a,Mascara,a)</l>
+<l>reduce_domain(b,Mascara,b)</l>
+<l>histo_2dim(Mascara, a,b, Histo2Dim)</l>
+<c>*visualiza la imagen</c>
+<l>* compose2(a,b,ab)</l>
+<l>* scale_image(ab,ab,10,0)</l>
+<c></c>
+<l>convert_image_type(Histo2Dim,Histo2Dimreal,'real')</l>
+<c>*escalodo para tener referenia igual a todos las imagenes</c>
+<l>area_center(Mascara,Area, Row4, Column4)</l>
+<l>tuple_real(Area,Area)</l>
+<l>scale_image(Histo2Dimreal,Histo2Dimreal,100.0/Area,0)</l>
+<l>smooth_image (Histo2Dimreal, Histo2Dimrealgauss, 'gauss', gaussSize)</l>
+<l>HistogramOut := Histo2Dimrealgauss</l>
+<l>return ()</l>
+</body>
+<docu id="Histo_ab_generator">
+<parameters>
+<parameter id="HistogramOut"/>
+<parameter id="ImageLabIn"/>
+<parameter id="ImageWorkingRGB"/>
+<parameter id="MAX_Val"/>
+<parameter id="Mascara"/>
+<parameter id="gaussSize"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

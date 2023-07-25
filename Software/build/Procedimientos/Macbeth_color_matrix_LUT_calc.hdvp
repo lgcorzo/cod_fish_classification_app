@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.1">
+<procedure name="Macbeth_color_matrix_LUT_calc">
+<interface>
+<io>
+<par name="ImageWorking" base_type="iconic" dimension="0"/>
+</io>
+<ic>
+<par name="Heightest" base_type="ctrl" dimension="0"/>
+<par name="Widthtest" base_type="ctrl" dimension="0"/>
+<par name="Rows" base_type="ctrl" dimension="0"/>
+<par name="Columms" base_type="ctrl" dimension="0"/>
+</ic>
+<oc>
+<par name="ClassLUTHandle" base_type="ctrl" dimension="0"/>
+</oc>
+</interface>
+<body>
+<l>RowFinal := [0,0,Heightest,Heightest ]</l>
+<l>Colfinal :=[0,Widthtest,Widthtest,0]</l>
+<l>count_channels(ImageWorking,Channels)</l>
+<l>if(Channels == 4)</l>
+<l>    decompose4(ImageWorking,R,G,B,NIR)</l>
+<l>else</l>
+<l>     decompose3(ImageWorking,R,G,B)</l>
+<l>endif</l>
+<c></c>
+<l>compose3(R,G,B,RGB)</l>
+<c>*corta la imagen por el rectangulo calulado</c>
+<c>* Now we can determine a projective transformation that will map our extracted</c>
+<c>* quadrilateral to a rectangle of given dimensions.  Note that we have to</c>
+<c>* add 0.5 to the coordinates to make the extracted pixel positions fit the</c>
+<c>* coordinate system that is used by perspective_trans_image.</c>
+<l>vector_to_proj_hom_mat2d (Rows + 0.5, Columms + 0.5, RowFinal + 0.5, Colfinal + 0.5, 'normalized_dlt', [], [], [], [], [], [], HomMat2D, Covariance)</l>
+<c>* Now we can map the image and the quadrilateral.</c>
+<l>projective_trans_image_size (RGB, ImageMacbeth, HomMat2D, 'bilinear',Widthtest ,  Heightest, 'false')</l>
+<c>*genero los 24 rois para el calculo de la matriz</c>
+<l>pattern_width := (Widthtest)/6 </l>
+<l>pattern_Heigh := (Heightest)/4 </l>
+<l>gen_rectangle1(ROI,0,0,Heightest,Widthtest)</l>
+<l>partition_rectangle (ROI, Partitioned, pattern_width,pattern_Heigh)</l>
+<l>erosion_circle(Partitioned,Partitioned,25)</l>
+<c>*calcula la media de cada ROI para pasarlo al calculo de la matriz de transformacion de color</c>
+<c></c>
+<l>gen_rectangle1 (ROI_0, 306.833, 675.391, 374.167, 777.697)</l>
+<l>gen_rectangle1 (ROI_1, 20.7329, 682.929, 78.2671, 782.357)</l>
+<l>gen_rectangle1 (ROI_2, 24.1575, 18.9286, 78.9521, 111.5)</l>
+<l>gen_rectangle1 (ROI_3, 316.623, 18.9286, 379.637, 111.5)</l>
+<c></c>
+<l>concat_obj(ROI_0,ROI_1,ROIs)</l>
+<l>concat_obj(ROIs,ROI_2,ROIs)</l>
+<l>concat_obj(ROIs,ROI_3,ROIs)</l>
+<c></c>
+<l>decompose3(ImageMacbeth,R,G,B)</l>
+<l>intensity (ROIs, R, MeanR, DeviationR)</l>
+<l>intensity (ROIs, G, MeanG, DeviationG)</l>
+<l>intensity (ROIs, B, MeanB, DeviationB)</l>
+<c>*busco el blanco y modifico la posicion para que coincida con los valores que quiero</c>
+<l>tuple_sort_index(MeanR,Indices)</l>
+<c>*posicion del blanco</c>
+<l>White_pos := Indices[3]</l>
+<c></c>
+<l>if(White_pos ==  1)</l>
+<l>    mirror_image(ImageMacbeth,ImageMacbeth,'row')</l>
+<l>   rotate_image(ImageMacbeth,ImageMacbeth, 180,'constant')</l>
+<l>endif</l>
+<l>if(White_pos ==  2)</l>
+<l>   rotate_image(ImageMacbeth,ImageMacbeth, 180,'constant')</l>
+<l>endif</l>
+<l>if(White_pos ==  3)</l>
+<l>    mirror_image(ImageMacbeth,ImageMacbeth,'column')</l>
+<c>    </c>
+<l>endif</l>
+<c></c>
+<c></c>
+<l>reduce_domain(ImageMacbeth,ROI,ImageMacbeth)</l>
+<l>decompose3(ImageMacbeth,R,G,B)</l>
+<c>*R</c>
+<l>intensity (Partitioned, R, MeanR, DeviationR)</l>
+<c>*G</c>
+<l>intensity (Partitioned, G, MeanG, DeviationG)</l>
+<c>*B</c>
+<l>intensity (Partitioned, B, MeanB, DeviationB)</l>
+<c></c>
+<c>*visualizacion</c>
+<c>*valores RGB tabla macbeth (1,2,3,4,5,6,7,8,9,10,11,12,13,14,...24 Izq-Der Arr-Aba</c>
+<l>R_macbeth :=[120,146,103,112,205,129,233,173,107,203, 91,223,  0,197,240,186, 88, 65, 65, 99,136,173,211,249]</l>
+<l>G_macbeth :=[198,142,121,135,163, 96,175,197, 74,106,106,141,146,103,208, 70,160, 75, 65, 99,135,172,209,248]</l>
+<l>B_macbeth :=[182,188,121,169,144, 82, 61, 78,122,114,178, 57,178,162, 47, 73, 87,163, 65, 99,135,173,210,248]             </l>
+<l>decompose3(ImageMacbeth, R,G,B)</l>
+<l>convert_image_type(R,R,'byte')</l>
+<l>convert_image_type(G,G,'byte')</l>
+<l>convert_image_type(B,B,'byte')</l>
+<l>trans_from_rgb(R,G,B,L,a,b,'cielab')</l>
+<l>compose3(L,a,b,ImageLab)</l>
+<c></c>
+<c></c>
+<c>*genera el clasificador con KNN y entrenamiento</c>
+<l>*create_class_knn (3, KNNHandle)</l>
+<l>*add_samples_image_class_knn (ImageLab, Partitioned, KNNHandle)</l>
+<c>*crea el LUT para la segmentacion rapida</c>
+<l>*train_class_knn (KNNHandle, [], [])</l>
+<l>*create_class_lut_knn (KNNHandle, [], [], ClassLUTHandle)</l>
+<l>*classify_image_class_knn (ImageLab, ClassRegionsKNN, DistanceImageKNN, KNNHandle, 2000000)</l>
+<l>*region_to_mean (ClassRegionsKNN, ImageLab, ImageClassSVM)</l>
+<c></c>
+<c></c>
+<l>return ()</l>
+</body>
+<docu id="Macbeth_color_matrix_LUT_calc">
+<parameters>
+<parameter id="ClassLUTHandle"/>
+<parameter id="Columms"/>
+<parameter id="Heightest"/>
+<parameter id="ImageWorking"/>
+<parameter id="Rows"/>
+<parameter id="Widthtest"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

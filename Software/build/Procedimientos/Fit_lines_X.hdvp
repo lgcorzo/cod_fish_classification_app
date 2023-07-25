@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.1">
+<procedure name="Fit_lines_X">
+<interface>
+<io>
+<par name="lineasleft" base_type="iconic" dimension="0"/>
+</io>
+<oc>
+<par name="RowBeginver" base_type="ctrl" dimension="0"/>
+<par name="RowEndver" base_type="ctrl" dimension="0"/>
+<par name="ColBeginver" base_type="ctrl" dimension="0"/>
+<par name="ColEndver" base_type="ctrl" dimension="0"/>
+</oc>
+</interface>
+<body>
+<c>*function fitline </c>
+<l>Rows := []</l>
+<l>Columns := []</l>
+<l>count_obj(lineasleft, numerolineas)</l>
+<l>for Index:= 1 to numerolineas by 1</l>
+<l>   select_obj(lineasleft,selected, Index)</l>
+<l>   get_contour_xld (selected, Row, Col)</l>
+<l>   Rows :=[Rows,Row]</l>
+<l>   Columns :=[Columns,Col]</l>
+<l>endfor</l>
+<c></c>
+<c>* Now fit these points to a quadratic function of the form</c>
+<c>* </c>
+<c>* f(x) = a*x + b</c>
+<c>* </c>
+<c>* This can be achieved by solving the system of equations</c>
+<c>* </c>
+<c>* Ax = B</c>
+<c></c>
+<c>* </c>
+<c>* If this system of equations is solved for x, x will contain</c>
+<c>* the parameters of the quadratic function:</c>
+<c>* </c>
+<c>* x = [a, b]</c>
+<c>* </c>
+<c></c>
+<c></c>
+<l>create_matrix (|Rows|, 2, 1.0, MatrixA)</l>
+<l>create_matrix (|Rows|, 1, Rows, MatrixACol0)</l>
+<c></c>
+<l>set_sub_matrix (MatrixA, MatrixACol0, 0, 0)</l>
+<c>* </c>
+<l>create_matrix (|Columns|, 1, Columns, MatrixB)</l>
+<l>solve_matrix (MatrixA, 'general', 0, MatrixB, MatrixX)</l>
+<c></c>
+<l>get_value_matrix (MatrixX, 0, 0, Ares)</l>
+<l>get_value_matrix (MatrixX, 1, 0, Bres)</l>
+<c>*line fitted</c>
+<l>tuple_min(Rows,RowBeginver)</l>
+<l>tuple_max(Rows,RowEndver)</l>
+<l>ColBeginver :=  Ares*RowBeginver + Bres </l>
+<l>ColEndver :=  Ares*RowEndver + Bres </l>
+<l>return ()</l>
+</body>
+<docu id="Fit_lines_X">
+<parameters>
+<parameter id="ColBeginver"/>
+<parameter id="ColEndver"/>
+<parameter id="RowBeginver"/>
+<parameter id="RowEndver"/>
+<parameter id="lineasleft"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

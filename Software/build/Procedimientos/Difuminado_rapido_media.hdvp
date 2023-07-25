@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.1">
+<procedure name="Difuminado_rapido_media">
+<interface>
+<io>
+<par name="Rgb_blanco" base_type="iconic" dimension="0"/>
+<par name="region" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="Rgb_blancoOut" base_type="iconic" dimension="0"/>
+</oo>
+<ic>
+<par name="resize_factor" base_type="ctrl" dimension="0"/>
+<par name="gauss_size" base_type="ctrl" dimension="0"/>
+</ic>
+</interface>
+<body>
+<l>Rgb_blancoOut := Rgb_blanco</l>
+<l>get_image_size (Rgb_blancoOut, Width, Height)</l>
+<l>zoom_image_size (Rgb_blancoOut, Rgb_blancoOut, Width/resize_factor, Height/resize_factor, 'constant')</l>
+<l>median_image (Rgb_blancoOut, Rgb_blancoOut, 'circle', gauss_size, 'mirrored')</l>
+<l>zoom_image_size (Rgb_blancoOut, Rgb_blancoOut, Width, Height, 'constant')</l>
+<l>return ()</l>
+</body>
+<docu id="Difuminado_rapido_media">
+<parameters>
+<parameter id="Rgb_blanco"/>
+<parameter id="Rgb_blancoOut"/>
+<parameter id="gauss_size"/>
+<parameter id="region"/>
+<parameter id="resize_factor"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

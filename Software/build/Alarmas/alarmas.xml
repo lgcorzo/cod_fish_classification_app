@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<Alarms>	
+<AlarmBlock Id="GVL.CSR_ALARMS">
+		<Alarm>
+			<ID>1003</ID>
+			<Title>PLC communication failure</Title>
+			<Description>Check the communication wires.</Description>
+		</Alarm>
+		<Alarm>
+			<ID>1004</ID>
+			<Title>Illumination failure</Title>
+			<Description>Check the ligths and the power supply of the ligths</Description>
+		</Alarm>
+	</AlarmBlock>
+</Alarms>

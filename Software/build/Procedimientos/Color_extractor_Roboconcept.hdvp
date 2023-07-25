@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.1">
+<procedure name="Color_extractor_Roboconcept">
+<interface>
+<io>
+<par name="ImageWorkingRGB" base_type="iconic" dimension="0"/>
+<par name="RegionWorking" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="Color_region" base_type="iconic" dimension="0"/>
+</oo>
+<ic>
+<par name="rango_H" base_type="ctrl" dimension="0"/>
+<par name="rango_V" base_type="ctrl" dimension="0"/>
+</ic>
+</interface>
+<body>
+<c></c>
+<l>return ()</l>
+</body>
+<docu id="Color_extractor_Roboconcept">
+<parameters>
+<parameter id="Color_region"/>
+<parameter id="ImageWorkingRGB"/>
+<parameter id="RegionWorking"/>
+<parameter id="rango_H"/>
+<parameter id="rango_V"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<WCFComConf xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Comunication_Params_server>
+    <_ipAddress>127.0.0.1</_ipAddress>
+    <_port>8010</_port>
+  </Comunication_Params_server>
+</WCFComConf>

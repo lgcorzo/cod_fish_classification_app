@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.3">
+<procedure name="RC_optimar_identificar_rapido">
+<interface>
+<io>
+<par name="Imagen" base_type="iconic" dimension="0"/>
+<par name="ImagenRgbWhite" base_type="iconic" dimension="0"/>
+<par name="ROI_0" base_type="iconic" dimension="0"/>
+</io>
+<ic>
+<par name="scale_1_1" base_type="ctrl" dimension="0"/>
+</ic>
+<oc>
+<par name="result" base_type="ctrl" dimension="0"/>
+<par name="Y_start" base_type="ctrl" dimension="0"/>
+</oc>
+</interface>
+<body>
+<c>*   Parámetros de entrada:</c>
+<c>*     - Imagen</c>
+<c>*</c>
+<c>*   Parámetros de salida:</c>
+<c>*     - result </c>
+<l>try</l>
+<c>      *Guardar la imagen de entrada para el final</c>
+<l>    factor_scala := 0.5/scale_1_1</l>
+<l>    Row21 := 0</l>
+<l>    Area := 0</l>
+<l>    zoom_image_factor(Imagen,Imagen,factor_scala, factor_scala, 'constant')</l>
+<l>    zoom_image_factor(ImagenRgbWhite,ImagenRgbWhite,factor_scala, factor_scala, 'constant')</l>
+<c>   </c>
+<l>    zoom_region(ROI_0, RegionZoom, factor_scala, factor_scala) </l>
+<c>    </c>
+<l>    full_domain(Imagen,Imagen)   </l>
+<l>    get_image_size(Imagen, Width, Height)</l>
+<c></c>
+<l>    smallest_rectangle1(RegionZoom,Row1, Column1, Row2, Column2)</l>
+<l>    crop_rectangle1(ImagenRgbWhite, ImagenRgbWhiterecortada, Row1, Column1, Row2, Column2)</l>
+<l>    crop_rectangle1(Imagen, ImagenRecortada, Row1, Column1, Row2, Column2) </l>
+<c>   </c>
+<l>    div_image(ImagenRecortada,ImagenRgbWhiterecortada,ImagenRgbcorregida,200,0)</l>
+<c>   </c>
+<c>    </c>
+<l>    decompose3(ImagenRgbcorregida, ImageR, ImageG, ImageB)</l>
+<l>    intensity(RegionZoom, ImageB, Mean, Deviation)</l>
+<l>    if(Mean &lt; 40)</l>
+<c>        *fallo falta de iluminacion</c>
+<l>        result := -1</l>
+<l>         Y_start := 0</l>
+<l>        return()</l>
+<c>        </c>
+<l>    endif</l>
+<c>        </c>
+<l>    SegmentImageHSV (ImagenRgbcorregida, Region) </l>
+<l>     count_obj(Region,countelements)</l>
+<l>     if (countelements &gt; 0)</l>
+<l>        fill_up(Region,pezregion)</l>
+<l>        connection(pezregion,pezregions)</l>
+<l>        select_shape_std(pezregions, pezregion, 'max_area', 100)   </l>
+<l>        area_center(pezregion, Area, R1, C1)</l>
+<l>        smallest_rectangle1(pezregion,Row11, Column11, Row21, Column21)</l>
+<l>     endif</l>
+<c>  </c>
+<c>    </c>
+<l>    Area := Area/(0.5*0.5)</l>
+<l>    R1 := Row21/factor_scala</l>
+<l>    result := Area</l>
+<l>    Y_start := R1</l>
+<c>    </c>
+<l>catch (Exception)</l>
+<l>endtry</l>
+<c>    </c>
+<c>  </c>
+<c>     </c>
+<l>return ()</l>
+</body>
+<docu id="RC_optimar_identificar_rapido">
+<short lang="en_US">Detect a fin</short>
+<parameters>
+<parameter id="Imagen"/>
+<parameter id="ImagenRgbWhite"/>
+<parameter id="ROI_0"/>
+<parameter id="Y_start"/>
+<parameter id="result"/>
+<parameter id="scale_1_1"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

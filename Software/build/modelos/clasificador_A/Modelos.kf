@@ -1,0 +1,275 @@
+{
+	"flow_name" : "Modelos",
+	"steps" : [
+		{
+			"class" : "weka.knowledgeflow.steps.Loader",
+			"properties" : {
+				"loader" : {
+					"type" : "loader",
+					"class" : "weka.core.converters.ArffLoader",
+					"filePath" : "C:/CLASSIFICATION/Trained/Instancias_imagenes.arff",
+					"useRelativePath" : false
+				},
+				"name" : "ArffLoader"
+			},
+			"connections" : {
+				"dataSet" : [
+					"ClassAssigner3"
+				]
+			},
+			"coordinates" : "165,274"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Saver",
+			"properties" : {
+				"name" : "ArffSaver",
+				"relationNameForFilename" : true,
+				"saver" : {
+					"type" : "saver",
+					"class" : "weka.core.converters.ArffSaver",
+					"filePath" : "",
+					"dir" : "C:/CLASSIFICATION/Model",
+					"prefix" : "append",
+					"useRelativePath" : false,
+					"options" : "-decimal 6"
+				}
+			},
+			"connections" : {
+			},
+			"coordinates" : "664,188"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.SerializedModelSaver",
+			"properties" : {
+				"filenamePrefix" : "classifier1",
+				"includeRelationNameInFilename" : false,
+				"incrementalSaveSchedule" : 0,
+				"name" : "SerializedModelSaver",
+				"outputDirectory" : "C:\\CLASSIFICATION\\Model"
+			},
+			"connections" : {
+			},
+			"coordinates" : "1042,237"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.ClassAssigner",
+			"properties" : {
+				"classColumn" : "Categoria_Forzada",
+				"name" : "ClassAssigner"
+			},
+			"connections" : {
+				"dataSet" : [
+					"TrainingSetMaker",
+					"ArffSaver"
+				]
+			},
+			"coordinates" : "522,274"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.TrainingSetMaker",
+			"properties" : {
+				"name" : "TrainingSetMaker"
+			},
+			"connections" : {
+				"trainingSet" : [
+					"Classifier1",
+					"Classifier2",
+					"Classifier5",
+					"Classifier3",
+					"Classifier4"
+				]
+			},
+			"coordinates" : "632,328"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.SerializedModelSaver",
+			"properties" : {
+				"filenamePrefix" : "classifier2",
+				"includeRelationNameInFilename" : false,
+				"incrementalSaveSchedule" : 0,
+				"name" : "SerializedModelSaver2",
+				"outputDirectory" : "C:\\CLASSIFICATION\\Model"
+			},
+			"connections" : {
+			},
+			"coordinates" : "1037,328"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.SerializedModelSaver",
+			"properties" : {
+				"filenamePrefix" : "classifier5",
+				"includeRelationNameInFilename" : false,
+				"incrementalSaveSchedule" : 0,
+				"name" : "SerializedModelSaver3",
+				"outputDirectory" : "C:\\CLASSIFICATION\\Model"
+			},
+			"connections" : {
+			},
+			"coordinates" : "1035,635"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.TextViewer",
+			"properties" : {
+				"name" : "TextViewer"
+			},
+			"connections" : {
+			},
+			"coordinates" : "973,173"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.ClassAssigner",
+			"properties" : {
+				"classColumn" : "Categoria_Forzada",
+				"name" : "ClassAssigner3"
+			},
+			"connections" : {
+				"dataSet" : [
+					"Appender"
+				]
+			},
+			"coordinates" : "287,275"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Appender",
+			"properties" : {
+				"name" : "Appender"
+			},
+			"connections" : {
+				"dataSet" : [
+					"ClassAssigner"
+				]
+			},
+			"coordinates" : "415,273"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.SerializedModelSaver",
+			"properties" : {
+				"filenamePrefix" : "classifier3",
+				"includeRelationNameInFilename" : false,
+				"incrementalSaveSchedule" : 0,
+				"name" : "SerializedModelSaver42",
+				"outputDirectory" : "C:\\CLASSIFICATION\\Model"
+			},
+			"connections" : {
+			},
+			"coordinates" : "1042,431"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.SerializedModelSaver",
+			"properties" : {
+				"filenamePrefix" : "classifier4",
+				"includeRelationNameInFilename" : false,
+				"incrementalSaveSchedule" : 0,
+				"name" : "SerializedModelSaver32",
+				"outputDirectory" : "C:\\CLASSIFICATION\\Model"
+			},
+			"connections" : {
+			},
+			"coordinates" : "1034,536"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Classifier",
+			"properties" : {
+				"classifier" : {
+					"type" : "optionHandler",
+					"class" : "weka.classifiers.meta.FilteredClassifier",
+					"options" : "-F \"weka.filters.unsupervised.attribute.Remove -V -R 533-620,885-984,last\" -W weka.classifiers.functions.MultilayerPerceptron -num-decimal-places 6 -- -L 0.3 -M 0.2 -N 500 -V 0 -S 0 -E 20 -H a"
+				},
+				"loadClassifierFileName" : ".",
+				"name" : "Classifier1",
+				"resetIncrementalClassifier" : false,
+				"updateIncrementalClassifier" : true
+			},
+			"connections" : {
+				"batchClassifier" : [
+					"SerializedModelSaver",
+					"SerializedModelSaver"
+				],
+				"text" : [
+					"TextViewer"
+				]
+			},
+			"coordinates" : "821,237"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Classifier",
+			"properties" : {
+				"classifier" : {
+					"type" : "optionHandler",
+					"class" : "weka.classifiers.meta.FilteredClassifier",
+					"options" : "-F \"weka.filters.unsupervised.attribute.Remove -V -R 621-638,last\" -W weka.classifiers.lazy.IBk -num-decimal-places 6 -- -K 1 -W 0 -A \"weka.core.neighboursearch.LinearNNSearch -A \\\"weka.core.EuclideanDistance -R first-last\\\"\""
+				},
+				"loadClassifierFileName" : ".",
+				"name" : "Classifier2",
+				"resetIncrementalClassifier" : false,
+				"updateIncrementalClassifier" : true
+			},
+			"connections" : {
+				"batchClassifier" : [
+					"SerializedModelSaver2"
+				]
+			},
+			"coordinates" : "826,324"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Classifier",
+			"properties" : {
+				"classifier" : {
+					"type" : "optionHandler",
+					"class" : "weka.classifiers.meta.FilteredClassifier",
+					"options" : "-F \"weka.filters.unsupervised.attribute.Remove -V -R 533-620,885-984,last\" -W weka.classifiers.bayes.BayesNet -num-decimal-places 6 -- -D -Q weka.classifiers.bayes.net.search.local.K2 -- -P 1 -S BAYES -E weka.classifiers.bayes.net.estimate.SimpleEstimator -- -A 0.5"
+				},
+				"loadClassifierFileName" : ".",
+				"name" : "Classifier3",
+				"resetIncrementalClassifier" : false,
+				"updateIncrementalClassifier" : true
+			},
+			"connections" : {
+				"batchClassifier" : [
+					"SerializedModelSaver42"
+				]
+			},
+			"coordinates" : "831,427"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Classifier",
+			"properties" : {
+				"classifier" : {
+					"type" : "optionHandler",
+					"class" : "weka.classifiers.meta.FilteredClassifier",
+					"options" : "-F \"weka.filters.unsupervised.attribute.Remove -V -R 533-620,885-984,last\" -W weka.classifiers.trees.J48 -num-decimal-places 6 -- -C 0.25 -M 2"
+				},
+				"loadClassifierFileName" : ".",
+				"name" : "Classifier4",
+				"resetIncrementalClassifier" : false,
+				"updateIncrementalClassifier" : true
+			},
+			"connections" : {
+				"batchClassifier" : [
+					"SerializedModelSaver32"
+				]
+			},
+			"coordinates" : "836,533"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Classifier",
+			"properties" : {
+				"classifier" : {
+					"type" : "optionHandler",
+					"class" : "weka.classifiers.meta.FilteredClassifier",
+					"options" : "-F \"weka.filters.unsupervised.attribute.Remove -V -R 533-620,885-984,last\" -W weka.classifiers.rules.JRip -- -F 3 -N 2.0 -O 2 -S 1"
+				},
+				"loadClassifierFileName" : ".",
+				"name" : "Classifier5",
+				"resetIncrementalClassifier" : false,
+				"updateIncrementalClassifier" : true
+			},
+			"connections" : {
+				"batchClassifier" : [
+					"SerializedModelSaver3"
+				]
+			},
+			"coordinates" : "845,640"
+		}
+	]
+}

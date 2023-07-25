@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.3">
+<procedure name="SegmentImageHSV">
+<interface>
+<io>
+<par name="Image" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="Region" base_type="iconic" dimension="0"/>
+</oo>
+</interface>
+<body>
+<c></c>
+<l>    ImageWorkingRGB := Image</l>
+<l>    get_domain(ImageWorkingRGB,RegionWorking)</l>
+<c>    *busca los verdes</c>
+<l>    Radius1:= 6</l>
+<l>    Radius2:= 6</l>
+<l>    Radius3:= 10</l>
+<c>    *azul lab</c>
+<l>    Center1 := [2, -11]</l>
+<l>    Center2 := [3, -15]</l>
+<l>    Center3 := [5, -20]</l>
+<l>    Radius := [Radius1,Radius2,Radius3]</l>
+<l>    Center :=[Center1,Center2,Center3]</l>
+<l>    distanciaMiniObj := 5</l>
+<l>    gen_empty_obj(empty)</l>
+<l>    ImageLabIn:=empty</l>
+<l>    Color_region_extractor (ImageWorkingRGB, RegionWorking, ImageLabIn, Color_region2_verde, ImageLabOutArea, Radius, Center)</l>
+<l>    Color_region := Color_region2_verde</l>
+<l>    difference(RegionWorking,Color_region,Region)</l>
+<l>    connection(Region,regions)</l>
+<l>    select_shape_std(regions, SelectedRegions1, 'max_area', 100)</l>
+<l>    dilation_circle(SelectedRegions1, RegionDilation, 3.5)</l>
+<l>    fill_up(RegionDilation,RegionDilation)</l>
+<l>    erosion_circle(RegionDilation, Region, 4.5)</l>
+<c>   </c>
+<c>    </c>
+<c>   </c>
+<c>    </c>
+<c></c>
+<c></c>
+<l>return()</l>
+<c></c>
+</body>
+<docu id="SegmentImageHSV">
+<parameters>
+<parameter id="Image"/>
+<parameter id="Region"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

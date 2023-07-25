@@ -1,0 +1,81 @@
+<AppConfig xmlns="http://schemas.datacontract.org/2004/07/CSRApp.config" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+	<AppName>CSR4</AppName>
+	<AppSize xmlns:a="http://schemas.datacontract.org/2004/07/System.Drawing">
+		<a:height>1050</a:height>
+		<a:width>1920</a:width>
+	</AppSize>
+	<Modules xmlns:a="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+	<a:KeyValueOfstringModuleInfosOFVwdFi>
+			<a:Key>Adquisicion</a:Key>
+			<a:Value i:type="ModuleInfoLocal">
+				<Id>Adquisicion</Id>
+				<Name>Acquisition</Name>
+				<Filename>modules/AdquisitionModule.dll</Filename>
+				<ModuleType>csr.modules.CSRFormModule</ModuleType>
+			</a:Value>
+		</a:KeyValueOfstringModuleInfosOFVwdFi>
+	<a:KeyValueOfstringModuleInfosOFVwdFi>
+			<a:Key>alarm</a:Key>
+			<a:Value i:type="ModuleInfoLocal">
+				<Id>alarm</Id>
+				<Name>Alarms</Name>
+				<Filename>modules/AlarmModule.dll</Filename>
+				<ModuleType>csr.modules.CSRFormModule</ModuleType>
+			</a:Value>
+		</a:KeyValueOfstringModuleInfosOFVwdFi>
+		<a:KeyValueOfstringModuleInfosOFVwdFi>
+			<a:Key>Vision</a:Key>
+			<a:Value i:type="ModuleInfoLocal">
+				<Id>Vision</Id>
+				<Name>Vision</Name>
+				<Filename>modules/VisionModule.dll</Filename>
+				<ModuleType>csr.modules.CSRFormModule</ModuleType>
+			</a:Value>
+		</a:KeyValueOfstringModuleInfosOFVwdFi>
+		<a:KeyValueOfstringModuleInfosOFVwdFi>
+			<a:Key>Training</a:Key>
+			<a:Value i:type="ModuleInfoLocal">
+				<Id>Training</Id>
+				<Name>Training</Name>
+				<Filename>modules/TrainingModule.dll</Filename>
+				<ModuleType>csr.modules.CSRFormModule</ModuleType>
+			</a:Value>
+		</a:KeyValueOfstringModuleInfosOFVwdFi>
+		<a:KeyValueOfstringModuleInfosOFVwdFi>
+			<a:Key>Calibracion</a:Key>
+			<a:Value i:type="ModuleInfoLocal">
+				<Id>Calibracion</Id>
+				<Name>Calibration</Name>
+				<Filename>modules/CalibracionModule.dll</Filename>
+				<ModuleType>csr.modules.CSRFormModule</ModuleType>
+			</a:Value>
+		</a:KeyValueOfstringModuleInfosOFVwdFi>
+		<a:KeyValueOfstringModuleInfosOFVwdFi>
+			<a:Key>WCF</a:Key>
+			<a:Value i:type="ModuleInfoLocal">
+				<Id>WCF</Id>
+				<Name>WCF</Name>
+				<Filename>modules/WCFModule.dll</Filename>
+				<ModuleType>csr.modules.CSRFormModule</ModuleType>
+			</a:Value>
+		</a:KeyValueOfstringModuleInfosOFVwdFi>		
+		<a:KeyValueOfstringModuleInfosOFVwdFi>
+			<a:Key>RDP</a:Key>
+			<a:Value i:type="ModuleInfoLocal">
+				<Id>RDP</Id>
+				<Name>RDP</Name>
+				<Filename>modules/RDPModule.dll</Filename>
+				<ModuleType>csr.modules.CSRFormModule</ModuleType>
+			</a:Value>
+		</a:KeyValueOfstringModuleInfosOFVwdFi>		
+		<a:KeyValueOfstringModuleInfosOFVwdFi>
+			<a:Key>Communication</a:Key>
+			<a:Value i:type="ModuleInfoLocal">
+				<Id>Communication</Id>
+				<Name>Communication</Name>
+				<Filename>modules/TwincatModule.dll</Filename>
+				<ModuleType>csr.modules.CSRFormModule</ModuleType>
+			</a:Value>
+		</a:KeyValueOfstringModuleInfosOFVwdFi>
+	</Modules>
+</AppConfig>

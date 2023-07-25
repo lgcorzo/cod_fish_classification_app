@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.1">
+<procedure name="Calcula_PCA_lab_params">
+<interface>
+<io>
+<par name="ImageWorkingRGB" base_type="iconic" dimension="0"/>
+<par name="Mascaraworking" base_type="iconic" dimension="0"/>
+<par name="ImageLabIn" base_type="iconic" dimension="0"/>
+</io>
+<oc>
+<par name="Trans" base_type="ctrl" dimension="0"/>
+<par name="TransInv" base_type="ctrl" dimension="0"/>
+<par name="MeanLab" base_type="ctrl" dimension="0"/>
+<par name="CovLab" base_type="ctrl" dimension="0"/>
+<par name="InfoPerComp" base_type="ctrl" dimension="0"/>
+</oc>
+</interface>
+<body>
+<l>count_obj(ImageLabIn,num)</l>
+<l>if (num == 0)</l>
+<l>reduce_domain(ImageWorkingRGB,Mascaraworking,Imagenworking)</l>
+<l>decompose3(Imagenworking, ImR, ImG, ImB)</l>
+<l>convert_image_type(ImR,ImR,'real')</l>
+<l>convert_image_type(ImG,ImG,'real')</l>
+<l>convert_image_type(ImB,ImB,'real')</l>
+<l>scale_image(ImR,ImR,1/255.0,0.0)</l>
+<l>scale_image(ImG,ImG,1/255.0,0.0)</l>
+<l>scale_image(ImB,ImB,1/255.0,0.0)</l>
+<l>trans_from_rgb (ImR, ImG, ImB, L, a, b, 'cielab') </l>
+<l>compose3(L, a, b,ImageLAB)</l>
+<c></c>
+<l>else</l>
+<l>    ImageLAB := ImageLabIn </l>
+<l>endif</l>
+<l>reduce_domain(ImageLAB,Mascaraworking,ImageLAB)</l>
+<l>TransInv:= []</l>
+<l>Trans:= []</l>
+<l>MeanLab:= 0</l>
+<l>CovLab:=0</l>
+<l>try</l>
+<c>    *para la comparacion de los espacios de color  Lab</c>
+<l>    gen_principal_comp_trans (ImageLAB, Trans, TransInv, MeanLab, CovLab, InfoPerComp)</l>
+<l>catch (Exception)</l>
+<l>    TransInv :=[0,0,0,0,0,0,0,0,0,0,0,0]</l>
+<l>    MeanLab[0] := 0</l>
+<l>    MeanLab[1] := 0</l>
+<l>    MeanLab[2] := 0</l>
+<l>    CovLab[0] := 0</l>
+<l>    CovLab[1] := 0</l>
+<l>    CovLab[2] := 0</l>
+<l>    CovLab[3] := 0</l>
+<l>    CovLab[4] := 0</l>
+<l>    CovLab[5] := 0</l>
+<l>    CovLab[6] := 0</l>
+<l>    CovLab[7] := 0</l>
+<l>    CovLab[8] := 0    </l>
+<l>endtry</l>
+<c></c>
+<l>return ()</l>
+</body>
+<docu id="Calcula_PCA_lab_params">
+<parameters>
+<parameter id="CovLab"/>
+<parameter id="ImageLabIn"/>
+<parameter id="ImageWorkingRGB"/>
+<parameter id="InfoPerComp"/>
+<parameter id="Mascaraworking"/>
+<parameter id="MeanLab"/>
+<parameter id="Trans"/>
+<parameter id="TransInv"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

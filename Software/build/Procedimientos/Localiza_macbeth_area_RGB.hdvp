@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.1">
+<procedure name="Localiza_macbeth_area_RGB">
+<interface>
+<io>
+<par name="image" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="RegionTrans1" base_type="iconic" dimension="0"/>
+</oo>
+</interface>
+<body>
+<l>get_image_size (image, Width, Height)</l>
+<l>get_domain (image, Domain)</l>
+<l>decompose3 (image, R, G, B)</l>
+<l>convert_image_type(R, R, 'real')</l>
+<l>convert_image_type(G, G, 'real')</l>
+<l>convert_image_type(B, B, 'real')</l>
+<l>scale_image(R,R,1/255.0,0.0)</l>
+<l>scale_image(G,G,1/255.0,0.0)</l>
+<l>scale_image(B,B,1/255.0,0.0)</l>
+<l>trans_from_rgb(R,G,B,L,a,b, 'cielab')</l>
+<l>compose3(L,a,b,Lab)</l>
+<l>mean_image(L,Lmean,10, 10)</l>
+<l>mean_image(a,amean,10, 10)</l>
+<l>mean_image(b,bmean,10, 10)</l>
+<l>min_max_gray(Domain,Lmean, 0, MinL, MaxL, RangeL)</l>
+<c></c>
+<l>valor := MinL + (MaxL - MinL)/2.0</l>
+<l>threshold (L, Region1, valor, 255)</l>
+<l>connection (Region1, Regions)</l>
+<l>select_shape_std(Regions, RegionTransMax, 'max_area', 100)</l>
+<l>fill_up(RegionTransMax,SelectedRegionsfill)</l>
+<l>rectangularity (RegionTransMax, Rectangularity)</l>
+<l>shape_trans(RegionTransMax, RegionTransConvex, 'convex')</l>
+<c></c>
+<l>get_image_size(L, Width, Height)</l>
+<l>Imageworking := L</l>
+<c>*quitar el fondo</c>
+<l>dist := 1</l>
+<l>full_domain(Imageworking,Imageworking)</l>
+<l>threshold(Imageworking,Reg,valor,255)</l>
+<l>region_to_bin(Reg, BinImage, 255, 0, Width, Height)</l>
+<c>*proyeccion vertical de la segmentacion</c>
+<l>zoom_image_size(BinImage,ImageZoom, 1, Height, 'weighted')</l>
+<c>*selecciono el minimo</c>
+<l>gray_features(ImageZoom,ImageZoom,'min', ValueMin)</l>
+<l>threshold(ImageZoom,minreg,ValueMin,ValueMin)</l>
+<l>connection(minreg,minregs)</l>
+<l>sort_region(minregs, SortedRegions, 'first_point', 'true', 'row')</l>
+<l>select_shape_std(SortedRegions, ObjectSelected, 'max_area', 100)</l>
+<l>inner_rectangle1(ObjectSelected,Row12, Column12, Row22, Column22)</l>
+<l>gen_rectangle1(Domain_background,Row12,0,Row22,Height)</l>
+<l>reduce_domain(Imageworking,Domain_background,ImageReduced)</l>
+<l>crop_domain(ImageReduced,pattern)</l>
+<l>zoom_image_size(pattern,ImageZoomed, Width, 1, 'bilinear')</l>
+<l>zoom_image_size(ImageZoomed,ImageZoomed, Width, Height, 'constant')</l>
+<l>sub_image(Imageworking,ImageZoomed,Imageworkingdiff,1,0)</l>
+<l>convert_image_type(Imageworkingdiff,Imageworkingdiff,'byte')</l>
+<l>scale_image_max(Imageworkingdiff,Imageworkingdiff)</l>
+<c></c>
+<l>threshold(Imageworkingdiff, ImageThreshold, 120,255)</l>
+<l>connection(ImageThreshold,regions)</l>
+<l>select_shape_std(regions, SelectedRegiosnMax, 'max_area', 100)</l>
+<l>fill_up(SelectedRegiosnMax, RegionFillUp)</l>
+<l>shape_trans(SelectedRegiosnMax, RegionTrans, 'convex')</l>
+<l>erosion_rectangle1(RegionTrans, RegionErosion, 20, 20)</l>
+<l>reduce_domain(Imageworkingdiff, RegionErosion, ImageReduced)</l>
+<l>threshold(ImageReduced, ImageThresholdBlack, 0,80)</l>
+<l>* connection(ImageThresholdBlack, ConnectedRegions)</l>
+<l>* select_shape_std(ConnectedRegions, SelectedRegions, 'max_area', 100)</l>
+<c>*elimino el ruido</c>
+<l>connection(ImageThresholdBlack,ImageThresholdBlack)</l>
+<l>select_shape(ImageThresholdBlack, SelectedRegions, 'area', 'and', 10, 99999999)</l>
+<l>union1(SelectedRegions,SelectedRegion)</l>
+<l>shape_trans(SelectedRegion, RegionTrans1, 'convex')</l>
+<c>*ajuste de las esquinas</c>
+<l>reduce_domain(image, RegionTrans, Imagecorners)</l>
+<l>corner_response (Imagecorners, FilterResponse, 3, 0.04)</l>
+<l>local_max_sub_pix (FilterResponse, 'facet', 1.5, 1.1, Row, Col)</l>
+<l>gen_cross_contour_xld (Crosses, Row, Col, 6, 0.785398)</l>
+<l>boundary(RegionTrans1, RegionBorder1, 'inner')</l>
+<l>boundary(RegionTrans, RegionBorder, 'inner')</l>
+<l>gen_contour_region_xld(RegionBorder1,Contoursint, 'border')</l>
+<l>gen_contour_region_xld(RegionBorder,Contoursext, 'border')</l>
+<c></c>
+<l>RowFinal := []</l>
+<l>ColummFinal := []</l>
+<c>*elimino las x que estan a menos de una distancia deteminada del borde exterior</c>
+<l>numbercrosess := |Row|</l>
+<l>for Indice := 0 to numbercrosess-1 by 1</l>
+<l>    distance_pc (Contoursint,Row[Indice],Col[Indice],DistanceMinint, DistanceMax)</l>
+<l>    distance_pc (Contoursext,Row[Indice],Col[Indice],DistanceMinext, DistanceMax)</l>
+<c>  </c>
+<c>    *si la distancia al bode es superior a 10 pixeles elimino</c>
+<l>    if(DistanceMinint &lt; DistanceMinext)</l>
+<l>        RowFinal := [RowFinal,Row[Indice]]</l>
+<l>        ColummFinal := [ColummFinal,Col[Indice]]</l>
+<l>    endif</l>
+<c>    </c>
+<c>    </c>
+<l>endfor</l>
+<c></c>
+<l>gen_region_points(region,RowFinal,ColummFinal)</l>
+<l>* shape_trans(region, RegionTrans1, 'convex')</l>
+<l>* dev_display(image)</l>
+<l>* dev_set_color ('red')</l>
+<l>* dev_display (Crosses)</l>
+<l>return ()</l>
+</body>
+<docu id="Localiza_macbeth_area_RGB">
+<parameters>
+<parameter id="RegionTrans1"/>
+<parameter id="image"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

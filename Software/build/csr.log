@@ -1,0 +1,15 @@
+/////////////////////////////////////////////////
+/////  CSR 4.1.6.0 :: CSR Log File             //
+/////////////////////////////////////////////////
+
+Date: 24/09/2016
+
+[17:00:31-Adquisicion]::HalconDotNet.HOperatorException: HALCON error #8600: Dynamic library could not be opened in operator open_framegrabber
+   en Camera.Camera.Connect() en E:\Proyectos\LAUNION\Union_soft_vision\LAUNION_01\CSR\Software\La Union\AdquisitionModule\Camera.cs:línea 280
+   en AdquisitionModule.AdquisitionModule.InitFrameGrabber() en E:\Proyectos\LAUNION\Union_soft_vision\LAUNION_01\CSR\Software\La Union\AdquisitionModule\MODULO\AdquisitionModule.cs:línea 238
+[17:00:32-ModuleManager]::Ocurrió un error durante la inicialización del módulo "Adquisicion".
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en AdquisitionModule.AdquisitionModule.DecomposeImage(HImage img, HImage& RGB, HImage& NIR) en E:\Proyectos\LAUNION\Union_soft_vision\LAUNION_01\CSR\Software\La Union\AdquisitionModule\MODULO\AdquisitionModule.cs:línea 632
+   en AdquisitionModule.AdquisitionModule.Init() en E:\Proyectos\LAUNION\Union_soft_vision\LAUNION_01\CSR\Software\La Union\AdquisitionModule\MODULO\AdquisitionModule.cs:línea 126
+   en CSRApp.modules.ModuleManager.InitModules(Size size) en e:\CSR\IMPLEMENTACIÓN\CSR_4.1\CSRApp\ModuleManager\ModuleManager.cs:línea 86
+[17:00:43-root]::Carga y inicialización finalizadas.
